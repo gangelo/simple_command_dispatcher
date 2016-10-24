@@ -35,7 +35,7 @@ module SimpleCommand
          #     
          #
          # @return [SimpleCommand result] the SimpleCommand result.
-         def call(command, command_params = nil, command_qualifiers = {})
+         def call(command, command_qualifiers = {}, *command_parameters)
             logger = Logger.new(STDOUT)
 
             # Check our parameters...
@@ -64,7 +64,7 @@ module SimpleCommand
                raise ArgumentError.new('Parameter [command] does not prepend module SimpleCommand. Using duck typing instead...')
             end
 
-            command_object.call(command_params)
+            command_object.call(*command_parameters)
          end
 
          private
