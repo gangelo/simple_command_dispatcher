@@ -5,7 +5,7 @@ require 'simple_command_dispatcher/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "simple_command_dispatcher"
-  spec.version       = SimpleCommandDispatcher::VERSION
+  spec.version       = SimpleCommand::Dispatcher::VERSION
   spec.authors       = ["Gene M. Angelo, Jr."]
   spec.email         = ["public.gma@gmail.com"]
 

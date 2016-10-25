@@ -1,9 +1,9 @@
 require "spec_helper"
 
-describe SimpleCommandDispatcher do
-  #it "has a version number" do
-  #  expect(SimpleCommandDispatcher::VERSION).not_to be nil
-  #end
+describe SimpleCommand::Dispatcher do
+  it "has a version number" do
+    expect(SimpleCommand::Dispatcher::VERSION).not_to be nil
+  end
 
   it "should return success? if successful" do
    command = SimpleCommand::Dispatcher.call(:TestCommand, { api: :Api, app_name: :AppName, api_version: :V1 }, { param1: :param1, param2: :param2, param3: :param3 })
@@ -67,7 +67,7 @@ describe SimpleCommandDispatcher do
          expect(command.success?).to eq(true)
       end
 
-      it "should work with commands that are not part of any modules" do
+      it "should work with commands that are not embedded in amy modules" do
          command = SimpleCommand::Dispatcher.call(:NoQualifiersCommand, nil, { param1: :param1, param2: :param2, param3: :param3 })
          expect(command.success?).to eq(true)
       end
