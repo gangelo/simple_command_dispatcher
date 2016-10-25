@@ -52,11 +52,25 @@ describe SimpleCommandDispatcher do
          expect(command.success?).to eq(true)
       end
 
-       it "should return success? if [command] contains api qualifiers and [command_qualifiers] are nil" do
+      it "should return success? if [command] contains api qualifiers and [command_qualifiers] are nil" do
          command = SimpleCommand::Dispatcher.call('Api::AppName::V1::TestCommand', {}, { param1: :param1, param2: :param2, param3: :param3 })
          expect(command.success?).to eq(true)
       end
 
+      it "should return success? if [command] contains api qualifiers and [command_qualifiers] are nil" do
+         command = SimpleCommand::Dispatcher.call('Api::AppName::V2::TestCommand', {}, :param1, :param2, :param3)
+         expect(command.success?).to eq(true)
+      end      
+
+      it "should return success? if [command_qualifiers] are passed as an array" do
+         command = SimpleCommand::Dispatcher.call(:TestCommand, [:Api, :AppName, :V1], { param1: :param1, param2: :param2, param3: :param3 })
+         expect(command.success?).to eq(true)
+      end
+
+      it "should work with commands that are not part of any modules" do
+         command = SimpleCommand::Dispatcher.call(:NoQualifiersCommand, nil, { param1: :param1, param2: :param2, param3: :param3 })
+         expect(command.success?).to eq(true)
+      end
    end
 
    #contect '[command_parameters]'
