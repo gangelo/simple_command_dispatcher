@@ -5,7 +5,13 @@ module SimpleCommand
 
          # Returns a constantized class
          def to_constantized_class(klass, klass_modules = [], options = {})
-            to_constantized_class_string(klass, klass_modules, options).constantize
+            constantized_class_string = to_constantized_class_string(klass, klass_modules, options)
+
+            begin
+               constantized_class_string.constantize
+            rescue
+                raise NameError.new("\"#{constantized_class_string}\" is not a valid class.")
+            end
          end
 
          # Returns a constantized class as a string
@@ -16,7 +22,20 @@ module SimpleCommand
             "#{klass_modules}#{klass_string}"
          end
 
-         # Returns the modules as a string (e.g. "Api::Auth::V1::")
+         # Returns the #command Modules qualifier given the #command_modules.
+         #
+         # @param [String or Hash] klass_modules the modules #klass belongs to.
+         # @param [Hash] options the #options provided to #call.
+         #
+         # @return [String] the fully qualified modules that will be prepended to a class,
+         # in order to create a valid SimpleCommand constant class to call.
+         #
+         # @example
+         #
+         #  to_modules_string("Api") # => "Api::"
+         #  to_modules_string([:Api, :AppName, :V1]) # => "Api::AppName::V1::"
+         #  to_modules_string({ :api :Api, app_name: :AppName, api_version: :V1 }) # => "Api::AppName::V1::"
+         #  to_modules_string({ :api :api, app_name: :app_name, api_version: :v1 }, { mudule_titleize: true }) # => "Api::AppName::V1::"
          def to_modules_string(klass_modules = [], options = {})
             klass_modules = validate_klass_modules(klass_modules)
 
@@ -48,8 +67,8 @@ module SimpleCommand
 
          # Returns the class as a string after transformations.
          def to_class_string(klass, options = {})
-            klass = klass.to_s unless klass.instance_of? String
-            if options[:titleize_command]
+            klass = validate_klass(klass, options)
+            if options[:class_titleize]
                klass = klass.titleize
             end
             klass
@@ -62,6 +81,20 @@ module SimpleCommand
             options = {} unless options.instance_of? Hash
             options = { class_titleize: false, module_titleize: false }.merge(options)
             options
+         end
+
+         def validate_klass(klass, options)
+            if !(klass.is_a?(Symbol) || klass.is_a?(String))
+               raise ArgumentError.new('Class is not a String or Symbol. Class must equal the name of the SimpleCommand to call in the form of a String or Symbol.')
+            end
+
+            klass = klass.to_s.trim_all
+
+            if klass.empty?
+               raise ArgumentError.new('Class is empty?')
+            end
+
+            klass
          end
 
          def validate_klass_modules(klass_modules)

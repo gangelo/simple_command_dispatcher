@@ -17,29 +17,24 @@ describe SimpleCommand::Dispatcher do
 
    context 'command Parameter' do
 
-      it "should throw an exception if the command is nil" do
-         expect { SimpleCommand::Dispatcher.call(nil, { api: :Api, app_name: :AppName, api_version: :V1 }, {}, { param1: :bad_param_param1, param2: :param2, param3: :param3 }) }
-            .to raise_error(ArgumentError, 'Command is nil or empty?')
-      end
-
-       it "should throw an exception if the command is empty" do
+      it "should throw an exception if the command is empty" do
          expect { SimpleCommand::Dispatcher.call("", { api: :Api, app_name: :AppName, api_version: :V1 }, {}, { param1: :bad_param_param1, param2: :param2, param3: :param3 }) }
-            .to raise_error(ArgumentError, 'Command is nil or empty?')
+            .to raise_error(ArgumentError, 'Class is empty?')
       end
 
       it "should throw an exception if parameter [command] is not a Symbol or a String" do
          expect { SimpleCommand::Dispatcher.call([kill: :me], { api: :Api, app_name: :AppName, api_version: :V1 }, {}, { param1: :bad_param_param1, param2: :param2, param3: :param3 }) }
-            .to raise_error(ArgumentError, 'Command is not a String or Symbol. Command must equal the name of the SimpleCommand to call in the form of a String or Symbol.')
+            .to raise_error(ArgumentError, 'Class is not a String or Symbol. Class must equal the name of the SimpleCommand to call in the form of a String or Symbol.')
       end
 
       it "should throw an exception if parameter [command] is not a valid constant" do
          expect { SimpleCommand::Dispatcher.call(:NameErrorCommand, { api: :Api, app_name: :AppName, api_version: :V1 }, {}, { param1: :param1, param2: :param2, param3: :param3 }) }
-            .to raise_error(NameError, "\"Api::AppName::V1::NameErrorCommand\" is not a valid SimpleCommand command.")
+            .to raise_error(NameError, "\"Api::AppName::V1::NameErrorCommand\" is not a valid class.")
       end
 
       it "should throw an exception if parameter [command] does not prepend module SimpleCommand" do
          expect { SimpleCommand::Dispatcher.call(:InvalidCommand, { api: :Api, app_name: :AppName, api_version: :V1 }, {}, { param1: :bad_param_param1, param2: :param2, param3: :param3 }) }
-            .to raise_error(ArgumentError, 'Command does not prepend module SimpleCommand. Using duck typing instead...')
+            .to raise_error(ArgumentError, 'Class does not prepend module SimpleCommand.')
       end
 
       it "should return success? if parameter [command] is a String" do
@@ -80,8 +75,8 @@ describe SimpleCommand::Dispatcher do
    end
 
    context 'options Parameter' do
-      it "should work if command modules are lower-case and titleize_command_modules option is set to true" do
-         command = SimpleCommand::Dispatcher.call(:TestCommand, [:api, 'appName', :v1], {titleize_command_modules: true}, { param1: :param1, param2: :param2, param3: :param3 })
+      it "should work if command modules are lower-case and module_titleize option is set to true" do
+         command = SimpleCommand::Dispatcher.call(:TestCommand, [:api, 'appName', :v1], {module_titleize: true}, { param1: :param1, param2: :param2, param3: :param3 })
          expect(command.success?).to eq(true)
       end
 
