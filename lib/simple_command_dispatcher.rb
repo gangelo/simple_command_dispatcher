@@ -71,7 +71,7 @@ module SimpleCommand
             # a valid SimpleCommand constant that we will use to execute (e.g 'Api::Auth::V1::MySimpleCommand').
             transformed_command = "#{transformed_command_modules}#{transformed_command_name}"
 
-            p transformed_command
+            #p transformed_command
             
             begin
                # See if our SimpleCommand is a valid constant. Calling Object.const_get simply
