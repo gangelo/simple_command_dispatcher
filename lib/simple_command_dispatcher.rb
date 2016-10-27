@@ -63,8 +63,6 @@ module SimpleCommand
             #simple_command_class_constant = Object.const_get(transformed_command)
             simple_command_class_constant = to_constantized_class(command, command_modules, options)
 
-            p simple_command_class_constant
-
             # Calling valid_simple_command? returns true if the class pointed to by
             # simple_command_class_constant is a valid SimpleCommand class; that is, 
             # if it prepends module SimpleCommand::ClassMethods.
@@ -80,6 +78,8 @@ module SimpleCommand
 
          private
 
+         # @!visibility public
+         #
          # Returns true or false depending on whether or not #command prepends Module SimpleCommand::ClassMethods.
          #
          # @param [String] klass_constant the constant representation of the alleged SimpleCommand to interrogate.

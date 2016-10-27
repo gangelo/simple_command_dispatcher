@@ -1,24 +1,26 @@
+
 module SimpleCommand
    module KlassTransform
-
-      public 
-
          # Returns a constantized class (as a Class constant), given the klass and klass_modules.
          #
-         # @param [Symbol or String] klass the class name.
-         # @param [Hash, Array or String] klass_modules the modules klass belongs to.
-         # @param [Hash] options the options that determine how klass_modules is transformed.
+         # @param klass [Symbol or String] the class name.
+         # @param klass_modules [Hash, Array or String] the modules klass belongs to.
+         # @param options [Hash] the options that determine how klass_modules is transformed.
          # @option options [Boolean] :class_titleize (false) Determines whether or not klass should be titleized.
          # @option options [Boolean] :module_titleize (false) Determines whether or not klass_modules should be titleized.
          #
          # @return [Class] the class constant. Can be used to call ClassConstant.constantize.
          #
+         # @raise [NameError] if the constantized class string cannot be constantized; that is, if it is not
+         #   a valid class constant.
+         #
          # @example
          #
-         #  to_constantized_class_string("Authenticate", "Api") # => Api::Authenticate
-         #  to_constantized_class_string(:Authenticate, [:Api, :AppName, :V1]) # => Api::AppName::V1::Authenticate
-         #  to_constantized_class_string(:Authenticate, { :api :Api, app_name: :AppName, api_version: :V2 }) # => Api::AppName::V2::Authenticate
-         #  to_constantized_class_string("authenticate", { :api :api, app_name: :app_name, api_version: :v1 }, { class_titleize: true, module_titleize: true }) # => Api::AppName::V1::Authenticate
+         #   to_constantized_class("Authenticate", "Api") # => Api::Authenticate
+         #   to_constantized_class(:Authenticate, [:Api, :AppName, :V1]) # => Api::AppName::V1::Authenticate
+         #   to_constantized_class(:Authenticate, { :api :Api, app_name: :AppName, api_version: :V2 }) # => Api::AppName::V2::Authenticate
+         #   to_constantized_class("authenticate", { :api :api, app_name: :app_name, api_version: :v1 }, { class_titleize: true, module_titleize: true }) # => Api::AppName::V1::Authenticate
+         #
          def to_constantized_class(klass, klass_modules = [], options = {})
             constantized_class_string = to_constantized_class_string(klass, klass_modules, options)
 
@@ -41,10 +43,11 @@ module SimpleCommand
          #
          # @example
          #
-         #  to_constantized_class_string("Authenticate", "Api") # => "Api::Authenticate"
-         #  to_constantized_class_string(:Authenticate, [:Api, :AppName, :V1]) # => "Api::AppName::V1::Authenticate"
-         #  to_constantized_class_string(:Authenticate, { :api :Api, app_name: :AppName, api_version: :V2 }) # => "Api::AppName::V2::Authenticate"
-         #  to_constantized_class_string("authenticate", { :api :api, app_name: :app_name, api_version: :v1 }, { class_titleize: true, module_titleize: true }) # => "Api::AppName::V1::Authenticate"
+         #   to_constantized_class_string("Authenticate", "Api") # => "Api::Authenticate"
+         #   to_constantized_class_string(:Authenticate, [:Api, :AppName, :V1]) # => "Api::AppName::V1::Authenticate"
+         #   to_constantized_class_string(:Authenticate, { :api :Api, app_name: :AppName, api_version: :V2 }) # => "Api::AppName::V2::Authenticate"
+         #   to_constantized_class_string("authenticate", { :api :api, app_name: :app_name, api_version: :v1 }, { class_titleize: true, module_titleize: true }) # => "Api::AppName::V1::Authenticate"
+         #
          def to_constantized_class_string(klass, klass_modules = [], options = {})
             options = ensure_options(options)
             klass_modules = to_modules_string(klass_modules, options)
@@ -52,20 +55,23 @@ module SimpleCommand
             "#{klass_modules}#{klass_string}"
          end
 
-         # Returns a string of modules that qualify a class, given a list of modules.
+         # Returns a string of modules that can be subsequently prepended to a class, to create a constantized class.
          #
          # @param [Hash, Array or String] klass_modules the modules a class belongs to.
          # @param [Hash] options the options that determine how klass_modules is transformed.
          # @option options [Boolean] :module_titleize (false) Determines whether or not klass_modules should be titleized.
          #
-         # @return [String] the modules that will be prepended to a class.
+         # @return [String] a string of modules that can be subsequently prepended to a class, to create a constantized class.
+         #
+         # @raise [ArgumentError] if the klass_modules is not of type String, Hash or Array.
          #
          # @example
          #
-         #  to_modules_string("Api") # => "Api::"
-         #  to_modules_string([:Api, :AppName, :V1]) # => "Api::AppName::V1::"
-         #  to_modules_string({ :api :Api, app_name: :AppName, api_version: :V1 }) # => "Api::AppName::V1::"
-         #  to_modules_string({ :api :api, app_name: :app_name, api_version: :v1 }, { module_titleize: true }) # => "Api::AppName::V1::"
+         #   to_modules_string("Api") # => "Api::"
+         #   to_modules_string([:Api, :AppName, :V1]) # => "Api::AppName::V1::"
+         #   to_modules_string({ :api :Api, app_name: :AppName, api_version: :V1 }) # => "Api::AppName::V1::"
+         #   to_modules_string({ :api :api, app_name: :app_name, api_version: :v1 }, { module_titleize: true }) # => "Api::AppName::V1::"
+         #
          def to_modules_string(klass_modules = [], options = {})
             klass_modules = validate_klass_modules(klass_modules)
 
@@ -105,10 +111,11 @@ module SimpleCommand
          #
          # @example
          #
-         #  to_class_string("MyClass") # => "MyClass"
-         #  to_class_string("myClass", { class_titleize: true }) # => "MyClass"
-         #  to_class_string(:MyClass) # => "MyClass"
-         #  to_class_string(:myClass, { class_titleize: true }) # => "MyClass"
+         #   to_class_string("MyClass") # => "MyClass"
+         #   to_class_string("myClass", { class_titleize: true }) # => "MyClass"
+         #   to_class_string(:MyClass) # => "MyClass"
+         #   to_class_string(:myClass, { class_titleize: true }) # => "MyClass"
+         #
          def to_class_string(klass, options = {})
             klass = validate_klass(klass, options)
             if options[:class_titleize]
@@ -117,31 +124,46 @@ module SimpleCommand
             klass
          end
 
+         private
 
-      private
-
+         # @!visibility public
+         #
+         # Ensures options are initialized and valid before accessing them.
+         #
+         # @param [Hash] options the options that determine how processing and transformations will be handled.
+         # @option options [Boolean] :class_titleize (false) Determines whether or not class names should be titleized.
+         # @option options [Boolean] :module_titleize (false) Determines whether or not module names should be titleized.
+         #
+         # @return [Hash] the initialized, validated options.
+         #
          def ensure_options(options)
             options = {} unless options.instance_of? Hash
             options = { class_titleize: false, module_titleize: false }.merge(options)
             options
          end
 
-         # Returns validates klass and returns klass as a string after all blanks have been removed using klass.gsub(/\s+/, "").
+         # @!visibility public
+         #
+         # Validates klass and returns klass as a string after all blanks have been removed using klass.gsub(/\s+/, "").
          #
          # @param [Symbol or String] klass the class name to be validated. klass cannot be empty?
          #
          # @return [String] the validated class as a string with blanks removed.
          #
+         # @raise [ArgumentError] if the klass is empty? or not of type String or Symbol.
+         #
          # @example
          #
-         #  validate_klass(" My Class ") # => "MyClass"
-         #  to_class_string(:MyClass) # => "MyClass"
+         #   validate_klass(" My Class ") # => "MyClass"
+         #   validate_klass(:MyClass) # => "MyClass"
+         #
          def validate_klass(klass, options)
             if !(klass.is_a?(Symbol) || klass.is_a?(String))
                raise ArgumentError.new('Class is not a String or Symbol. Class must equal the name of the SimpleCommand to call in the form of a String or Symbol.')
             end
 
-            klass = klass.to_s.trim_all
+            #klass = klass.to_s.trim_all
+            klass = klass.to_s.strip
 
             if klass.empty?
                raise ArgumentError.new('Class is empty?')
@@ -150,6 +172,23 @@ module SimpleCommand
             klass
          end
 
+         # @!visibility public
+         #
+         # Validates and returns klass_modules.
+         #
+         # @param [Symbol, Array or String] klass_modules the module(s) to be validated.
+         #
+         # @return [Symbol, Array or String] the validated module(s).
+         #
+         # @raise [ArgumentError] if the klass_modules is not of type String, Hash or Array.
+         #
+         # @example
+         #
+         #   validate_modules(" Module ") # => " Module "
+         #   validate_modules(:Module) # => "Module"
+         #   validate_module("ModuleA::ModuleB") # => "ModuleA::ModuleB"
+         #
+         # @private
          def validate_klass_modules(klass_modules)
             return {} if klass_modules.nil? || (klass_modules.respond_to?(:empty?) && klass_modules.empty?)
 
@@ -159,5 +198,6 @@ module SimpleCommand
 
             klass_modules
          end
+      #end
    end
 end
