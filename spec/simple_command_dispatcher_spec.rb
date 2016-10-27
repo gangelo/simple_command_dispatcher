@@ -29,7 +29,7 @@ describe SimpleCommand::Dispatcher do
 
       it "should throw an exception if parameter [command] is not a valid constant" do
          expect { SimpleCommand::Dispatcher.call(:NameErrorCommand, { api: :Api, app_name: :AppName, api_version: :V1 }, {}, { param1: :param1, param2: :param2, param3: :param3 }) }
-            .to raise_error(NameError, "\"Api::AppName::V1::NameErrorCommand\" is not a valid class.")
+            .to raise_error(NameError, "\"Api::AppName::V1::NameErrorCommand\" is not a valid class constant.")
       end
 
       it "should throw an exception if parameter [command] does not prepend module SimpleCommand" do
