@@ -5,37 +5,14 @@
 __simple_command_dispatcher__ (SCD) allows you to execute __simple_command__ commands in a more dynamic way. If you are not familiar with the _simple_command_ gem, check it out [here][simple-command]. SCD was written specifically with the [rails_api][rails-api] in mind; however, you can use SDC wherever you use simple_command commands. 
 
 ## Example
-The below example is from an `rails-api` API that uses token-based authentication, and assumes the following:
+The below example is from a `rails-api` API that uses token-based authentication, and assumes the following:
 
 * `application_controller` is a base class, inherited by all other controllers. The `#authenticate_request` action is called with every request for authentication (`before_action :authenticate_request`).
 * `request.headers` will contain the authorization token to authenticate the request (`request.headers["Authorization"]`)
 * This application uses the following folder structure to manage its _simple_command_ commands:
 
+![N|Solid](https://cldup.com/EJsj-OKZy0.png)
 
-    |--- /app
-       |
-       |--- /api
-          |
-          |--- /my_app1
-             |
-             |--- v1
-                |
-                |--- authenticate.rb 
-             |--- v2
-                |
-                |--- authenticate.rb 
-             |--- etc.
-          |
-          |--- /my_app2
-             |
-             |--- v1
-                |
-                |--- authenticate.rb 
-             |--- v2
-                |
-                |--- authenticate.rb 
-             |--- etc.
-             
 (example cont.)
 
  * The command classes are named *__according to their respective location within the above folder structure__*.
