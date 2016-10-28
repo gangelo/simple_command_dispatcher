@@ -2,10 +2,12 @@
 # A. It's a Ruby gem!
 
 ## Overview
-__simple_command_dispatcher__ (SCD) allows you to execute __simple_command__ commands in a more dynamic way. If you are not familiar with the _simple_command_ gem, check it out [here][simple-command]. SCD was written specifically with the [rails_api][rails-api] in mind; however, you can use SDC wherever you use simple_command commands. 
+__simple_command_dispatcher__ (SCD) allows you to execute __simple_command__ commands in a more dynamic way. If you are not familiar with the _simple_command_ gem, check it out [here][simple-command]. SCD was written specifically with the [rails-api][rails-api] in mind; however, you can use SDC wherever you use simple_command commands. 
 
 ## Example
-The below example is from a `rails-api` API that uses token-based authentication, and assumes the following:
+The below example is from a `rails-api` API that uses token-based authentication.
+
+This example assumes the following:
 
 * `application_controller` is a base class, inherited by all other controllers. The `#authenticate_request` action is called with every request for authentication (`before_action :authenticate_request`).
 * `request.headers` will contain the authorization token to authenticate the request (`request.headers["Authorization"]`)
@@ -13,14 +15,12 @@ The below example is from a `rails-api` API that uses token-based authentication
 
 ![N|Solid](https://cldup.com/EJsj-OKZy0.png)
 
-(example cont.)
-
  * Command classes (and the modules they reside under) are named *__according to their file name and respective location within the above folder structure__*; therefore, the command classes defined for this example are named in the following manner:
    * ```'/api/my_app1/v1/authenticate.rb’ # => class Api::MyApp1::V1::Authenticate ... end```
    * ```‘/api/my_app1/v2/authenticate.rb’ # => class Api::MyApp1::V2::Authenticate ... end```
    * ```‘/api/my_app2/v1/authenticate.rb’ # => class Api::MyApp2::V1::Authenticate ... end```
    * ```‘/api/my_app2/v2/authenticate.rb’ # => class Api::MyApp2::V2::Authenticate ... end```
-* The *__routes used to authenticate requests__* in this example, confirms to the following format: `"/api/[app_name]/[app_version]/authenticate"` where `[app_name]` = the _application name_, and `[app_version]` = the _application version_; therefore, the authentication routes defined for this example, ultimately look like this after running `$ rake routes`:
+* The *__routes used to authenticate requests__* in this example, conform to the following format: `"/api/[app_name]/[app_version]/authenticate"` where `[app_name]` = the _application name_, and `[app_version]` = the _application version_; therefore, running `$ rake routes` for this example would output the following authentication route information:
 
 | Prefix        | Verb | URI Pattern | Controller#Action 
 |-------------:|:-------------|:------------------|:------------------|
