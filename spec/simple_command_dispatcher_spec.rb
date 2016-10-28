@@ -47,8 +47,13 @@ describe SimpleCommand::Dispatcher do
          expect(command.success?).to eq(true)
       end
 
-      it "should return success? if command_qualifiers are combined as strings" do
+      it "should return success? if command_modules are combined as strings" do
          command = SimpleCommand::Dispatcher.call(:TestCommand, { api_qualifier: 'Api::AppName', version: :V1 }, {}, { param1: :param1, param2: :param2, param3: :param3 })
+         expect(command.success?).to eq(true)
+      end
+
+      it "should return success? if command_modules is a string" do
+         command = SimpleCommand::Dispatcher.call(:TestCommand, 'Api::AppName::V1', {}, { param1: :param1, param2: :param2, param3: :param3 })
          expect(command.success?).to eq(true)
       end
 

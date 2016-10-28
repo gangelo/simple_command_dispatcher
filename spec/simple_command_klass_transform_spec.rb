@@ -23,7 +23,14 @@ describe SimpleCommand::KlassTransform do
   #    end
   # end
 
-   describe "Tests for to_constantized_class_string" do
+   describe "Tests for #camelize" do
+      it "should return a camelized string from a route" do
+         result = @it.camelize("/api/auth/app_name/v1/authenticate")
+         expect(result).to eq("Api::Auth::AppName::V1::Authenticate")
+      end
+   end
+
+   describe "Tests for #to_constantized_class_string" do
       it "should create a constantized class string with the detault options" do
          result = @it.to_constantized_class_string(:Authenticate, { api: :Api, auth: :Auth, app_name: :AppName, api_version: :V1 })
          expect(result).to eq("Api::Auth::AppName::V1::Authenticate")
@@ -87,18 +94,5 @@ describe SimpleCommand::KlassTransform do
             expect(result).to eq("Api::Auth::AppName::V1::")
          end
       end
-=begin
-      describe "when passing modules as strings" do
-         it "should transform an array of strings to a module string" do
-            result = @it.to_modules_string(["Api", "Auth", "AppName", "V1"])
-            expect(result).to eq("Api::Auth::AppName::V1::")
-         end
-
-         it "should transform a hash of strings to a module string" do
-            result = @it.to_modules_string({ api: "Api", auth: "Auth", app_name: "AppName", api_version: "V1" })
-            expect(result).to eq("Api::Auth::AppName::V1::")
-         end
-      end
-=end
    end
 end

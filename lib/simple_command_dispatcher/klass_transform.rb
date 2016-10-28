@@ -1,5 +1,7 @@
 
 module SimpleCommand
+
+   # Handles class and module transformations.
    module KlassTransform
          # Returns a constantized class (as a Class constant), given the klass and klass_modules.
          #
@@ -124,6 +126,20 @@ module SimpleCommand
             klass
          end
 
+         # Transforms a route into a module string
+         #
+         # @example
+         #
+         #   module_to_route("/api/app/auth/v1") # => "Api::App::Auth::V1"
+         #   module_to_route("/api/app_name/auth/v1") # => "Api::AppName::Auth::V1"
+         #
+         def camelize(token)
+            if !token.instance_of? String
+               raise ArgumentError.new('Token is not a String')
+            end
+            token = token.titlecase.camelize.sub(/^[:]*/,"").trim_all unless token.empty?
+         end
+
          private
 
          # @!visibility public
@@ -131,14 +147,27 @@ module SimpleCommand
          # Ensures options are initialized and valid before accessing them.
          #
          # @param [Hash] options the options that determine how processing and transformations will be handled.
-         # @option options [Boolean] :class_titleize (false) Determines whether or not class names should be titleized.
-         # @option options [Boolean] :module_titleize (false) Determines whether or not module names should be titleized.
+         # @option options [Boolean] :camelize (false) determines whether or not both class and module names should be camelized.
+         # @option options [Boolean] :titleize (false) determines whether or not both class and module names should be titleized.
+         # @option options [Boolean] :class_titleize (false) determines whether or not class names should be titleized.
+         # @option options [Boolean] :module_titleize (false) determines whether or not module names should be titleized.
+         # @option options [Boolean] :class_camelized (false) determines whether or not class names should be camelized.
+         # @option options [Boolean] :module_camelized (false) determines whether or not module names should be camelized.
          #
          # @return [Hash] the initialized, validated options.
          #
          def ensure_options(options)
             options = {} unless options.instance_of? Hash
-            options = { class_titleize: false, module_titleize: false }.merge(options)
+            options = { camelize: false, titleize: false, class_titleize: false, module_titleize: false, class_camelize: false, module_camelize: false}.merge(options)
+
+            if options[:camelize]
+               options[:class_camelize] = options[:module_camelize] = true
+            end
+
+            if options[:titleize]
+               options[:class_titleize] = options[:module_titleize] = true
+            end
+
             options
          end
 
