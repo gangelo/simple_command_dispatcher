@@ -85,6 +85,11 @@ describe SimpleCommand::Dispatcher do
          expect(command.success?).to eq(true)
       end
 
+      it "should work if command module is a route and camelize option is set to true" do
+         command = SimpleCommand::Dispatcher.call("test_command", "/api/app_name/v1", { camelize: true }, { param1: :param1, param2: :param2, param3: :param3 })
+         expect(command.success?).to eq(true)
+      end
+
       #it "should work if command is lower-case and titleize_command option is set to true" do
       #   command = SimpleCommand::Dispatcher.call(:testCommand, [:Api, :AppName, :v2], {titleize_command: true}, :param1, :param2, :param3 )
       #   expect(command.success?).to eq(true)

@@ -1,8 +1,68 @@
-# SimpleCommand::Dispatcher
+# Q. simple_command_dispatcher - what is it?
+# A. It's a Ruby gem!
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/simple_command_dispatcher`. To experiment with that code, run `bin/console` for an interactive prompt.
+## Overview
+__simple_command_dispatcher__ (SCD) allows you to execute __simple_command__ commands in a more dynamic way. If you are not familiar with the _simple_command_ gem, check it out [here][simple-command]. SCD was written specifically with the [rails_api][rails-api] in mind; however, you can use SDC wherever you use simple_command commands. 
 
-TODO: Delete this and the text above, and describe your gem
+## Example
+The below example is from an `rails-api` API that uses token-based authentication, and assumes the following:
+
+* `application_controller` is a base class, inherited by all other controllers. The `#authenticate_request` action is called with every request for authentication (`before_action :authenticate_request`).
+* `request.headers` will contain the authorization token to authenticate the request (`request.headers["Authorization"]`)
+* This application uses the following folder structure to manage its _simple_command_ commands:
+
+
+    |--- /app
+       |
+       |--- /api
+          |
+          |--- /my_app1
+             |
+             |--- v1
+                |
+                |--- authenticate.rb 
+             |--- v2
+                |
+                |--- authenticate.rb 
+             |--- etc.
+          |
+          |--- /my_app2
+             |
+             |--- v1
+                |
+                |--- authenticate.rb 
+             |--- v2
+                |
+                |--- authenticate.rb 
+             |--- etc.
+             
+(example cont.)
+
+ * The command classes are named *__according to their respective location within the above folder structure__*.
+ * The route format necessary to authenticate a request takes on the following format: `"/api/[app_name]/[app_version]/authenticate"` where `[app_name]` = the _application name_, and `[app_version]` = the _application version_.
+* The classes within each `authenticate.rb` file in the above folder structure would `prepend SimpleCommand` and be named the following:
+  * ```'/api/my_app1/v1/authenticate.rb’ # => class Api::MyApp1::V1::Authenticate ... end```
+  * ```‘/api/my_app1/v2/authenticate.rb’ # => class Api::MyApp1::V2::Authenticate ... end```
+  * ```‘/api/my_app2/v1/authenticate.rb’ # => class Api::MyApp2::V1::Authenticate ... end```
+  * ```‘/api/my_app2/v2/authenticate.rb’ # => class Api::MyApp2::V2::Authenticate ... end```
+* The 
+
+```ruby 
+# /app/controllers/application_controller.rb
+require 'simple_command_dispatcher'
+
+class ApplicationController < ActionController::API
+   before_action :authenticate_request
+   attr_reader :current_user
+
+   private
+
+   def authenticate_request
+      @current_user = AuthorizeApiRequest.call(request.headers).result
+      render json: { error: 'Not Authorized' }, status: 401 unless @current_user
+   end
+end
+```
 
 ## Installation
 
@@ -38,4 +98,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+
+   [simple-command]: <https://rubygems.org/gems/simple_command>
+   [rails-api]: <https://rubygems.org/gems/rails-api>
 

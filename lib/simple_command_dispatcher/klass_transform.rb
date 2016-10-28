@@ -94,8 +94,8 @@ module SimpleCommand
                   else
                      raise ArgumentError.new('Class modules is not a String, Hash or Array.')
                end
-
                klass_modules_string = klass_modules_string.split('::').map(&:titleize).join('::') if options[:module_titleize]
+               klass_modules_string = camelize(klass_modules_string) if options[:module_camelize]
                klass_modules_string = klass_modules_string.trim_all
                klass_modules_string = "#{klass_modules_string}::" unless klass_modules_string.empty?
             end
@@ -122,6 +122,9 @@ module SimpleCommand
             klass = validate_klass(klass, options)
             if options[:class_titleize]
                klass = klass.titleize
+            end
+            if options[:class_camelize]
+               klass = camelize(klass)
             end
             klass
          end
@@ -191,7 +194,6 @@ module SimpleCommand
                raise ArgumentError.new('Class is not a String or Symbol. Class must equal the name of the SimpleCommand to call in the form of a String or Symbol.')
             end
 
-            #klass = klass.to_s.trim_all
             klass = klass.to_s.strip
 
             if klass.empty?
