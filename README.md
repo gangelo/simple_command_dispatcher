@@ -33,15 +33,22 @@ This example assumes the following:
 require 'simple_command_dispatcher'
 
 class ApplicationController < ActionController::API
-   before_action :authenticate_request
-   attr_reader :current_user
+    before_action :authenticate_request
+    attr_reader :current_user
 
-   private
+    private
 
-   def authenticate_request
-      @current_user = AuthorizeApiRequest.call(request.headers).result
-      render json: { error: 'Not Authorized' }, status: 401 unless @current_user
-   end
+    def authenticate_request
+        # request.env['PATH_INFO'] will return one of the following
+        route = request.env['PATH_INFO'] # => "/api/my_app1/v1/authenticate.json”
+        route = route.split('/').slice(0,4).join('/') # => "/api/my_app1/v1/"
+        command = SimpleCommand::Dispatcher.call(:Authenticate, route, { camelize: true}, request.headers)
+        if command.success?
+            @current_user = command.result
+        else
+            render json: { error: 'Not Authorized' }, status: 401
+        end
+    end
 end
 ```
 
