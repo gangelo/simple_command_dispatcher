@@ -15,15 +15,19 @@ The below example is from a `rails-api` API that uses token-based authentication
 
 (example cont.)
 
- * The command classes are named *__according to their respective location within the above folder structure__*.
- * The route format necessary to authenticate a request takes on the following format: `"/api/[app_name]/[app_version]/authenticate"` where `[app_name]` = the _application name_, and `[app_version]` = the _application version_.
-* The classes within each `authenticate.rb` file in the above folder structure would `prepend SimpleCommand` and be named the following:
-  * ```'/api/my_app1/v1/authenticate.rb’ # => class Api::MyApp1::V1::Authenticate ... end```
-  * ```‘/api/my_app1/v2/authenticate.rb’ # => class Api::MyApp1::V2::Authenticate ... end```
-  * ```‘/api/my_app2/v1/authenticate.rb’ # => class Api::MyApp2::V1::Authenticate ... end```
-  * ```‘/api/my_app2/v2/authenticate.rb’ # => class Api::MyApp2::V2::Authenticate ... end```
-* The 
+ * Command classes (and the modules they reside under) are named *__according to their file name and respective location within the above folder structure__*; therefore, the command classes defined for this example are named in the following manner:
+   * ```'/api/my_app1/v1/authenticate.rb’ # => class Api::MyApp1::V1::Authenticate ... end```
+   * ```‘/api/my_app1/v2/authenticate.rb’ # => class Api::MyApp1::V2::Authenticate ... end```
+   * ```‘/api/my_app2/v1/authenticate.rb’ # => class Api::MyApp2::V1::Authenticate ... end```
+   * ```‘/api/my_app2/v2/authenticate.rb’ # => class Api::MyApp2::V2::Authenticate ... end```
+* The *__routes used to authenticate requests__* in this example, confirms to the following format: `"/api/[app_name]/[app_version]/authenticate"` where `[app_name]` = the _application name_, and `[app_version]` = the _application version_; therefore, the authentication routes defined for this example, ultimately look like this after running `$ rake routes`:
 
+| Prefix        | Verb | URI Pattern | Controller#Action 
+|-------------:|:-------------|:------------------|:------------------|
+| api_**my_app1_v1**_authenticate | POST | /api/**my_app1/v1**/authenticate(.:format) | api/**my_app1/v1**/authentication#authenticate |
+| api_**my_app1_v2**_authenticate | POST | /api/**my_app1/v2**/authenticate(.:format) | api/**my_app1/v2**/authentication#authenticate |
+| api_**my_app2_v1**_authenticate | POST | /api/**my_app2/v1**/authenticate(.:format) | api/**my_app2/v1**/authentication#authenticate |
+| api_**my_app2_v2**_authenticate | POST | /api/**my_app2/v2**/authenticate(.:format) | api/**my_app2/v2**/authentication#authenticate |
 ```ruby 
 # /app/controllers/application_controller.rb
 require 'simple_command_dispatcher'
