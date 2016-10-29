@@ -10,6 +10,6 @@ task default: :spec
 # Yard
 YARD::Rake::YardocTask.new do |t|
   t.files   = ['lib/**/*.rb']   
-  t.options = ['--no-cache', '--protected', '--private', '--embed-mixins', '--markup MARKDOWN'] 
-  t.stats_options = ['--list-undoc'] 
+  t.options = ['--no-cache', '--protected', '--private', '--embed-mixins']
+  t.stats_options = ['--list-undoc']
 end

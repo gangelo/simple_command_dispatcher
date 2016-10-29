@@ -16,13 +16,14 @@ This example assumes the following:
 ![N|Solid](https://cldup.com/1UeyWzOLic.png)
 
  * Command classes (and the modules they reside under) are named *__according to their file name and respective location within the above folder structure__*; therefore, the command classes defined for this example would be named in the following manner:
-   * ```'/api/my_app1/v1/authenticate_request.rb’ # => class Api::MyApp1::V1::AuthenticateRequest ... end```
-   * ```'/api/my_app1/v1/authenticate_user.rb’ # => class Api::MyApp1::V1::AuthenticateUser ... end```
-   * ```‘/api/my_app1/v2/authenticate_user.rb’ # => class Api::MyApp1::V2::AuthenticateUser ... end```
-   * ```'/api/my_app2/v1/authenticate_request.rb’ # => class Api::MyApp2::V1::AuthenticateRequest ... end```
-   * ```'/api/my_app2/v1/authenticate_user.rb’ # => class Api::MyApp2::V1::AuthenticateUser ... end```
-   * ```‘/api/my_app2/v1/update_user.rb’ # => class Api::MyApp2::V1::UpdateUser ... end```
-   * ```‘/api/my_app2/v2/update_user.rb’ # => class Api::MyApp2::V2::UpdateUser ... end```
+   * `'/api/my_app1/v1/authenticate_request.rb' # => class Api::MyApp1::V1::AuthenticateRequest ... end`
+   * `'/api/my_app1/v1/authenticate_user.rb’ # => class Api::MyApp1::V1::AuthenticateUser ... end`
+   * `‘/api/my_app1/v2/authenticate_user.rb’ # => class Api::MyApp1::V2::AuthenticateUser ... end`
+   * `'/api/my_app2/v1/authenticate_request.rb’ # => class Api::MyApp2::V1::AuthenticateRequest ... end`
+   * `'/api/my_app2/v1/authenticate_user.rb’ # => class Api::MyApp2::V1::AuthenticateUser ... end`
+   * `‘/api/my_app2/v1/update_user.rb’ # => class Api::MyApp2::V1::UpdateUser ... end`
+   * `‘/api/my_app2/v2/update_user.rb’ # => class Api::MyApp2::V2::UpdateUser ... end`
+
 * The *__routes used in this example__*, conform to the following format: `"/api/[app_name]/[app_version]/[controller]"` where `[app_name]` = the _application name_,`[app_version]` = the _application version_, and `[controller]` = the _controller_; therefore, running `$ rake routes` for this example would output the following sample route information:
 
 | Prefix        | Verb | URI Pattern | Controller#Action 
@@ -34,6 +35,8 @@ This example assumes the following:
 |  | PUT | /api/**my_app2/v2**/users/:id(.:format) | api/**my_app2/v2**/users#update |
 
 ### Request Authentication Code Snippet
+
+
 ```ruby 
 # /app/controllers/application_controller.rb
 require 'simple_command_dispatcher'
@@ -72,6 +75,7 @@ class ApplicationController < ActionController::API
     end
 end
 ```
+
 
 ## Installation
 
