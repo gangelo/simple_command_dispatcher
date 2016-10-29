@@ -33,6 +33,7 @@ This example assumes the following:
 | api_**my_app2_v2**_user | PATCH | /api/**my_app2/v2**/users/:id(.:format) | api/**my_app2/v2**/users#update |
 |  | PUT | /api/**my_app2/v2**/users/:id(.:format) | api/**my_app2/v2**/users#update |
 
+### Request Authentication Code Snippet
 ```ruby 
 # /app/controllers/application_controller.rb
 require 'simple_command_dispatcher'
@@ -59,6 +60,8 @@ class ApplicationController < ActionController::API
         # @param command, which becomes "Api::MyApp1::V1::AuthenticateRequest." This string is then
         # simply constantized; #call is then executed, passing the @param command_parameters
         # (e.g. request.headers, which contains ["Authorization"], out authorization token).
+        # Consequently, the correlation between our routes and command class module structure 
+        # was no coincidence.
         command = SimpleCommand::Dispatcher.call(:AuthenticateRequest, 
                      path, { camelize: true}, request.headers)
         if command.success?
@@ -88,7 +91,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+See the example above.
 
 ## Development
 
@@ -98,7 +101,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/simple_command_dispatcher. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/gangelo/simple_command_dispatcher. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 
 ## License
