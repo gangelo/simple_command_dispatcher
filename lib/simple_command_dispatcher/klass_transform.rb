@@ -131,10 +131,12 @@ module SimpleCommand
 
       # Transforms a route into a module string
       #
+      # @return [String] the camelized token.
+      #
       # @example
       #
-      #   module_to_route("/api/app/auth/v1") # => "Api::App::Auth::V1"
-      #   module_to_route("/api/app_name/auth/v1") # => "Api::AppName::Auth::V1"
+      #   camelize("/api/app/auth/v1") # => "Api::App::Auth::V1"
+      #   camelize("/api/app_name/auth/v1") # => "Api::AppName::Auth::V1"
       #
       def camelize(token)
          if !token.instance_of? String
@@ -156,7 +158,7 @@ module SimpleCommand
       # @option options [Boolean] :module_titleize (false) determines whether or not module names should be titleized.
       # @option options [Boolean] :class_camelized (false) determines whether or not class names should be camelized.
       # @option options [Boolean] :module_camelized (false) determines whether or not module names should be camelized.
-      #
+      # 
       # @return [Hash] the initialized, validated options.
       #
       def ensure_options(options)
@@ -219,7 +221,6 @@ module SimpleCommand
       #   validate_modules(:Module) # => "Module"
       #   validate_module("ModuleA::ModuleB") # => "ModuleA::ModuleB"
       #
-      # @private
       def validate_klass_modules(klass_modules)
          return {} if klass_modules.nil? || (klass_modules.respond_to?(:empty?) && klass_modules.empty?)
 

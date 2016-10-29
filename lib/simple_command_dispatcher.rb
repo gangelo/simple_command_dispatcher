@@ -35,8 +35,12 @@ module SimpleCommand
          #    (e.g. 'Api::AppName::V1::MySimpleCommand' = Api::AppName::V1::MySimpleCommand.call(*command_parameters)).
          #
          # @param [Hash] options the options that determine how command and command_module are transformed.
-         # @option options [Boolean] :class_titleize (false) determines whether or not command should be titleized.
-         # @option options [Boolean] :module_titleize (false) determines whether or not command_modules should be titleized.
+         # @option options [Boolean] :camelize (false) determines whether or not both class and module names should be camelized.
+         # @option options [Boolean] :titleize (false) determines whether or not both class and module names should be titleized.
+         # @option options [Boolean] :class_titleize (false) determines whether or not class names should be titleized.
+         # @option options [Boolean] :module_titleize (false) determines whether or not module names should be titleized.
+         # @option options [Boolean] :class_camelized (false) determines whether or not class names should be camelized.
+         # @option options [Boolean] :module_camelized (false) determines whether or not module names should be camelized.
          #
          # @param command_parameters [*] the parameters to pass to the call method of the SimpleCommand (See #command). This parameter is simply
          #    passed through to the call method of the SimpleCommand (See #command).
