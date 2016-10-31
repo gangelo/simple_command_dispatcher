@@ -17,7 +17,6 @@ module SimpleCommand
    #
    # For information about the simple_command gem, visit https://rubygems.org/gems/simple_command
    #
-   #
    module Dispatcher
       
       class << self
@@ -38,12 +37,12 @@ module SimpleCommand
          # @option options [Boolean] :camelize (false) determines whether or not both class and module names should be camelized.
          # @option options [Boolean] :titleize (false) determines whether or not both class and module names should be titleized.
          # @option options [Boolean] :class_titleize (false) determines whether or not class names should be titleized.
-         # @option options [Boolean] :module_titleize (false) determines whether or not module names should be titleized.
          # @option options [Boolean] :class_camelized (false) determines whether or not class names should be camelized.
+         # @option options [Boolean] :module_titleize (false) determines whether or not module names should be titleized.
          # @option options [Boolean] :module_camelized (false) determines whether or not module names should be camelized.
          #
-         # @param command_parameters [*] the parameters to pass to the call method of the SimpleCommand (See #command). This parameter is simply
-         #    passed through to the call method of the SimpleCommand (See #command).
+         # @param command_parameters [*] the parameters to pass to the call method of the SimpleCommand. This parameter is simply
+         #    passed through to the call method of the SimpleCommand.
          #
          # @return [SimpleCommand] the SimpleCommand returned as a result from calling the SimpleCommand#call method.
          #
@@ -80,11 +79,12 @@ module SimpleCommand
 
          # @!visibility public
          #
-         # Returns true or false depending on whether or not #command prepends Module SimpleCommand::ClassMethods.
+         # Returns true or false depending on whether or not the class constant prepends module SimpleCommand::ClassMethods.
          #
-         # @param [String] klass_constant the constant representation of the alleged SimpleCommand to interrogate.
+         # @param klass_constant [String] a class constant that will be validated to see whether or not the class prepends module SimpleCommand::ClassMethods.
          #
          # @return [Boolean] true if klass_constant prepends Module SimpleCommand::ClassMethods, false otherwise.
+         #
          def is_simple_command?(klass_constant)
             klass_constant.eigenclass.included_modules.include? SimpleCommand::ClassMethods
          end

@@ -3,13 +3,18 @@ module SimpleCommand
 
    # Handles class and module transformations.
    module KlassTransform
+
       # Returns a constantized class (as a Class constant), given the klass and klass_modules.
       #
       # @param klass [Symbol or String] the class name.
       # @param klass_modules [Hash, Array or String] the modules klass belongs to.
       # @param options [Hash] the options that determine how klass_modules is transformed.
-      # @option options [Boolean] :class_titleize (false) Determines whether or not klass should be titleized.
-      # @option options [Boolean] :module_titleize (false) Determines whether or not klass_modules should be titleized.
+      # @option options [Boolean] :camelize (false) determines whether or not both klass and klass_modules should be camelized.
+      # @option options [Boolean] :titleize (false) determines whether or not both klass and klass_modules should be titleized.
+      # @option options [Boolean] :class_titleize (false) determines whether or not klass names should be titleized.
+      # @option options [Boolean] :class_camelized (false) determines whether or not klass names should be camelized.
+      # @option options [Boolean] :module_titleize (false) determines whether or not klass_modules names should be titleized.
+      # @option options [Boolean] :module_camelized (false) determines whether or not klass_modules names should be camelized.
       #
       # @return [Class] the class constant. Can be used to call ClassConstant.constantize.
       #

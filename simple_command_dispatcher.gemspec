@@ -12,10 +12,10 @@ Gem::Specification.new do |spec|
   spec.email         = ["public.gma@gmail.com"]
 
   spec.summary       = %q{Provides a way to dispatch simple_command ruby gem SimpleCommands (service objects) in a more dynamic manner within your service API. Ideal for rails-api.}
-  spec.description   = %q{Within a services API (rails-api for instance), you have a need to execute different SimpleCommands
-                          based on one or more factors: API version, user type, user credentials, or, if your services API services multiple applications,
-                          application name. For example, your service API may execute either Api::Auth::V1::AuthenticateCommand.call(...) or Api::Auth::V2::AuthenticateCommand.call(...)
-                          based on the API version. simple_command_dispatcher allows you to make one call to execute either command without the use of 'if' statemetns.}.gsub(/\s/,' ')
+  spec.description   = %q{Within a services API (rails-api for instance), you may have a need to execute different SimpleCommands
+                          based on one or more factors: multiple application, API version, user type, user credentials, etc. For example, 
+                          your service API may need to execute either Api::Auth::V1::AuthenticateCommand.call(...) or Api::Auth::V2::AuthenticateCommand.call(...)
+                          based on the API version. simple_command_dispatcher allows you to make one call to execute both command dynamically.}.gsub(/\s/,' ')
   spec.homepage      = "https://github.com/gangelo/simple_command_dispatcher"
   spec.license       = "MIT"
 
@@ -41,6 +41,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "yard"
   spec.add_development_dependency "rdoc"
+  spec.add_development_dependency "colorize"
 
   spec.required_ruby_version = '>= 2.0'
   spec.add_runtime_dependency 'simple_command', '>= 0.0.9'
