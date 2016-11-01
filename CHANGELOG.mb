@@ -1,6 +1,6 @@
 ### 0.1.3
 * Documentation updates
-* Add `SimpleCommand::KlassTransform` rake task sandbox to test the following `SimpleCommand::KlassTransform` classes:
+* Add `SimpleCommand::KlassTransform` rake task sandbox to test the below listed `SimpleCommand::KlassTransform` members; run the rake tasks for usage; these rake tasks are simply a playground to see how simple_command_dispatcher transforms parameters into output when calling SimpleCommand::Dispatcher.call(...):
   * `SimpleCommand::KlassTransform#to_class_string`
     * $ rake to_class_string 
   * `SimpleCommand::KlassTransform#to_modules_string`

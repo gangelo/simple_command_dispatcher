@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.description   = %q{Within a services API (rails-api for instance), you may have a need to execute different SimpleCommands
                           based on one or more factors: multiple application, API version, user type, user credentials, etc. For example, 
                           your service API may need to execute either Api::Auth::V1::AuthenticateCommand.call(...) or Api::Auth::V2::AuthenticateCommand.call(...)
-                          based on the API version. simple_command_dispatcher allows you to make one call to execute both command dynamically.}.gsub(/\s/,' ')
+                          based on the API version. simple_command_dispatcher allows you to make one call to execute both command dynamically.}.gsub(/\s+/,' ')
   spec.homepage      = "https://github.com/gangelo/simple_command_dispatcher"
   spec.license       = "MIT"
 
