@@ -43,7 +43,14 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rdoc"
   spec.add_development_dependency "colorize"
 
-  spec.required_ruby_version = '>= 2.0'
+  if RUBY_VERSION >= '2.2.2'
+    # To support activesupport 5.0.0.1
+    spec.required_ruby_version = '>= 2.2.2'
+    spec.add_runtime_dependency 'activesupport', '~> 5.0', '>= 5.0.0.1'
+  else
+    spec.required_ruby_version = '>= 2.0'
+    spec.add_runtime_dependency 'activesupport', '~> 4.2', '>= 4.2.7.1'
+  end
+
   spec.add_runtime_dependency 'simple_command', '>= 0.0.9'
-  spec.add_runtime_dependency 'activesupport', '~> 4.2', '>= 4.2.7.1'
 end
