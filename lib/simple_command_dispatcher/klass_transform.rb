@@ -1,3 +1,4 @@
+require_relative '../core_extensions/string'
 
 module SimpleCommand
 

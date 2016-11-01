@@ -1,3 +1,6 @@
+### 1.1.0
+* Bug fix lib/core_extensions/string.rb not included in SimpleCommand::Dispatcher, causing exception.
+
 ### 1.0.0
 * Limit support to ruby >= 2.2.2
 

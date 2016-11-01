@@ -3,8 +3,6 @@ lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'simple_command_dispatcher/version'
 
-Gem.find_files("core_extensions/**/*.rb").each { | path | require path }
-
 Gem::Specification.new do |spec|
   spec.name          = "simple_command_dispatcher"
   spec.version       = SimpleCommand::Dispatcher::VERSION
