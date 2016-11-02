@@ -1,3 +1,11 @@
+### Unreleased
+* Upcoming features
+  * whitelist for allowable namespaces
+
+### 1.1.1
+* Documentation updates
+  * Add example code in README.md to include clarification on command namespacing, and how to autoload command classes to avoid NameError exceptions when SimpleCommand::Dispatcher.call(...) is call due to uninitialized command constants.
+
 ### 1.1.0
 * Bug fix lib/core_extensions/string.rb not included in SimpleCommand::Dispatcher, causing exception.
 
