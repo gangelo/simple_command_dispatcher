@@ -1,7 +1,7 @@
 [![GitHub version](https://badge.fury.io/gh/gangelo%2Fsimple_command_dispatcher.svg)](https://badge.fury.io/gh/gangelo%2Fsimple_command_dispatcher)
 [![Gem Version](https://badge.fury.io/rb/simple_command_dispatcher.svg)](https://badge.fury.io/rb/simple_command_dispatcher)
-![](http://ruby-gem-downloads-badge.herokuapp.com/simple_command_dispatcher?type=total)
 
+![](http://ruby-gem-downloads-badge.herokuapp.com/simple_command_dispatcher?type=total)
 [![Documentation](http://img.shields.io/badge/docs-rdoc.info-blue.svg)](http://www.rubydoc.info/gems/simple_command_dispatcher/)
 [![License](http://img.shields.io/badge/license-MIT-yellowgreen.svg)](#license)
 
