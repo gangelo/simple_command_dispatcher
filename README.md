@@ -1,6 +1,8 @@
 [![GitHub version](https://badge.fury.io/gh/gangelo%2Fsimple_command_dispatcher.svg)](https://badge.fury.io/gh/gangelo%2Fsimple_command_dispatcher)
 [![Gem Version](https://badge.fury.io/rb/simple_command_dispatcher.svg)](https://badge.fury.io/rb/simple_command_dispatcher)
 
+[![License](http://img.shields.io/badge/license-MIT-yellowgreen.svg)](#license)
+
 # Q. simple_command_dispatcher - what is it?
 # A. It's a Ruby gem!
 
