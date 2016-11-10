@@ -3,6 +3,7 @@
 
 ![](http://ruby-gem-downloads-badge.herokuapp.com/simple_command_dispatcher?type=total)
 [![Documentation](http://img.shields.io/badge/docs-rdoc.info-blue.svg)](http://www.rubydoc.info/gems/simple_command_dispatcher/)
+
 [![License](http://img.shields.io/badge/license-MIT-yellowgreen.svg)](#license)
 
 # Q. simple_command_dispatcher - what is it?
