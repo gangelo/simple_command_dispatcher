@@ -1,18 +1,17 @@
 module Api
    module AppName
-         module V1
+         module V2
 
-            class WarningCommand
-               # Doess not extend SimpleCommand, but has call method.
-               # prepend SimpleCommand
+             class InvalidCustomCommand
+               # This is a custom command that oess not prepend SimpleCommand.
 
-               def initialize(params = {})
+               public 
+
+               def call(params = {})
                   @param1 = params[:param1]
                   @param2 = params[:param2]
                   @param3 = params[:param3]
-               end
 
-               def call
                   execute
                end
 

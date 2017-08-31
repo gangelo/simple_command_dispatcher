@@ -1,19 +1,25 @@
 require "spec_helper"
 
 describe SimpleCommand::Dispatcher do
-  it "has a version number" do
-    expect(SimpleCommand::Dispatcher::VERSION).not_to be nil
-  end
+   before(:each) do
+      SimpleCommand::Dispatcher.configure do |config|
+         config.allow_custom_commands = false
+      end
+   end
 
-  it "should return success? if successful" do
-   command = SimpleCommand::Dispatcher.call(:TestCommand, { api: :Api, app_name: :AppName, api_version: :V1 }, {}, { param1: :param1, param2: :param2, param3: :param3 })
-    expect(command.success?).to eq(true)
-  end
+   it "has a version number" do
+      expect(SimpleCommand::Dispatcher::VERSION).not_to be nil
+   end
 
-  it "should return failure? if unsuccessful" do
-   command = SimpleCommand::Dispatcher.call(:TestCommand, { api: :Api, app_name: :AppName, api_version: :V1 }, {}, { param1: :bad_param_param1, param2: :param2, param3: :param3 })
-    expect(command.failure?).to eq(true)
-  end
+   it "should return success? if successful" do
+      command = SimpleCommand::Dispatcher.call(:TestCommand, { api: :Api, app_name: :AppName, api_version: :V1 }, {}, { param1: :param1, param2: :param2, param3: :param3 })
+      expect(command.success?).to eq(true)
+   end
+
+   it "should return failure? if unsuccessful" do
+      command = SimpleCommand::Dispatcher.call(:TestCommand, { api: :Api, app_name: :AppName, api_version: :V1 }, {}, { param1: :bad_param_param1, param2: :param2, param3: :param3 })
+      expect(command.failure?).to eq(true)
+   end
 
    context 'command Parameter' do
 
@@ -24,7 +30,7 @@ describe SimpleCommand::Dispatcher do
 
       it "should throw an exception if parameter [command] is not a Symbol or a String" do
          expect { SimpleCommand::Dispatcher.call([kill: :me], { api: :Api, app_name: :AppName, api_version: :V1 }, {}, { param1: :bad_param_param1, param2: :param2, param3: :param3 }) }
-            .to raise_error(ArgumentError, 'Class is not a String or Symbol. Class must equal the name of the SimpleCommand to call in the form of a String or Symbol.')
+            .to raise_error(ArgumentError, 'Class is not a String or Symbol. Class must equal the class name of the SimpleCommand or Command to call in the form of a String or Symbol.')
       end
 
       it "should throw an exception if parameter [command] is not a valid constant" do
@@ -34,7 +40,7 @@ describe SimpleCommand::Dispatcher do
 
       it "should throw an exception if parameter [command] does not prepend module SimpleCommand" do
          expect { SimpleCommand::Dispatcher.call(:InvalidCommand, { api: :Api, app_name: :AppName, api_version: :V1 }, {}, { param1: :bad_param_param1, param2: :param2, param3: :param3 }) }
-            .to raise_error(ArgumentError, 'Class does not prepend module SimpleCommand.')
+            .to raise_error(ArgumentError, 'Class "Api::AppName::V1::InvalidCommand" must prepend module SimpleCommand if Configuration#allow_custom_commands is true.')
       end
 
       it "should return success? if parameter [command] is a String" do
@@ -106,6 +112,33 @@ describe SimpleCommand::Dispatcher do
       #   expect(command.success?).to eq(true)
       #end
    end
+
+   context "Custom Commands" do
+      before(:each) do
+         SimpleCommand::Dispatcher.configure do |config|
+            config.allow_custom_commands = true
+         end
+      end
+
+      it "should work with custom commands" do
+         result = SimpleCommand::Dispatcher.call(:CustomCommand, 
+            { api: :Api, app_name: :AppName, api_version: :V1 }, {}, { param1: :param1 })
+         expect(result).to eq(true)
+      end
+
+      it "should work with SimpleCommand commands when allowing custom commands" do
+         command = SimpleCommand::Dispatcher.call(:TestCommand, 
+            { api: :Api, app_name: :AppName, api_version: :V1 }, {}, { param1: :param1, param2: :param2, param3: :param3 })
+         expect(command.success?).to eq(true)
+      end
+
+      it "should raise NameError if doesn't respond_to? ::call" do
+         expect { SimpleCommand::Dispatcher.call(:InvalidCustomCommand, 
+            { api: :Api, app_name: :AppName, api_version: :V2 }, {}, { param1: :param1, param2: :param2, param3: :param3 }) }
+            .to raise_error(NameError, "Class \"Api::AppName::V2::InvalidCustomCommand\" does not respond_to? method ::call.")
+      end
+   end
+
 end
 
 

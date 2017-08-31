@@ -199,7 +199,7 @@ module SimpleCommand
       #
       def validate_klass(klass, options)
          if !(klass.is_a?(Symbol) || klass.is_a?(String))
-            raise ArgumentError.new('Class is not a String or Symbol. Class must equal the name of the SimpleCommand to call in the form of a String or Symbol.')
+            raise ArgumentError.new('Class is not a String or Symbol. Class must equal the class name of the SimpleCommand or Command to call in the form of a String or Symbol.')
          end
 
          klass = klass.to_s.strip

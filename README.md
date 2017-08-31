@@ -12,7 +12,11 @@
 # A. It's a Ruby gem!
 
 ## Overview
-__simple_command_dispatcher__ (SCD) allows you to execute __simple_command__ commands in a more dynamic way. If you are not familiar with the _simple_command_ gem, check it out [here][simple-command]. SCD was written specifically with the [rails-api][rails-api] in mind; however, you can use SDC wherever you use simple_command commands. 
+__simple_command_dispatcher__ (SCD) allows you to execute __simple_command__ commands (and now _custom commands_ as of version 1.2.1) in a more dynamic way. If you are not familiar with the _simple_command_ gem, check it out [here][simple-command]. SCD was written specifically with the [rails-api][rails-api] in mind; however, you can use SDC wherever you would use simple_command commands. 
+
+## Update as of Version 1.2.1
+### Custom Commands
+SCD now allows you to execute _custom commands_ (i.e. classes that do not prepend the _SimpleCommand_ module) by setting `Configuration#allow_custom_commands = true` (see the __Custom Commands__ section below for details).
 
 ## Example
 The below example is from a `rails-api` API that uses token-based authentication and services two mobile applications, identified as *__my_app1__* and *__my_app2__*, in this example.
@@ -131,6 +135,12 @@ Rails.application.config.to_prepare do
    ActionDispatch::Reloader.to_prepare { reloader.execute_if_updated }
    reloader.execute
 end
+
+# Optionally set our configuration setting to allow
+# for custom command execution.
+SimpleCommand::Dispatcher.configure do |config|
+   config.allow_custom_commands = true
+end 
 ```
 
 ```ruby 
@@ -176,6 +186,90 @@ class ApplicationController < ActionController::API
 end
 ```
 
+## Custom Commands
+
+As of __Version 1.2.1__ simple_command_dispatcher (SCD) allows you to execute _custom commands_ (i.e. classes that do not prepend the _SimpleCommand_ module) by setting `Configuration#allow_custom_commands = true`.
+
+In order to execute _custom commands_, there are three (3) requirements:
+   1. Create a _custom command_. Your _custom command_ class must expose a public `::call` class method.
+   2. Set the `Configuration#allow_custom_commands` property to `true`.
+   3. Execute your _custom command_ by calling the `::call` class method. 
+
+### Custom Command Example
+
+#### 1. Create a Custom Command
+```ruby
+# /api/my_app/v1/custom_command.rb
+
+module Api
+   module MyApp
+         module V1
+
+            # This is a custom command that does not prepend SimpleCommand.
+            class CustomCommand
+               
+               def self.call(*args)
+                  command = self.new(*args)
+                  if command
+                     command.send(:execute)
+                  else
+                     false
+                  end
+               end
+               
+               private
+
+               def initialize(params = {})
+                  @param1 = params[:param1]
+               end
+
+               private
+
+               attr_accessor :param1
+
+               def execute
+                  if (param1 == :param1)
+                     return true
+                  end
+
+                  return false
+               end
+            end
+
+      end
+   end
+end
+```
+#### 2. Set the `Configuration#allow_custom_commands` property to `true`
+```ruby
+# In your rails, rails-api app, etc...
+# /config/initializers/simple_command_dispatcher.rb
+
+SimpleCommand::Dispatcher.configure do |config|
+    config.allow_custom_commands = true
+end 
+```
+
+#### 3. Execute your _Custom Command_
+Executing your _custom command_ is no different than executing a __SimpleCommand__ command with the exception that you must properly handle the return object that results from calling your _custom command_; being a _custom command_, there is no guarantee that the return object will be the command object as is the case when calling a SimpleCommand command.
+```ruby
+# /app/controllers/some_controller.rb
+
+require 'simple_command_dispatcher'
+
+class SomeController < ApplicationController::API
+   public
+   
+   def some_api
+      success = SimpleCommand::Dispatcher.call(:CustomCommand, get_command_path, { camelize: true}, request.headers)
+      if success
+         # Do something...
+      else
+         # Do something else...
+      end
+    end
+end
+```
 
 ## Installation
 

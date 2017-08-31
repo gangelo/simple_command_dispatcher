@@ -13,9 +13,9 @@ end
 
 module SimpleCommand
    
-   # Provides a way to call SimpleCommand commands in a more dymanic manner.
+   # Provides a way to call SimpleCommands or your own custom commands in a more dymanic manner.
    #
-   # For information about the simple_command gem, visit https://rubygems.org/gems/simple_command
+   # For information about the simple_command gem, visit {https://rubygems.org/gems/simple_command}
    #
    module Dispatcher
       
@@ -24,9 +24,9 @@ module SimpleCommand
 
          public
 
-         # Calls a *SimpleCommand* given the command name, the modules the command belongs to and the parameters to pass to the command.
+         # Calls a *SimpleCommand* or *Command* given the command name, the modules the command belongs to and the parameters to pass to the command.
          #
-         # @param command [Symbol, String] the name of the SimpleCommand to call.
+         # @param command [Symbol, String] the name of the SimpleCommand or Command to call.
          #
          # @param command_modules [Hash, Array] the ruby modules that qualify the SimpleCommand to call. When passing a Hash, the Hash 
          #    keys serve as documentation only. For example, ['Api', 'AppName', 'V1'] and { :api :Api, app_name: :AppName, api_version: :V1 }
@@ -41,10 +41,10 @@ module SimpleCommand
          # @option options [Boolean] :module_titleize (false) determines whether or not module names should be titleized.
          # @option options [Boolean] :module_camelized (false) determines whether or not module names should be camelized.
          #
-         # @param command_parameters [*] the parameters to pass to the call method of the SimpleCommand. This parameter is simply
-         #    passed through to the call method of the SimpleCommand.
+         # @param command_parameters [Array<Symbol>] the parameters to pass to the call method of the SimpleCommand . This parameter is simply
+         #    passed through to the call method of the SimpleCommand/Command.
          #
-         # @return [SimpleCommand] the SimpleCommand returned as a result from calling the SimpleCommand#call method.
+         # @return [SimpleCommand, Object] the SimpleCommand or Object returned as a result of calling the SimpleCommand#call method or the Command#call method respectfully.
          #
          # @example
          #     
@@ -61,32 +61,66 @@ module SimpleCommand
          def call(command = "", command_modules = {}, options = {}, *command_parameters)
 
             # Create a constantized class from our command and command_modules...
-            simple_command_class_constant = to_constantized_class(command, command_modules, options)
+            command_class_constant = to_constantized_class(command, command_modules, options)
 
-            # Calling is_simple_command? returns true if the class pointed to by
-            # simple_command_class_constant is a valid SimpleCommand class; that is, 
-            # if it prepends module SimpleCommand::ClassMethods.
-            if !is_simple_command?(simple_command_class_constant) 
-               raise ArgumentError.new('Class does not prepend module SimpleCommand.')
+            # If we're NOT allowing custom commands, make sure we're dealing with a a command class
+            # that prepends the SimpleCommand module.
+            if !SimpleCommand::Dispatcher.configuration.allow_custom_commands  
+               # Calling is_simple_command? returns true if the class pointed to by
+               # command_class_constant is a valid SimpleCommand class; that is, 
+               # if it prepends module SimpleCommand::ClassMethods.
+               if !is_simple_command?(command_class_constant) 
+                  raise ArgumentError.new("Class \"#{command_class_constant}\" must prepend module SimpleCommand if Configuration#allow_custom_commands is true.")
+               end
             end
 
-            # We know we have a valid SimpleCommand; all we need to do is call #call,
-            # pass the command_parameter variable arguments to the call, and return the results.
-            simple_command_class_constant.call(*command_parameters)
+            if is_valid_command(command_class_constant)
+               # We know we have a valid SimpleCommand; all we need to do is call #call,
+               # pass the command_parameter variable arguments to the call, and return the results.
+               run_command(command_class_constant, command_parameters)
+            else
+               raise NameError.new("Class \"#{command_class_constant}\" does not respond_to? method ::call.")
+            end
          end
 
          private
 
-         # @!visibility public
+         # Returns true or false depending on whether or not the class constant has a public 
+         # class method named ::call defined. Commands that do not have a public class method
+         # named ::call, are considered invalid.
          #
+         # @param klass_constant [String] a class constant that will be validated to see whether or not the class is a valid command.
+         #
+         # @return [Boolean] true if klass_constant has a public class method named ::call defined, false otherwise.
+         #
+         # @!visibility public
+         def is_valid_command(klass_constant)
+            klass_constant.eigenclass.public_method_defined?(:call)
+         end
+
          # Returns true or false depending on whether or not the class constant prepends module SimpleCommand::ClassMethods.
          #
          # @param klass_constant [String] a class constant that will be validated to see whether or not the class prepends module SimpleCommand::ClassMethods.
          #
          # @return [Boolean] true if klass_constant prepends Module SimpleCommand::ClassMethods, false otherwise.
          #
+         # @!visibility public
          def is_simple_command?(klass_constant)
             klass_constant.eigenclass.included_modules.include? SimpleCommand::ClassMethods
+         end
+
+         # Runs the command given the parameters and returns the result.
+         #
+         # @param klass_constant [String] a class constant that will be called.
+         # @param parameters [Array] an array of parameters to pass to the command that will be called.
+         #
+         # @return [Object] returns the object (if any) that results from calling the command.
+         #
+         # @!visibility public
+         def run_command(klass_constant, parameters)
+            klass_constant.call(*parameters)
+         #rescue NameError
+         #   raise NameError.new("Class \"#{klass_constant}\" does not respond_to? method ::call.")
          end
       end
    end
