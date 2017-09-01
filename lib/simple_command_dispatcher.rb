@@ -3,6 +3,9 @@ require "simple_command_dispatcher/klass_transform"
 require "simple_command"
 require "active_support/core_ext/string/inflections"
 
+require 'simple_command_dispatcher/configuration'
+require 'simple_command_dispatcher/configure'
+
 module Kernel
   def eigenclass
     class << self
