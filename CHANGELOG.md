@@ -1,3 +1,6 @@
+### Version 1.2.2
+* Bug fix
+  * Fixed NoMethodError on 'configure' metnod when trying to include configuration block in /config/initializers/simple_command_dispatcher.rb
 ### Version 1.2.1
 * Configuration class
   * Added the new Configuration class that exposes the #allow_custom_classes property which takes a Boolean allowing/disallowing the use of custom commands to be used. See the documentation for details and usage.
