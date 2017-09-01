@@ -9,11 +9,12 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Gene M. Angelo, Jr."]
   spec.email         = ["public.gma@gmail.com"]
 
-  spec.summary       = %q{Provides a way to dispatch simple_command ruby gem SimpleCommands (service objects) in a more dynamic manner within your service API. Ideal for rails-api.}
-  spec.description   = %q{Within a services API (rails-api for instance), you may have a need to execute different SimpleCommands
+  spec.summary       = %q{Provides a way to dispatch simple_command (ruby gem) commands or your own custom commands (service objects) in a more dynamic manner 
+                          within your service API. Ideal for rails-api.}
+  spec.description   = %q{Within a services API (rails-api for instance), you may have a need to execute different simple_commands or your own custom commands (service objects)
                           based on one or more factors: multiple application, API version, user type, user credentials, etc. For example, 
                           your service API may need to execute either Api::Auth::V1::AuthenticateCommand.call(...) or Api::Auth::V2::AuthenticateCommand.call(...)
-                          based on the API version. simple_command_dispatcher allows you to make one call to execute both command dynamically.}.gsub(/\s+/,' ')
+                          based on the API version. simple_command_dispatcher allows you to execute either command with one line of code dynamically.}.gsub(/\s+/,' ')
   spec.homepage      = "https://github.com/gangelo/simple_command_dispatcher"
   spec.license       = "MIT"
 

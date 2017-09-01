@@ -1,3 +1,5 @@
+require_relative 'configuration'
+
 module SimpleCommand
 	module Dispatcher
 		class << self

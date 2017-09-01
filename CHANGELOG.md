@@ -1,3 +1,6 @@
+### Version 1.2.3
+* Refactor 'requires' in configure.rb and simple_command_dispatcher.rb
+* Update gemspec summary and description
 ### Version 1.2.2
 * Bug fix
   * Fixed NoMethodError on 'configure' metnod when trying to include configuration block in /config/initializers/simple_command_dispatcher.rb
