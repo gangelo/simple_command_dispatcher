@@ -8,7 +8,7 @@
 
 [![License](http://img.shields.io/badge/license-MIT-yellowgreen.svg)](#license)
 
-# Q. simple_command_dispatcher - what is it?
+# Q. simple_command_dispatcher - what is it? 
 # A. It's a Ruby gem!
 
 ## Overview
