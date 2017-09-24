@@ -8,8 +8,8 @@
 
 [![License](http://img.shields.io/badge/license-MIT-yellowgreen.svg)](#license)
 
-# Q. simple_command_dispatcher - what is it? 
-# A. It's a Ruby gem!
+# Q. simple_command_dispatcher - what is it?
+# A. It's a Ruby gem!!!
 
 ## Overview
 __simple_command_dispatcher__ (SCD) allows you to execute __simple_command__ commands (and now _custom commands_ as of version 1.2.1) in a more dynamic way. If you are not familiar with the _simple_command_ gem, check it out [here][simple-command]. SCD was written specifically with the [rails-api][rails-api] in mind; however, you can use SDC wherever you would use simple_command commands. 
