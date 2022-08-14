@@ -1,232 +1,222 @@
+# frozen_string_literal: true
+
 require 'rake'
 # Tasks to play with certain klass_transform module members
 
-
 desc 'Test to_class_string'
 task :to_class_string do
-   require "colorize"
-   require "simple_command_dispatcher"
+  require 'colorize'
+  require 'simple_command_dispatcher'
 
-   class Test
-      prepend SimpleCommand::KlassTransform
-   end
-  
-   puts "Testing SimpleCommand::KlassTransform#to_class_String...\n".cyan
-   puts "Enter a blank line to exit.".cyan
-    loop do
-      puts "\nUsage: \"-c [class], -o [options]\" where class = String or Symbol and options = Hash".cyan
-      puts "\n\t Examples:"
-      print "\n\t\t-c \"my_class\" -o { class_camelize: true }".cyan
-      print "\n\t\t-c :MyClass -o { class_camelize: false }".cyan
+  class Test
+    prepend SimpleCommand::KlassTransform
+  end
 
-      print "\n=> "
+  puts "Testing SimpleCommand::KlassTransform#to_class_String...\n".cyan
+  puts 'Enter a blank line to exit.'.cyan
+  loop do
+    puts "\nUsage: \"-c [class], -o [options]\" where class = String or Symbol and options = Hash".cyan
+    puts "\n\t Examples:"
+    print "\n\t\t-c \"my_class\" -o { class_camelize: true }".cyan
+    print "\n\t\t-c :MyClass -o { class_camelize: false }".cyan
 
-      input = STDIN.gets.chomp
-      break if input.empty?
+    print "\n=> "
 
-      input = clean_input(input)
+    input = $stdin.gets.chomp
+    break if input.empty?
 
-      klass = get_option_class(input)
-      if klass.nil? || klass.empty?
-         print "=> Error: Class not a String or Symbol\n".red
-         next
-      elsif !klass.is_a?(String) && ! klass.is_a?(Symbol)
-         print "=> Error: Class not a String or Symbol\n".red
-         next
-      end
+    input = clean_input(input)
 
-      options_hash = get_options_hash(input)
-
-      options_hash = { class_camelize: true }.merge(options_hash || {})
-
-      puts "\nCalling to_class_string with the following parameters: class: #{klass.class}, options: #{options_hash.class}".cyan
-
-      print "\nSuccess: => #to_class_String(#{klass}, #{options_hash}) => #{Test.new.to_class_string(klass, options_hash)}\n".green
+    klass = get_option_class(input)
+    if klass.nil? || klass.empty?
+      print "=> Error: Class not a String or Symbol\n".red
+      next
+    elsif !klass.is_a?(String) && !klass.is_a?(Symbol)
+      print "=> Error: Class not a String or Symbol\n".red
+      next
     end
 
-    print
-    print 'Done'.yellow
-    print
-end
+    options_hash = get_options_hash(input)
 
+    options_hash = { class_camelize: true }.merge(options_hash || {})
+
+    puts "\nCalling to_class_string with the following parameters: class: #{klass.class}, options: #{options_hash.class}".cyan
+
+    print "\nSuccess: => #to_class_String(#{klass}, #{options_hash}) => #{Test.new.to_class_string(klass,
+                                                                                                   options_hash)}\n".green
+  end
+
+  print
+  print 'Done'.yellow
+  print
+end
 
 desc 'Test to_modules_string'
 task :to_modules_string do
-   require "colorize"
-   require "simple_command_dispatcher"
+  require 'colorize'
+  require 'simple_command_dispatcher'
 
-   class Test
-      prepend SimpleCommand::KlassTransform
-   end
-  
-   puts "Testing SimpleCommand::KlassTransform#to_modules_string...\n".cyan
-   puts "Enter a blank line to exit.".cyan
-    loop do 
-      puts "\nUsage: \"-m [modules], -o [options]\" where modules = Hash, Array or String and options = Hash".cyan
-      puts "\n\t Examples:"
-      print "\n\t\t-m \"Module1::Module2::Module3\" -o { modules_camelize: false }".cyan
-      print "\n\t\t-m [:module1, :module2, :module3] -o { modules_camelize: true }".cyan
-      print "\n\t\t-m {api: :api, app: :crazy_buttons, version: :v1} -o { modules_camelize: true }".cyan
+  class Test
+    prepend SimpleCommand::KlassTransform
+  end
 
-      print "\n=> "
+  puts "Testing SimpleCommand::KlassTransform#to_modules_string...\n".cyan
+  puts 'Enter a blank line to exit.'.cyan
+  loop do
+    puts "\nUsage: \"-m [modules], -o [options]\" where modules = Hash, Array or String and options = Hash".cyan
+    puts "\n\t Examples:"
+    print "\n\t\t-m \"Module1::Module2::Module3\" -o { modules_camelize: false }".cyan
+    print "\n\t\t-m [:module1, :module2, :module3] -o { modules_camelize: true }".cyan
+    print "\n\t\t-m {api: :api, app: :crazy_buttons, version: :v1} -o { modules_camelize: true }".cyan
 
-      input = STDIN.gets.chomp
-      break if input.empty?
+    print "\n=> "
 
-      input = clean_input(input)
+    input = $stdin.gets.chomp
+    break if input.empty?
 
-      modules = get_option_modules(input)
-      p modules.class
-      if modules.nil? || modules.empty?
-         print "=> Error: Modules not a Hash, Array or String\n".red
-         next
-      elsif !modules.is_a?(Hash) && !modules.is_a?(Array) && !modules.is_a?(String)
-         print "=> Error: Modules not a Hash, Array or String\n".red
-         next
-      end
+    input = clean_input(input)
 
-      options_hash = get_options_hash(input)
-      options_hash = { module_camelize: true }.merge(options_hash || {})
-
-      puts "\nCalling to_modules_string with the following parameters: modules: #{modules}, type: #{modules.class}, options: #{options_hash}, type: #{options_hash.class}...".cyan
-
-      puts "\nSuccess: => #to_modules_string(#{modules}, #{options_hash}) => #{Test.new.to_modules_string(modules, options_hash)}\n".green
+    modules = get_option_modules(input)
+    p modules.class
+    if modules.nil? || modules.empty?
+      print "=> Error: Modules not a Hash, Array or String\n".red
+      next
+    elsif !modules.is_a?(Hash) && !modules.is_a?(Array) && !modules.is_a?(String)
+      print "=> Error: Modules not a Hash, Array or String\n".red
+      next
     end
 
-    print
-    print 'Done'.yellow
-    print
+    options_hash = get_options_hash(input)
+    options_hash = { module_camelize: true }.merge(options_hash || {})
 
+    puts "\nCalling to_modules_string with the following parameters: modules: #{modules}, type: #{modules.class}, options: #{options_hash}, type: #{options_hash.class}...".cyan
+
+    puts "\nSuccess: => #to_modules_string(#{modules}, #{options_hash}) => #{Test.new.to_modules_string(modules,
+                                                                                                        options_hash)}\n".green
+  end
+
+  print
+  print 'Done'.yellow
+  print
 end
-
-
-#
-#
-#
 
 desc 'Test to_constantized_class_string'
 task :to_constantized_class_string do
-   require "colorize"
-   require "simple_command_dispatcher"
+  require 'colorize'
+  require 'simple_command_dispatcher'
 
-   class Test
-      prepend SimpleCommand::KlassTransform
-   end
-  
-   puts "Testing SimpleCommand::KlassTransform#to_constantized_class_string...\n".cyan
-   puts "Enter a blank line to exit.".cyan
-    loop do 
-      puts "\nUsage: \"-c [class] -m [modules], -o [options]\" where class = Symbol or String, modules = Hash, Array or String and options = Hash".cyan
-      puts "\n\t Examples:"
-      print "\n\t\t-c :MyClass -m \"Module1::Module2::Module3\" -o { modules_camelize: false }".cyan
-      print "\n\t\t-c \"my_class\" -m [:module1, :module2, :module3] -o { modules_camelize: true }".cyan
-      print "\n\t\t-c :myClass -m {api: :api, app: :crazy_buttons, version: :v1} -o { modules_camelize: true }".cyan
+  class Test
+    prepend SimpleCommand::KlassTransform
+  end
 
-      print "\n=> "
+  puts "Testing SimpleCommand::KlassTransform#to_constantized_class_string...\n".cyan
+  puts 'Enter a blank line to exit.'.cyan
+  loop do
+    puts "\nUsage: \"-c [class] -m [modules], -o [options]\" where class = Symbol or String, modules = Hash, Array or String and options = Hash".cyan
+    puts "\n\t Examples:"
+    print "\n\t\t-c :MyClass -m \"Module1::Module2::Module3\" -o { modules_camelize: false }".cyan
+    print "\n\t\t-c \"my_class\" -m [:module1, :module2, :module3] -o { modules_camelize: true }".cyan
+    print "\n\t\t-c :myClass -m {api: :api, app: :crazy_buttons, version: :v1} -o { modules_camelize: true }".cyan
 
-      input = STDIN.gets.chomp
-      break if input.empty?
+    print "\n=> "
 
-      input = clean_input(input)
+    input = $stdin.gets.chomp
+    break if input.empty?
 
-      klass = get_option_class(input)
-      if klass.nil? || klass.empty?
-         print "=> Error: Class not a String or Symbol\n".red
-         next
-      elsif !klass.is_a?(String) && ! klass.is_a?(Symbol)
-         print "=> Error: Class not a String or Symbol\n".red
-         next
-      end
+    input = clean_input(input)
 
-      modules = get_option_modules(input)
-      if modules.nil? || modules.empty?
-         print "=> Error: Modules not a Hash, Array or String\n".red
-         next
-      elsif !modules.is_a?(Hash) && !modules.is_a?(Array) && !modules.is_a?(String)
-         print "=> Error: Modules not a Hash, Array or String\n".red
-         next
-      end
-
-      options_hash = get_options_hash(input)
-      options_hash = { class_camelize: true, module_camelize: true }.merge(options_hash || {})
-
-      puts "\nCalling to_constantized_class_string with the following parameters: class: #{klass}, type: #{klass.class}, modules: #{modules}, type: #{modules.class}, options: #{options_hash}, type: #{options_hash.class}...".cyan
-
-      puts "\nSuccess: => #to_constantized_class_string(#{klass}, #{modules}, #{options_hash}) => #{Test.new.to_constantized_class_string(klass, modules, options_hash)}\n".green
+    klass = get_option_class(input)
+    if klass.nil? || klass.empty?
+      print "=> Error: Class not a String or Symbol\n".red
+      next
+    elsif !klass.is_a?(String) && !klass.is_a?(Symbol)
+      print "=> Error: Class not a String or Symbol\n".red
+      next
     end
 
-    print
-    print 'Done'.yellow
-    print
-end
+    modules = get_option_modules(input)
+    if modules.nil? || modules.empty?
+      print "=> Error: Modules not a Hash, Array or String\n".red
+      next
+    elsif !modules.is_a?(Hash) && !modules.is_a?(Array) && !modules.is_a?(String)
+      print "=> Error: Modules not a Hash, Array or String\n".red
+      next
+    end
 
+    options_hash = get_options_hash(input)
+    options_hash = { class_camelize: true, module_camelize: true }.merge(options_hash || {})
+
+    puts "\nCalling to_constantized_class_string with the following parameters: class: #{klass}, type: #{klass.class}, modules: #{modules}, type: #{modules.class}, options: #{options_hash}, type: #{options_hash.class}...".cyan
+
+    puts "\nSuccess: => #to_constantized_class_string(#{klass}, #{modules}, #{options_hash}) => #{Test.new.to_constantized_class_string(
+      klass, modules, options_hash
+    )}\n".green
+  end
+
+  print
+  print 'Done'.yellow
+  print
+end
 
 #
 # Helper methods
-# 
+#
 
 def clean_input(input)
-   # Place a space before every dash that is not separated by a space.
-   input = input.gsub(/-c/, " -c ").gsub(/-m/, " -m ").gsub(/-o/, " -o ")
-   input = input.gsub(/"/, " \" ").gsub(/\s+/, " ").strip
+  # Place a space before every dash that is not separated by a space.
+  input = input.gsub(/-c/, ' -c ').gsub(/-m/, ' -m ').gsub(/-o/, ' -o ')
+  input = input.gsub(/"/, ' " ').gsub(/\s+/, ' ').strip
 
-   puts "=> keyboard input after clean_input => #{input}".magenta
+  puts "=> keyboard input after clean_input => #{input}".magenta
 
-   input
+  input
 end
 
 def get_option_class(options)
-   if options.nil? || options.empty?
-      return ""
-   end
-   options_options = options[/-c\s*([:"].+?(["\s-]||$?))($|\s+|-)/m,1]
+  return '' if options.nil? || options.empty?
 
-   return "" if options_options.nil?
+  options_options = options[/-c\s*([:"].+?(["\s-]||$?))($|\s+|-)/m, 1]
 
-   options_options = options_options.gsub(/("|')+/, "")
-   klass = options_options.strip.gsub(/\s+/, " ")
+  return '' if options_options.nil?
 
-   puts "=> class after get_option_class => #{klass}".magenta
+  options_options = options_options.gsub(/("|')+/, '')
+  klass = options_options.strip.gsub(/\s+/, ' ')
 
-   klass
+  puts "=> class after get_option_class => #{klass}".magenta
+
+  klass
 end
 
 def get_options_hash(options)
-   if options.nil? || options.empty?
-      return {}
-   end
-   options_options = options[/-o\s*([{].+?([}\s-]$?))($|\s+|-)/m,1]
+  return {} if options.nil? || options.empty?
 
-   return {} if options_options.nil?
+  options_options = options[/-o\s*([{].+?([}\s-]$?))($|\s+|-)/m, 1]
 
-   puts "=> options after get_options_hash => #{options_options}".magenta
+  return {} if options_options.nil?
 
-   begin
-      eval(options_options)
-   rescue
-      {}
-   end
+  puts "=> options after get_options_hash => #{options_options}".magenta
+
+  begin
+    eval(options_options)
+  rescue StandardError
+    {}
+  end
 end
 
 def get_option_modules(modules)
-   if modules.nil? || modules.empty?
-      return ""
-   end
+  return '' if modules.nil? || modules.empty?
 
-   extracted_modules = modules[/-m\s*([\[{"].+?(["}\]\s-]$?))($|\s+|-)/m,1]
+  extracted_modules = modules[/-m\s*([\[{"].+?(["}\]\s-]$?))($|\s+|-)/m, 1]
 
-   return "" if extracted_modules.nil?
+  return '' if extracted_modules.nil?
 
-   extracted_modules = extracted_modules.strip.gsub(/\s+/, " ")
+  extracted_modules = extracted_modules.strip.gsub(/\s+/, ' ')
 
-   puts "=> modules after get_option_modules => #{extracted_modules}".magenta
+  puts "=> modules after get_option_modules => #{extracted_modules}".magenta
 
-   begin
-      eval(extracted_modules)
-   rescue
-      ""
-   end
+  begin
+    eval(extracted_modules)
+  rescue StandardError
+    ''
+  end
 end
-
-
-

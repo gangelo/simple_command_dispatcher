@@ -1,29 +1,29 @@
-require "simple_command"
+# frozen_string_literal: true
 
- class NoQualifiersCommand
-   prepend SimpleCommand
+require 'simple_command'
 
-   def initialize(params = {})
-      @param1 = params[:param1]
-      @param2 = params[:param2]
-      @param3 = params[:param3]
-   end
+class NoQualifiersCommand
+  prepend SimpleCommand
 
-   def call
-      execute
-   end
+  def initialize(params = {})
+    @param1 = params[:param1]
+    @param2 = params[:param2]
+    @param3 = params[:param3]
+  end
 
-   private
+  def call
+    execute
+  end
 
-   attr_accessor :param1, :param2, :param3
+  private
 
-   def execute
-      if (param1 == :param1 && param2 == :param2 && param3 == :param3)
-         return true
-      end
+  attr_accessor :param1, :param2, :param3
 
-      errors.add :invalid_parameters, 'Parameters are invalid'
+  def execute
+    return true if param1 == :param1 && param2 == :param2 && param3 == :param3
 
-      nil
-   end
+    errors.add :invalid_parameters, 'Parameters are invalid'
+
+    nil
+  end
 end

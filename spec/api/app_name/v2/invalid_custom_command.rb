@@ -1,33 +1,29 @@
+# frozen_string_literal: true
+
 module Api
-   module AppName
-         module V2
+  module AppName
+    module V2
+      class InvalidCustomCommand
+        # This is a custom command that oess not prepend SimpleCommand.
 
-             class InvalidCustomCommand
-               # This is a custom command that oess not prepend SimpleCommand.
+        def call(params = {})
+          @param1 = params[:param1]
+          @param2 = params[:param2]
+          @param3 = params[:param3]
 
-               public 
+          execute
+        end
 
-               def call(params = {})
-                  @param1 = params[:param1]
-                  @param2 = params[:param2]
-                  @param3 = params[:param3]
+        private
 
-                  execute
-               end
+        attr_accessor :param1, :param2, :param3
 
-               private
+        def execute
+          return true if param1 == :param1 && param2 == :param2 && param3 == :param3
 
-               attr_accessor :param1, :param2, :param3
-
-               def execute
-                  if (param1 == :param1 && param2 == :param2 && param3 == :param3)
-                     return true
-                  end
-
-                  return false
-               end
-            end
-
+          false
+        end
       end
-   end
+    end
+  end
 end

@@ -1,3 +1,9 @@
+### Version 1.2.4
+* Now requires Ruby 2.6.3
+* Fix broken spec.
+* Update Ruby gems.
+* Patch CVEs: activesupport CVE-2020-8165, rake CVE-2020-8130, rdoc CVE-2021-31799, tzinfo CVE-2022-31163, yard CVE-2017-17042 and CVE-2019-1020001.
+* Fix rubocop violations.
 ### Version 1.2.3
 * Refactor 'requires' in configure.rb and simple_command_dispatcher.rb
 * Update gemspec summary and description

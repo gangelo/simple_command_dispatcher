@@ -1,36 +1,33 @@
+# frozen_string_literal: true
+
 module Api
-   module AppName
-         module V1
+  module AppName
+    module V1
+      # This is a custom command that does not prepend SimpleCommand.
+      class CustomCommand
+        def self.call(*args)
+          command = new(*args)
+          if command
+            command.send(:execute)
+          else
+            false
+          end
+        end
 
-            # This is a custom command that does not prepend SimpleCommand.
-            class CustomCommand
+        private
 
-               def self.call(*args)
-                  command = self.new(*args)
-                  if command
-                     command.send(:execute)
-                  else
-                     false
-                  end
-               end
+        def initialize(params = {})
+          @param1 = params[:param1]
+        end
 
-               private 
+        attr_accessor :param1
 
-               def initialize(params = {})
-                  @param1 = params[:param1]
-               end
+        def execute
+          return true if param1 == :param1
 
-               attr_accessor :param1
-
-               def execute
-                  if (param1 == :param1)
-                     return true
-                  end
-
-                  return false
-               end
-            end
-
+          false
+        end
       end
-   end
+    end
+  end
 end
