@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    simple_command_dispatcher (1.2.3)
+    simple_command_dispatcher (1.2.4)
       activesupport (~> 5.0, >= 5.0.0.1)
       simple_command (~> 0.2.0)
 
