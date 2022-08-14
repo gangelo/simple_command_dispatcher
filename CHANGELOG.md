@@ -1,3 +1,5 @@
+### Version 1.2.5
+* Check in Gemfile.lock
 ### Version 1.2.4
 * Now requires Ruby 2.6.3
 * Fix broken spec.
