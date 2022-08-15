@@ -68,7 +68,7 @@ module SimpleCommand
             "Class \"#{command_class_constant}\" must prepend module SimpleCommand if Configuration#allow_custom_commands is true."
         end
 
-        if is_valid_command(command_class_constant)
+        if valid_command?(command_class_constant)
           # We know we have a valid SimpleCommand; all we need to do is call #call,
           # pass the command_parameter variable arguments to the call, and return the results.
           run_command(command_class_constant, command_parameters)
@@ -88,7 +88,7 @@ module SimpleCommand
       # @return [Boolean] true if klass_constant has a public class method named ::call defined, false otherwise.
       #
       # @!visibility public
-      def is_valid_command(klass_constant)
+      def valid_command?(klass_constant)
         klass_constant.eigenclass.public_method_defined?(:call)
       end
 
