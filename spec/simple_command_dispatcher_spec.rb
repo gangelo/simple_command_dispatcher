@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SimpleCommand::Dispatcher do
+RSpec.describe SimpleCommand::Dispatcher, type: :module do
   before(:each) do
     SimpleCommand::Dispatcher.configure do |config|
       config.allow_custom_commands = false
