@@ -63,7 +63,7 @@ module SimpleCommand
 
         # If we're NOT allowing custom commands, make sure we're dealing with a a command class
         # that prepends the SimpleCommand module.
-        if !SimpleCommand::Dispatcher.configuration.allow_custom_commands && !is_simple_command?(command_class_constant)
+        if !SimpleCommand::Dispatcher.configuration.allow_custom_commands && !simple_command?(command_class_constant)
           raise ArgumentError,
             "Class \"#{command_class_constant}\" must prepend module SimpleCommand if Configuration#allow_custom_commands is true."
         end
@@ -99,7 +99,7 @@ module SimpleCommand
       # @return [Boolean] true if klass_constant prepends Module SimpleCommand::ClassMethods, false otherwise.
       #
       # @!visibility public
-      def is_simple_command?(klass_constant)
+      def simple_command?(klass_constant)
         klass_constant.eigenclass.included_modules.include? SimpleCommand::ClassMethods
       end
 
