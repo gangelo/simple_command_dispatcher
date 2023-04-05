@@ -1,3 +1,5 @@
+### Version 1.2.6
+* Update ruby gems to patch CVE.
 ### Version 1.2.5
 * Check in Gemfile.lock
 ### Version 1.2.4
