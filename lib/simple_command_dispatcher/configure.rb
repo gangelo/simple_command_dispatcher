@@ -6,7 +6,7 @@ module SimpleCommand
   module Dispatcher
     class << self
       attr_writer :configuration
-      end
+    end
 
     # Returns the application configuration object.
     #

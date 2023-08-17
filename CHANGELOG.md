@@ -1,3 +1,6 @@
+### Version 1.2.7
+* Update ruby gems.
+* Miscellaneous refactors.
 ### Version 1.2.6
 * Update ruby gems to patch CVE.
 ### Version 1.2.5
