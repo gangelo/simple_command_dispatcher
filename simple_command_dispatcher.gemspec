@@ -37,7 +37,6 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 2.2.2'
   spec.add_runtime_dependency 'activesupport', '~> 5.0', '>= 5.0.0.1'
-  #spec.add_runtime_dependency 'simple_command', '>= 0.0.9'
   spec.add_runtime_dependency 'simple_command', '~> 0.2.0'
 
   spec.add_development_dependency 'pry-byebug', '~> 3.9'
