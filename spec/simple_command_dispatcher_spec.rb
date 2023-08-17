@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SimpleCommand::Dispatcher do
+RSpec.describe SimpleCommand::Dispatcher, type: :module do
   before(:each) do
     SimpleCommand::Dispatcher.configure do |config|
       config.allow_custom_commands = false
@@ -95,8 +95,14 @@ describe SimpleCommand::Dispatcher do
       expect(command.success?).to eq(true)
     end
 
-    it 'should return success? if [command_qualifiers] are passed as an array' do
+    it 'should return success? if [command_qualifiers] are passed as an array of Symbols' do
       command = SimpleCommand::Dispatcher.call(:TestCommand, %i[Api AppName V1], {},
+                                               { param1: :param1, param2: :param2, param3: :param3 })
+      expect(command.success?).to eq(true)
+    end
+
+    it 'should return success? if [command_qualifiers] are passed as an array of Strings' do
+      command = SimpleCommand::Dispatcher.call(:TestCommand, %w[Api AppName V1], {},
                                                { param1: :param1, param2: :param2, param3: :param3 })
       expect(command.success?).to eq(true)
     end
