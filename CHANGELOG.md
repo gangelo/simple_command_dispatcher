@@ -1,3 +1,5 @@
+### Version 1.2.8 [2023-08-30]
+* Update ruby gems.
 ### Version 1.2.7
 * Update ruby gems.
 * Miscellaneous refactors.
