@@ -35,12 +35,12 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version = '>= 2.2.2'
-  spec.add_runtime_dependency 'activesupport', '~> 5.0', '>= 5.0.0.1'
+  spec.required_ruby_version = '>= 2.7.0'
+  spec.add_runtime_dependency 'activesupport', '~> 7.0.8'
   spec.add_runtime_dependency 'simple_command', '~> 0.2.0'
 
   spec.add_development_dependency 'pry-byebug', '~> 3.9'
-  spec.add_development_dependency 'bundler', '~> 2.2', '>= 2.2.17'
+  spec.add_development_dependency 'bundler', '~> 2.4', '>= 2.4.21'
   spec.add_development_dependency 'colorize', '~> 0.8.1'
   spec.add_development_dependency 'rake', '~> 13.0', '>= 13.0.6'
   spec.add_development_dependency 'rdoc', '~> 6.4'
