@@ -41,7 +41,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'pry-byebug', '~> 3.9'
   spec.add_development_dependency 'bundler', '~> 2.4', '>= 2.4.21'
-  spec.add_development_dependency 'colorize', '~> 0.8.1'
+  spec.add_development_dependency 'colorize', '~> 1.1.0'
   spec.add_development_dependency 'rake', '~> 13.0', '>= 13.0.6'
   spec.add_development_dependency 'rdoc', '~> 6.4'
   spec.add_development_dependency 'rspec', '>= 3.10'
