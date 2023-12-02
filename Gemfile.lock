@@ -3,7 +3,7 @@ PATH
   specs:
     simple_command_dispatcher (2.0.1)
       activesupport (>= 7.0.8, < 8.0)
-      simple_command (>= 0.2.0, < 1.0)
+      simple_command (>= 0.2.0, < 2.0)
 
 GEM
   remote: https://rubygems.org/
@@ -94,7 +94,7 @@ GEM
       rubocop-factory_bot (~> 2.22)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
-    simple_command (0.2.1)
+    simple_command (1.0.1)
     stringio (3.1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
