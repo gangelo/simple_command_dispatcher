@@ -1,3 +1,5 @@
+### Version 2.0.1 [2023-12-02]
+* Update ruby gems.
 ### Version 2.0.0 [2023-11-01]
 * simple_command_dispatcher now depends on ruby version >= 2.7.0
 * Update ruby gems.
