@@ -35,18 +35,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version = '>= 2.7.0'
+  spec.required_ruby_version = '>= 3.0'
   spec.add_runtime_dependency 'activesupport', '>= 7.0.8', '< 8.0'
-  spec.add_runtime_dependency 'simple_command', '>= 0.2.0', '< 1.0'
-
-  spec.add_development_dependency 'pry-byebug', '>= 3.9', '< 4.0'
-  spec.add_development_dependency 'bundler', '>= 2.4', '< 3.0'
-  spec.add_development_dependency 'colorize', '>= 0.8.1', '< 1.0'
-  spec.add_development_dependency 'rake', '>= 13.0', '< 14.0'
-  spec.add_development_dependency 'rdoc', '>= 6.4', '< 7.0'
-  spec.add_development_dependency 'rspec', '>= 3.10', '< 4.0'
-  spec.add_development_dependency 'rubocop', '>= 1.35', '< 2.0'
-  spec.add_development_dependency 'rubocop-performance', '>= 1.14', '< 2.0'
-  spec.add_development_dependency 'rubocop-rspec', '~> 2.25'
-  spec.add_development_dependency 'yard', '>= 0.9.28', '< 1.0'
+  spec.add_runtime_dependency 'simple_command', '~> 1.0', '>= 1.0.1'
 end

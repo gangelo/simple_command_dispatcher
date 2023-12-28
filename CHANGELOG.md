@@ -1,3 +1,7 @@
+### Version 3.0.0 [2023-12-27]
+* Now requires Ruby >= 3.0
+* Now requires simple_command '~> 1.0', '>= 1.0.1'; I will try to remove this dependency somehow for users who are not using simple_command.
+* Update ruby gems.
 ### Version 2.0.1 [2023-12-02]
 * Update ruby gems.
 ### Version 2.0.0 [2023-11-01]
