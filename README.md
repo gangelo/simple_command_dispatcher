@@ -1,11 +1,8 @@
-[![GitHub version](https://badge.fury.io/gh/gangelo%2Fsimple_command_dispatcher.svg)](https://badge.fury.io/gh/gangelo%2Fsimple_command_dispatcher)
-[![Gem Version](https://badge.fury.io/rb/simple_command_dispatcher.svg)](https://badge.fury.io/rb/simple_command_dispatcher)
-
+[![GitHub version](https://badge.fury.io/gh/gangelo%2Fsimple_command_dispatcher.svg?refresh=1)](https://badge.fury.io/gh/gangelo%2Fsimple_command_dispatcher)
+[![Gem Version](https://badge.fury.io/rb/simple_command_dispatcher.svg?refresh=1)](https://badge.fury.io/rb/simple_command_dispatcher)
 [![](https://ruby-gem-downloads-badge.herokuapp.com/simple_command_dispatcher?type=total)](http://www.rubydoc.info/gems/simple_command_dispatcher/)
 [![Documentation](http://img.shields.io/badge/docs-rdoc.info-blue.svg)](http://www.rubydoc.info/gems/simple_command_dispatcher/)
-
 [![Report Issues](https://img.shields.io/badge/report-issues-red.svg)](https://github.com/gangelo/simple_command_dispatcher/issues)
-
 [![License](http://img.shields.io/badge/license-MIT-yellowgreen.svg)](#license)
 
 # Q. simple_command_dispatcher - what is it?
