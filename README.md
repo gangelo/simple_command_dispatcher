@@ -1,3 +1,4 @@
+[![Ruby](https://github.com/gangelo/simple_command_dispatcher/actions/workflows/ruby.yml/badge.svg?refresh=1)](https://github.com/gangelo/simple_command_dispatcher/actions/workflows/ruby.yml)
 [![GitHub version](https://badge.fury.io/gh/gangelo%2Fsimple_command_dispatcher.svg?refresh=1)](https://badge.fury.io/gh/gangelo%2Fsimple_command_dispatcher)
 [![Gem Version](https://badge.fury.io/rb/simple_command_dispatcher.svg?refresh=1)](https://badge.fury.io/rb/simple_command_dispatcher)
 [![](https://ruby-gem-downloads-badge.herokuapp.com/simple_command_dispatcher?type=total)](http://www.rubydoc.info/gems/simple_command_dispatcher/)
