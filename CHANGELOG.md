@@ -1,3 +1,5 @@
+### Version 3.0.2 [2024-01-31]
+* Update ruby gems.
 ### Version 3.0.1 [2024-01-07]
 * Relax ruby version to Gem::Requirement.new('>= 3.0.1', '< 4.0')
 * Update ruby gems.
