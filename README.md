@@ -1,6 +1,6 @@
 [![Ruby](https://github.com/gangelo/simple_command_dispatcher/actions/workflows/ruby.yml/badge.svg?refresh=2)](https://github.com/gangelo/simple_command_dispatcher/actions/workflows/ruby.yml)
-[![GitHub version](https://badge.fury.io/gh/gangelo%2Fsimple_command_dispatcher.svg?refresh=3)](https://badge.fury.io/gh/gangelo%2Fsimple_command_dispatcher)
-[![Gem Version](https://badge.fury.io/rb/simple_command_dispatcher.svg?refresh=3)](https://badge.fury.io/rb/simple_command_dispatcher)
+[![GitHub version](https://badge.fury.io/gh/gangelo%2Fsimple_command_dispatcher.svg?refresh=4)](https://badge.fury.io/gh/gangelo%2Fsimple_command_dispatcher)
+[![Gem Version](https://badge.fury.io/rb/simple_command_dispatcher.svg?refresh=4)](https://badge.fury.io/rb/simple_command_dispatcher)
 [![](https://ruby-gem-downloads-badge.herokuapp.com/simple_command_dispatcher?type=total)](http://www.rubydoc.info/gems/simple_command_dispatcher/)
 [![Documentation](http://img.shields.io/badge/docs-rdoc.info-blue.svg)](http://www.rubydoc.info/gems/simple_command_dispatcher/)
 [![Report Issues](https://img.shields.io/badge/report-issues-red.svg)](https://github.com/gangelo/simple_command_dispatcher/issues)
@@ -10,7 +10,7 @@
 # A. It's a Ruby gem!!!
 
 ## Overview
-__simple_command_dispatcher__ (SCD) allows you to execute __simple_command__ commands (and now _custom commands_ as of version 1.2.1) in a more dynamic way. If you are not familiar with the _simple_command_ gem, check it out [here][simple-command]. SCD was written specifically with the [rails-api][rails-api] in mind; however, you can use SDC wherever you would use simple_command commands. 
+__simple_command_dispatcher__ (SCD) allows you to execute __simple_command__ commands (and now _custom commands_ as of version 1.2.1) in a more dynamic way. If you are not familiar with the _simple_command_ gem, check it out [here][simple-command]. SCD was written specifically with the [rails-api][rails-api] in mind; however, you can use SDC wherever you would use simple_command commands.
 
 ## Update as of Version 1.2.1
 ### Custom Commands
@@ -29,31 +29,31 @@ This example assumes the following:
 
 Command classes (and the modules they reside under) are named *__according to their file name and respective location within the above folder structure__*; for example, the command class defined in the `/api/my_app1/v1/authenticate_request.rb` file would be defined in this manner:
 
-```ruby 
+```ruby
 # /api/my_app1/v1/authenticate_request.rb
 
-module Api 
-   module MyApp1 
-      module V1 
-         class AuthenticateRequest 
-         end 
-     end 
-   end 
+module Api
+   module MyApp1
+      module V1
+         class AuthenticateRequest
+         end
+     end
+   end
 end
 ```
-   
+
 Likewise, the command class defined in the `/api/my_app2/v2/update_user.rb` file would be defined in this manner, and so on:
 
-```ruby 
+```ruby
 # /api/my_app2/v2/update_user.rb
 
-module Api 
-   module MyApp2 
-      module V2 
-         class UpdateUser 
-         end 
-     end 
-   end 
+module Api
+   module MyApp2
+      module V2
+         class UpdateUser
+         end
+     end
+   end
 end
 ```
 
@@ -81,8 +81,8 @@ The __routes used in this example__, conform to the following format: `"/api/[ap
 #
 #   class Api::MyApp1::V1::AuthenticateRequest; end
 #
-# As opposed to this: 
-# 
+# As opposed to this:
+#
 #   module Api
 #      module MyApp1
 #         module V1
@@ -138,10 +138,10 @@ end
 # for custom command execution.
 SimpleCommand::Dispatcher.configure do |config|
    config.allow_custom_commands = true
-end 
+end
 ```
 
-```ruby 
+```ruby
 # /app/controllers/application_controller.rb
 
 require 'simple_command_dispatcher'
@@ -154,8 +154,8 @@ class ApplicationController < ActionController::API
 
    def get_command_path
       # request.env['PATH_INFO'] could return any number of paths. The important
-      # thing (in the case of our example), is that we get the portion of the 
-      # path that uniquely identifies the SimpleCommand we need to call; this 
+      # thing (in the case of our example), is that we get the portion of the
+      # path that uniquely identifies the SimpleCommand we need to call; this
       # would include the application, the API version and the SimpleCommand
       # name itself.
       command_path = request.env['PATH_INFO'] # => "/api/[app name]/v1/[action]”
@@ -163,16 +163,16 @@ class ApplicationController < ActionController::API
    end
 
    private
-   
+
    def authenticate_request
       # The parameters and options we are passing to the dispatcher, wind up equating
       # to the following: Api::MyApp1::V1::AuthenticateRequest.call(request.headers).
-      # Explaination: @param command_modules (e.g. path, "/api/my_app1/v1/"), in concert with @param 
-      # options { camelize: true }, is transformed into "Api::MyApp1::V1" and prepended to the 
+      # Explaination: @param command_modules (e.g. path, "/api/my_app1/v1/"), in concert with @param
+      # options { camelize: true }, is transformed into "Api::MyApp1::V1" and prepended to the
       # @param command, which becomes "Api::MyApp1::V1::AuthenticateRequest." This string is then
       # simply constantized; #call is then executed, passing the @param command_parameters
       # (e.g. request.headers, which contains ["Authorization"], out authorization token).
-      # Consequently, the correlation between our routes and command class module structure 
+      # Consequently, the correlation between our routes and command class module structure
       # was no coincidence.
       command = SimpleCommand::Dispatcher.call(:AuthenticateRequest, get_command_path, { camelize: true}, request.headers)
       if command.success?
@@ -191,7 +191,7 @@ As of __Version 1.2.1__ simple_command_dispatcher (SCD) allows you to execute _c
 In order to execute _custom commands_, there are three (3) requirements:
    1. Create a _custom command_. Your _custom command_ class must expose a public `::call` class method.
    2. Set the `Configuration#allow_custom_commands` property to `true`.
-   3. Execute your _custom command_ by calling the `::call` class method. 
+   3. Execute your _custom command_ by calling the `::call` class method.
 
 ### Custom Command Example
 
@@ -205,7 +205,7 @@ module Api
 
             # This is a custom command that does not prepend SimpleCommand.
             class CustomCommand
-               
+
                def self.call(*args)
                   command = self.new(*args)
                   if command
@@ -214,7 +214,7 @@ module Api
                      false
                   end
                end
-               
+
                private
 
                def initialize(params = {})
@@ -245,7 +245,7 @@ end
 
 SimpleCommand::Dispatcher.configure do |config|
     config.allow_custom_commands = true
-end 
+end
 ```
 
 #### 3. Execute your _Custom Command_
@@ -257,7 +257,7 @@ require 'simple_command_dispatcher'
 
 class SomeController < ApplicationController::API
    public
-   
+
    def some_api
       success = SimpleCommand::Dispatcher.call(:CustomCommand, get_command_path, { camelize: true}, request.headers)
       if success
@@ -306,4 +306,3 @@ The gem is available as open source under the terms of the [MIT License](http://
 
    [simple-command]: <https://rubygems.org/gems/simple_command>
    [rails-api]: <https://rubygems.org/gems/rails-api>
-
