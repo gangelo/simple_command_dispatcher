@@ -1,3 +1,4 @@
+# rubocop:disable Style/OptionHash
 # frozen_string_literal: true
 
 require_relative '../core_extensions/string'
@@ -94,7 +95,7 @@ module SimpleCommand
     #   to_modules_string({ :api :api, app_name: :app_name, api_version: :v1 }, { module_titleize: true })
     #      # => "Api::AppName::V1::"
     #
-    def to_modules_string(klass_modules = [], options = {})
+    def to_modules_string(klass_modules = [], options = {}) # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
       klass_modules = validate_klass_modules(klass_modules)
 
       options = ensure_options(options)
@@ -246,3 +247,5 @@ module SimpleCommand
     end
   end
 end
+
+# rubocop:enable Style/OptionHash
