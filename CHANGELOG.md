@@ -1,3 +1,5 @@
+### Version 3.0.3 [2024-02-18]
+* Update ruby gems.
 ### Version 3.0.2 [2024-01-31]
 * Update ruby gems.
 ### Version 3.0.1 [2024-01-07]

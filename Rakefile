@@ -6,7 +6,7 @@ require 'yard'
 
 # Rspec
 RSpec::Core::RakeTask.new(:spec)
-task default: :spec
+#task default: :spec
 
 # Yard
 YARD::Rake::YardocTask.new do |t|
@@ -17,3 +17,8 @@ end
 
 # Load our custom rake tasks.
 Gem.find_files('tasks/**/*.rake').each { |path| import path }
+
+require 'rubocop/rake_task'
+RuboCop::RakeTask.new
+
+task default: %i[spec rubocop]
