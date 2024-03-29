@@ -9,8 +9,8 @@
 #
 # See https://docs.rubocop.org/rubocop/configuration
 require:
-  - rubocop-performance
-  - rubocop-rspec
+#  - rubocop-performance
+#  - rubocop-rspec
 
 AllCops:
   SuggestExtensions: false
@@ -139,8 +139,8 @@ Metrics/PerceivedComplexity:
 #    - 'lib/file.rb'
 
 # Allow `downcase == ` instead of forcing `casecmp`
-Performance/Casecmp:
-  Enabled: false
+#Performance/Casecmp:
+#  Enabled: false
 
 # Require children definitions to be nested or compact in classes and modules
 Style/ClassAndModuleChildren:

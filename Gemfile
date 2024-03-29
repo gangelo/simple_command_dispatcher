@@ -12,9 +12,9 @@ gem 'rake', '>= 13.0', '< 14.0'
 group :development do
   gem 'pry-byebug', '>= 3.9', '< 4.0'
   gem 'rdoc', '>= 6.4', '< 7.0'
-  gem 'rubocop', '>= 1.35', '< 2.0'
-  gem 'rubocop-performance', '>= 1.14', '< 2.0'
-  gem 'rubocop-rspec', '~> 2.25'
+  gem 'rubocop', '>= 1.62', '< 2.0'
+  gem 'rubocop-performance', '>= 1.20', '< 2.0'
+  gem 'rubocop-rspec', '>= 2.28', '< 3.0'
 end
 
 group :test do
