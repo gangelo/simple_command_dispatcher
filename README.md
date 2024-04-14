@@ -167,7 +167,7 @@ class ApplicationController < ActionController::API
    def authenticate_request
       # The parameters and options we are passing to the dispatcher, wind up equating
       # to the following: Api::MyApp1::V1::AuthenticateRequest.call(request.headers).
-      # Explaination: @param command_modules (e.g. path, "/api/my_app1/v1/"), in concert with @param
+      # Explaination: @param command_namespace (e.g. path, "/api/my_app1/v1/"), in concert with @param
       # options { camelize: true }, is transformed into "Api::MyApp1::V1" and prepended to the
       # @param command, which becomes "Api::MyApp1::V1::AuthenticateRequest." This string is then
       # simply constantized; #call is then executed, passing the @param params
