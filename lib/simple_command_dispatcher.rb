@@ -28,18 +28,10 @@ module SimpleCommand
       #
       # @param command [Symbol, String] the name of the SimpleCommand or Command to call.
       #
-<<<<<<< HEAD
-      # @param command_modules [Hash, Array] the ruby modules that qualify the SimpleCommand to call. When
-      #    passing a Hash, the Hash keys serve as documentation only. For example, ['Api', 'AppName', 'V1']
-      #    and { :api :Api, app_name: :AppName, api_version: :V1 } will both produce 'Api::AppName::V1',
-      #    this string will be prepended to the command to form the SimpleCommand to call
-      #    (e.g. 'Api::AppName::V1::MySimpleCommand' = Api::AppName::V1::MySimpleCommand.call(*command_parameters)).
-=======
       # @param command_modules [Hash, Array] the ruby modules that qualify the SimpleCommand to call. When passing a Hash, the Hash
       #    keys serve as documentation only. For example, ['Api', 'AppName', 'V1'] and { :api :Api, app_name: :AppName, api_version: :V1 }
       #    will both produce 'Api::AppName::V1', this string will be prepended to the command to form the SimpleCommand to call
       #    (e.g. 'Api::AppName::V1::MySimpleCommand' = Api::AppName::V1::MySimpleCommand.call(*request_params)).
->>>>>>> 9894c0f (Change #call arg name command_parameters to request_parameters)
       #
       # @param [Hash] options the options that determine how command and command_module are transformed.
       # @option options [Boolean] :camelize (false) determines whether or not both class and module names should be
@@ -51,13 +43,8 @@ module SimpleCommand
       # @option options [Boolean] :module_titleize (false) determines whether or not module names should be titleized.
       # @option options [Boolean] :module_camelized (false) determines whether or not module names should be camelized.
       #
-<<<<<<< HEAD
-      # @param command_parameters [Array<Symbol>] the parameters to pass to the call method of the SimpleCommand.
-      #    This parameter is simplypassed through to the call method of the SimpleCommand/Command.
-=======
       # @param request_params [Array<Symbol>] the parameters to pass to the call method of the SimpleCommand . This parameter is simply
       #    passed through to the call method of the SimpleCommand/Command.
->>>>>>> 9894c0f (Change #call arg name command_parameters to request_parameters)
       #
       # @return [SimpleCommand, Object] the SimpleCommand or Object returned as a result of calling the
       #    SimpleCommand#call method or the Command#call method respectfully.
