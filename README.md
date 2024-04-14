@@ -170,7 +170,7 @@ class ApplicationController < ActionController::API
       # Explaination: @param command_modules (e.g. path, "/api/my_app1/v1/"), in concert with @param
       # options { camelize: true }, is transformed into "Api::MyApp1::V1" and prepended to the
       # @param command, which becomes "Api::MyApp1::V1::AuthenticateRequest." This string is then
-      # simply constantized; #call is then executed, passing the @param command_parameters
+      # simply constantized; #call is then executed, passing the @param params
       # (e.g. request.headers, which contains ["Authorization"], out authorization token).
       # Consequently, the correlation between our routes and command class module structure
       # was no coincidence.

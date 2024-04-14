@@ -36,6 +36,17 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.required_ruby_version = Gem::Requirement.new('>= 3.0.1', '< 4.0')
+
   spec.add_runtime_dependency 'activesupport', '>= 7.0.8', '< 8.0'
   spec.add_runtime_dependency 'simple_command', '~> 1.0', '>= 1.0.1'
+
+  spec.add_development_dependency 'pry-byebug', '~> 3.9'
+  spec.add_development_dependency 'bundler', '~> 2.2', '>= 2.2.17'
+  spec.add_development_dependency 'colorize', '~> 0.8.1'
+  spec.add_development_dependency 'rake', '~> 13.0', '>= 13.0.6'
+  spec.add_development_dependency 'rdoc', '~> 6.4'
+  spec.add_development_dependency 'rspec', '>= 3.10'
+  spec.add_development_dependency 'rubocop', '~> 1.35'
+  spec.add_development_dependency 'rubocop-performance', '~> 1.14', '>= 1.14.3'
+  spec.add_development_dependency 'yard', '~> 0.9.28'
 end
