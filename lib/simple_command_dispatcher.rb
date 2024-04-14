@@ -28,7 +28,7 @@ module SimpleCommand
       #
       # @param command [Symbol, String] the name of the SimpleCommand or Command to call.
       #
-      # @param command_modules [Hash, Array] the ruby modules that qualify the SimpleCommand to call. When passing a Hash, the Hash
+      # @param command_namespace [Hash, Array] the ruby modules that qualify the SimpleCommand to call. When passing a Hash, the Hash
       #    keys serve as documentation only. For example, ['Api', 'AppName', 'V1'] and { :api :Api, app_name: :AppName, api_version: :V1 }
       #    will both produce 'Api::AppName::V1', this string will be prepended to the command to form the SimpleCommand to call
       #    (e.g. 'Api::AppName::V1::MySimpleCommand' = Api::AppName::V1::MySimpleCommand.call(*request_params)).
@@ -66,9 +66,9 @@ module SimpleCommand
       #  SimpleCommand::Dispatcher.call(:Authenticate, ['Api::Auth::JazzMeUp', :V1],
       #     'jazz_me@gmail.com', 'JazzM3!') # => SimpleCommand result
       #
-      def call(command = '', command_modules = {}, options = {}, *request_params)
-        # Create a constantized class from our command and command_modules...
-        command_class_constant = to_constantized_class(command, command_modules, options)
+      def call(command = '', command_namespace = {}, options = {}, *request_params)
+        # Create a constantized class from our command and command_namespace...
+        command_class_constant = to_constantized_class(command, command_namespace, options)
 
         # If we're NOT allowing custom commands, make sure we're dealing with a a command class
         # that prepends the SimpleCommand module.
