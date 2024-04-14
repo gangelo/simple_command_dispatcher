@@ -1,3 +1,7 @@
+### Version 2.0.0
+Breaking changes
+- Remove allow_custom_commands configuration option as it's unnecessary.
+
 ### Version 1.2.5
 * Check in Gemfile.lock
 ### Version 1.2.4
