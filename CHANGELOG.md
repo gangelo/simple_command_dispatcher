@@ -1,3 +1,6 @@
+### Version 3.0.3 [2024-08-03]
+* Update ruby gems.
+* Patch CVE related to rexml gem.
 ### Version 3.0.3 [2024-02-18]
 * Update ruby gems.
 ### Version 3.0.2 [2024-01-31]

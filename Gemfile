@@ -14,7 +14,7 @@ group :development do
   gem 'rdoc', '>= 6.4', '< 7.0'
   gem 'rubocop', '>= 1.62', '< 2.0'
   gem 'rubocop-performance', '>= 1.20', '< 2.0'
-  gem 'rubocop-rspec', '>= 2.28', '< 3.0'
+  gem 'rubocop-rspec', '~> 3.0', '>= 3.0.3'
 end
 
 group :test do
