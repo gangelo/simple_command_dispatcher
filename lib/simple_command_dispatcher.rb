@@ -66,7 +66,7 @@ module SimpleCommand
       #  SimpleCommand::Dispatcher.call(:Authenticate, ['Api::Auth::JazzMeUp', :V1],
       #     'jazz_me@gmail.com', 'JazzM3!') # => SimpleCommand result
       #
-      def call(command = '', command_namespace = {}, options = {}, *request_params)
+      def call(command, command_namespace = {}, options = {}, *request_params)
         # Create a constantized class from our command and command_namespace...
         command_class_constant = to_constantized_class(command, command_namespace, options)
 
