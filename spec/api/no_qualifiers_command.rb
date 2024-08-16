@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'simple_command'
+require_relative '../support/command_callable'
 
 class NoQualifiersCommand
-  prepend SimpleCommand
+  prepend CommandCallable
 
   def initialize(params = {})
     @param1 = params[:param1]

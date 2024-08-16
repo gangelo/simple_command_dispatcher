@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-require 'simple_command'
+require_relative '../../../support/command_callable'
 
 module Api
   module AppName
-    module V1
-      class TestCommand
-        prepend SimpleCommand
+    module V2
+      class GoodCommandA
+        prepend CommandCallable
 
-        def initialize(params = {})
-          @param1 = params[:param1]
-          @param2 = params[:param2]
-          @param3 = params[:param3]
+        def initialize(param1, param2, param3, **_kwargs)
+          @param1 = param1
+          @param2 = param2
+          @param3 = param3
         end
 
         def call

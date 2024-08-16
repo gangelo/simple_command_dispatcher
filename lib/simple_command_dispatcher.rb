@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-require 'simple_command_dispatcher/version'
-require 'simple_command_dispatcher/klass_transform'
-require 'simple_command'
+require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/string/inflections'
 require 'simple_command_dispatcher/configure'
+require 'simple_command_dispatcher/errors'
+require 'simple_command_dispatcher/klass_transform'
+require 'simple_command_dispatcher/version'
 
 module Kernel
   def eigenclass
@@ -21,17 +22,17 @@ module SimpleCommand
   #
   module Dispatcher
     class << self
-      include SimpleCommand::KlassTransform
+      include KlassTransform
 
-      # Calls a *SimpleCommand* or *Command* given the command name, the modules the command belongs to
+      # Calls a *Command* given the command name, the modules the command belongs to
       # and the parameters to pass to the command.
       #
-      # @param command [Symbol, String] the name of the SimpleCommand or Command to call.
+      # @param command [Symbol, String] the name of the Command to call.
       #
-      # @param command_namespace [Hash, Array] the ruby modules that qualify the SimpleCommand to call.
+      # @param command_namespace [Hash, Array] the ruby modules that qualify the Command to call.
       #    When passing a Hash, the Hash keys serve as documentation only.
       #    For example, ['Api', 'AppName', 'V1'] and { :api :Api, app_name: :AppName, api_version: :V1 }
-      #    will both produce 'Api::AppName::V1', this string will be prepended to the command to form the SimpleCommand
+      #    will both produce 'Api::AppName::V1', this string will be prepended to the command to form the Command
       #    to call (e.g. 'Api::AppName::V1::MySimpleCommand' = Api::AppName::V1::MySimpleCommand.call(*request_params)).
       #
       # @param [Hash] options the options that determine how command and command_module are transformed.
@@ -44,11 +45,10 @@ module SimpleCommand
       # @option options [Boolean] :module_titleize (false) determines whether or not module names should be titleized.
       # @option options [Boolean] :module_camelized (false) determines whether or not module names should be camelized.
       #
-      # @param request_params [Array<Symbol>] the parameters to pass to the call method of the SimpleCommand. This
-      #    parameter is simply passed through to the call method of the SimpleCommand/Command.
+      # @param request_params [Array<Symbol>] the parameters to pass to the call method of the Command. This
+      #    parameter is simply passed through to the call method of the Command.
       #
-      # @return [SimpleCommand, Object] the SimpleCommand or Object returned as a result of calling the
-      #    SimpleCommand#call method or the Command#call method respectfully.
+      # @return [Object] the Object returned as a result of calling the Command#call method.
       #
       # @example
       #
@@ -56,84 +56,43 @@ module SimpleCommand
       #  # Api::Carz4Rent::V1::Authenticate.call({ email: 'sam@gmail.com', password: 'AskM3!' })
       #  SimpleCommand::Dispatcher.call(:Authenticate,
       #     { api: :Api, app_name: :Carz4Rent, api_version: :V1 },
-      #     { email: 'sam@gmail.com', password: 'AskM3!' } ) # => SimpleCommand result
+      #     { email: 'sam@gmail.com', password: 'AskM3!' } ) # => Command result
       #
       #  # Below equates to the following: Api::Carz4Rent::V2::Authenticate.call('sam@gmail.com', 'AskM3!')
       #  SimpleCommand::Dispatcher.call(:Authenticate,
-      #     ['Api', 'Carz4Rent', 'V2'], 'sam@gmail.com', 'AskM3!') # => SimpleCommand result
+      #     ['Api', 'Carz4Rent', 'V2'], 'sam@gmail.com', 'AskM3!') # => Command result
       #
       #  # Below equates to the following:
       #  # Api::Auth::JazzMeUp::V1::Authenticate.call('jazz_me@gmail.com', 'JazzM3!')
       #  SimpleCommand::Dispatcher.call(:Authenticate, ['Api::Auth::JazzMeUp', :V1],
-      #     'jazz_me@gmail.com', 'JazzM3!') # => SimpleCommand result
+      #     'jazz_me@gmail.com', 'JazzM3!') # => Command result
       #
       def call(command:, command_namespace: {}, request_params: nil, options: {})
         # Create a constantized class from our command and command_namespace...
-        command_class_constant = to_constantized_class(command, command_namespace, options)
+        constantized_class_object = to_constantized_class(command, command_namespace, options)
+        validate_command!(constantized_class_object)
 
-        # If we're NOT allowing custom commands, make sure we're dealing with a a command class
-        # that prepends the SimpleCommand module.
-        if !SimpleCommand::Dispatcher.configuration.allow_custom_commands && !simple_command?(command_class_constant)
-          raise ArgumentError,
-            "Class \"#{command_class_constant}\" " \
-            'must prepend module SimpleCommand if Configuration#allow_custom_commands is true.'
-        end
+        # We know we have a valid command class object if we get here. All we need to do is call the .call
+        # class method, pass the request_params arguments depending on the request_params data type, and
+        # return the results.
 
-        if valid_command?(command_class_constant)
-          # We know we have a valid SimpleCommand; all we need to do is call #call,
-          # pass the command_parameter variable arguments to the call, and return the results.
-
-          # Determine the appropriate method of passing parameters based on their type
-          if request_params.is_a?(Hash)
-            run_command(command_class_constant, **request_params)
-          elsif request_params.is_a?(Array)
-            run_command(command_class_constant, *request_params)
-          else
-            run_command(command_class_constant, request_params)
-          end
+        if request_params.is_a?(Hash)
+          run_command(constantized_class_object, **request_params)
+        elsif request_params.is_a?(Array)
+          run_command(constantized_class_object, *request_params)
         else
-          raise NameError, "Class \"#{command_class_constant}\" does not respond_to? method ::call."
+          run_command(constantized_class_object, request_params)
         end
       end
 
       private
 
-      # Returns true or false depending on whether or not the class constant has a public
-      # class method named ::call defined. Commands that do not have a public class method
-      # named ::call, are considered invalid.
-      #
-      # @param klass_constant [String] a class constant that will be validated to see whether or not the
-      #    class is a valid command.
-      #
-      # @return [Boolean] true if klass_constant has a public class method named ::call defined,
-      #    false otherwise.
-      #
-      # @!visibility public
-      def valid_command?(klass_constant)
-        klass_constant.eigenclass.public_method_defined?(:call)
+      def validate_command!(constantized_class_object)
+        unless constantized_class_object.eigenclass.public_method_defined?(:call)
+          raise RequiredClassMethodMissingError, constantized_class_object
+        end
       end
 
-      # Returns true or false depending on whether or not the class constant prepends module
-      #    SimpleCommand::ClassMethods.
-      #
-      # @param klass_constant [String] a class constant that will be validated to see whether
-      #    or not the class prepends module SimpleCommand::ClassMethods.
-      #
-      # @return [Boolean] true if klass_constant prepends Module SimpleCommand::ClassMethods, false otherwise.
-      #
-      # @!visibility public
-      def simple_command?(klass_constant)
-        klass_constant.eigenclass.included_modules.include? SimpleCommand::ClassMethods
-      end
-
-      # Runs the command given the parameters and returns the result.
-      #
-      # @param klass_constant [String] a class constant that will be called.
-      # @param parameters [Array] an array of parameters to pass to the command that will be called.
-      #
-      # @return [Object] returns the object (if any) that results from calling the command.
-      #
-      # @!visibility public
       def run_command(klass_constant, *parameters, **keyword_parameters)
         if keyword_parameters.empty?
           klass_constant.call(*parameters)

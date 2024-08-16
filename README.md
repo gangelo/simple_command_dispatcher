@@ -7,27 +7,32 @@
 [![License](http://img.shields.io/badge/license-MIT-yellowgreen.svg)](#license)
 
 # Q. simple_command_dispatcher - what is it?
+
 # A. It's a Ruby gem!!!
 
 ## Overview
-__simple_command_dispatcher__ (SCD) allows you to execute __simple_command__ commands (and now _custom commands_ as of version 1.2.1) in a more dynamic way. If you are not familiar with the _simple_command_ gem, check it out [here][simple-command]. SCD was written specifically with the [rails-api][rails-api] in mind; however, you can use SDC wherever you would use simple_command commands.
+
+**simple_command_dispatcher** (SCD) allows you to execute **simple_command** commands (and now _custom commands_ as of version 1.2.1) in a more dynamic way. If you are not familiar with the _simple_command_ gem, check it out [here][simple-command]. SCD was written specifically with the [rails-api][rails-api] in mind; however, you can use SDC wherever you would use simple_command commands.
 
 ## Update as of Version 1.2.1
+
 ### Custom Commands
-SCD now allows you to execute _custom commands_ (i.e. classes that do not prepend the _SimpleCommand_ module) by setting `Configuration#allow_custom_commands = true` (see the __Custom Commands__ section below for details).
+
+SCD now allows you to execute _custom commands_ (i.e. classes that do not prepend the _SimpleCommand_ module) by setting `Configuration#allow_custom_commands = true` (see the **Custom Commands** section below for details).
 
 ## Example
-The below example is from a `rails-api` API that uses token-based authentication and services two mobile applications, identified as *__my_app1__* and *__my_app2__*, in this example.
+
+The below example is from a `rails-api` API that uses token-based authentication and services two mobile applications, identified as _**my_app1**_ and _**my_app2**_, in this example.
 
 This example assumes the following:
 
-* `application_controller` is a base class, inherited by all other controllers. The `#authenticate_request` method is called for every request in order to make sure the request is authorized (`before_action :authenticate_request`).
-* `request.headers` will contain the authorization token to authorize all requests (`request.headers["Authorization"]`)
-* This application uses the following folder structure to manage its _simple_command_ commands:
+- `application_controller` is a base class, inherited by all other controllers. The `#authenticate_request` method is called for every request in order to make sure the request is authorized (`before_action :authenticate_request`).
+- `request.headers` will contain the authorization token to authorize all requests (`request.headers["Authorization"]`)
+- This application uses the following folder structure to manage its _simple_command_ commands:
 
 ![N|Solid](https://cldup.com/1UeyWzOLic.png)
 
-Command classes (and the modules they reside under) are named *__according to their file name and respective location within the above folder structure__*; for example, the command class defined in the `/api/my_app1/v1/authenticate_request.rb` file would be defined in this manner:
+Command classes (and the modules they reside under) are named _**according to their file name and respective location within the above folder structure**_; for example, the command class defined in the `/api/my_app1/v1/authenticate_request.rb` file would be defined in this manner:
 
 ```ruby
 # /api/my_app1/v1/authenticate_request.rb
@@ -57,17 +62,15 @@ module Api
 end
 ```
 
-The __routes used in this example__, conform to the following format: `"/api/[app_name]/[app_version]/[controller]"` where `[app_name]` = the _application name_,`[app_version]` = the _application version_, and `[controller]` = the _controller_; therefore, running `$ rake routes` for this example would output the following sample route information:
+The **routes used in this example**, conform to the following format: `"/api/[app_name]/[app_version]/[controller]"` where `[app_name]` = the _application name_,`[app_version]` = the _application version_, and `[controller]` = the _controller_; therefore, running `$ rake routes` for this example would output the following sample route information:
 
-
-| Prefix        | Verb | URI Pattern | Controller#Action |
-|-------------:|:-------------|:------------------|:------------------|
+|                           Prefix | Verb  | URI Pattern                                 | Controller#Action                    |
+| -------------------------------: | :---- | :------------------------------------------ | :----------------------------------- |
 | api_my_app1_v1_user_authenticate | POST  | /api/my_app1/v1/user/authenticate(.:format) | api/my_app1/v1/authentication#create |
 | api_my_app1_v2_user_authenticate | POST  | /api/my_app1/v2/user/authenticate(.:format) | api/my_app1/v2/authentication#create |
 | api_my_app2_v1_user_authenticate | POST  | /api/my_app2/v1/user/authenticate(.:format) | api/my_app2/v1/authentication#create |
-| api_my_app2_v2_user              | PATCH | /api/my_app2/v2/users/:id(.:format)         | api/my_app2/v2/users#update |
-|                                  | PUT   | /api/my_app2/v2/users/:id(.:format)         | api/my_app2/v2/users#update |
-
+|              api_my_app2_v2_user | PATCH | /api/my_app2/v2/users/:id(.:format)         | api/my_app2/v2/users#update          |
+|                                  | PUT   | /api/my_app2/v2/users/:id(.:format)         | api/my_app2/v2/users#update          |
 
 ### Request Authentication Code Snippet
 
@@ -186,16 +189,18 @@ end
 
 ## Custom Commands
 
-As of __Version 1.2.1__ simple_command_dispatcher (SCD) allows you to execute _custom commands_ (i.e. classes that do not prepend the _SimpleCommand_ module) by setting `Configuration#allow_custom_commands = true`.
+As of **Version 1.2.1** simple*command_dispatcher (SCD) allows you to execute \_custom commands* (i.e. classes that do not prepend the _SimpleCommand_ module) by setting `Configuration#allow_custom_commands = true`.
 
 In order to execute _custom commands_, there are three (3) requirements:
-   1. Create a _custom command_. Your _custom command_ class must expose a public `::call` class method.
-   2. Set the `Configuration#allow_custom_commands` property to `true`.
-   3. Execute your _custom command_ by calling the `::call` class method.
+
+1.  Create a _custom command_. Your _custom command_ class must expose a public `::call` class method.
+2.  Set the `Configuration#allow_custom_commands` property to `true`.
+3.  Execute your _custom command_ by calling the `::call` class method.
 
 ### Custom Command Example
 
 #### 1. Create a Custom Command
+
 ```ruby
 # /api/my_app/v1/custom_command.rb
 
@@ -204,7 +209,7 @@ module Api
          module V1
 
             # This is a custom command that does not prepend SimpleCommand.
-            class CustomCommand
+            class GoodCommandA
 
                def self.call(*args)
                   command = self.new(*args)
@@ -238,7 +243,9 @@ module Api
    end
 end
 ```
+
 #### 2. Set the `Configuration#allow_custom_commands` property to `true`
+
 ```ruby
 # In your rails, rails-api app, etc...
 # /config/initializers/simple_command_dispatcher.rb
@@ -249,7 +256,9 @@ end
 ```
 
 #### 3. Execute your _Custom Command_
-Executing your _custom command_ is no different than executing a __SimpleCommand__ command with the exception that you must properly handle the return object that results from calling your _custom command_; being a _custom command_, there is no guarantee that the return object will be the command object as is the case when calling a SimpleCommand command.
+
+Executing your _custom command_ is no different than executing a **SimpleCommand** command with the exception that you must properly handle the return object that results from calling your _custom command_; being a _custom command_, there is no guarantee that the return object will be the command object as is the case when calling a SimpleCommand command.
+
 ```ruby
 # /app/controllers/some_controller.rb
 
@@ -259,7 +268,7 @@ class SomeController < ApplicationController::API
    public
 
    def some_api
-      success = SimpleCommand::Dispatcher.call(:CustomCommand, get_command_path, { camelize: true}, request.headers)
+      success = SimpleCommand::Dispatcher.call(:GoodCommandA, get_command_path, { camelize: true}, request.headers)
       if success
          # Do something...
       else
@@ -299,10 +308,9 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/gangelo/simple_command_dispatcher. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
-
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
-   [simple-command]: <https://rubygems.org/gems/simple_command>
-   [rails-api]: <https://rubygems.org/gems/rails-api>
+[simple-command]: https://rubygems.org/gems/simple_command
+[rails-api]: https://rubygems.org/gems/rails-api

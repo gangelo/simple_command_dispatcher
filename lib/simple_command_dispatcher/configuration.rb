@@ -14,20 +14,10 @@ module SimpleCommand
     #    end
     #
     class Configuration
-      # Gets/sets the *allow_custom_commands* configuration setting (defaults to false).
-      # If this setting is set to *false*, only command classes that prepend the *SimpleCommand* module
-      # will be considered acceptable to run, all other command classes will fail to run. If this
-      # setting is set to *true*, any command class will be considered acceptable to run, regardless of
-      # whether or not the class prepends the *SimpleCommand* module.
-      #
-      # For information about the simple_command gem, visit {https://rubygems.org/gems/simple_command}
-      #
-      # @return [Boolean] the value.
-      #
-      attr_accessor :allow_custom_commands
+      # TODO: Add configuration options here.
+      # attr_accessor :some_config_option
 
       def initialize
-        # The default is to use any command that exposes a ::call class method.
         reset
       end
 
@@ -36,7 +26,8 @@ module SimpleCommand
       # @return [nil] returns nil.
       #
       def reset
-        @allow_custom_commands = false
+        # TODO: Reset configuration to default values here.
+        # @some_config_option = false
         nil
       end
     end
