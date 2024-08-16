@@ -33,9 +33,9 @@ GEM
     json (2.7.2)
     language_server-protocol (3.17.0.3)
     method_source (1.1.0)
-    minitest (5.24.1)
+    minitest (5.25.1)
     mutex_m (0.2.0)
-    parallel (1.26.2)
+    parallel (1.26.3)
     parser (3.3.4.2)
       ast (~> 2.4.1)
       racc
@@ -45,13 +45,9 @@ GEM
     pry-byebug (3.10.1)
       byebug (~> 11.0)
       pry (>= 0.13, < 0.15)
-    psych (5.1.2)
-      stringio
     racc (1.8.1)
     rainbow (3.1.1)
     rake (13.2.1)
-    rdoc (6.7.0)
-      psych (>= 4.0.0)
     regexp_parser (2.9.2)
     rexml (3.3.5)
       strscan
@@ -93,12 +89,10 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
-    stringio (3.1.1)
     strscan (3.1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.5.0)
-    yard (0.9.36)
 
 PLATFORMS
   arm64-darwin-22
@@ -113,14 +107,12 @@ DEPENDENCIES
   colorize (>= 0.8.1, < 2.0)
   pry-byebug (>= 3.9, < 4.0)
   rake (>= 13.0, < 14.0)
-  rdoc (>= 6.4, < 7.0)
   rspec (>= 3.10, < 4.0)
   rubocop (>= 1.62, < 2.0)
   rubocop-performance (>= 1.20, < 2.0)
   rubocop-rspec (~> 3.0, >= 3.0.3)
   simple_command_dispatcher!
   simplecov (>= 0.22.0, < 1.0)
-  yard (>= 0.9.28, < 1.0)
 
 BUNDLED WITH
    2.5.6
