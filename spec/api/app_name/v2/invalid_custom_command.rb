@@ -4,7 +4,7 @@ module Api
   module AppName
     module V2
       class InvalidCustomCommand
-        # This is a custom command that oess not prepend SimpleCommand.
+        # This is a custom command that does not prepend SimpleCommand.
 
         def call(params = {})
           @param1 = params[:param1]

@@ -67,7 +67,7 @@ module SimpleCommand
       #  SimpleCommand::Dispatcher.call(:Authenticate, ['Api::Auth::JazzMeUp', :V1],
       #     'jazz_me@gmail.com', 'JazzM3!') # => SimpleCommand result
       #
-      def call(command, command_namespace = {}, options = {}, *request_params)
+      def call(command:, command_namespace: {}, request_params: nil, options: {})
         # Create a constantized class from our command and command_namespace...
         command_class_constant = to_constantized_class(command, command_namespace, options)
 
@@ -82,7 +82,15 @@ module SimpleCommand
         if valid_command?(command_class_constant)
           # We know we have a valid SimpleCommand; all we need to do is call #call,
           # pass the command_parameter variable arguments to the call, and return the results.
-          run_command(command_class_constant, request_params)
+
+          # Determine the appropriate method of passing parameters based on their type
+          if request_params.is_a?(Hash)
+            run_command(command_class_constant, **request_params)
+          elsif request_params.is_a?(Array)
+            run_command(command_class_constant, *request_params)
+          else
+            run_command(command_class_constant, request_params)
+          end
         else
           raise NameError, "Class \"#{command_class_constant}\" does not respond_to? method ::call."
         end
@@ -126,10 +134,12 @@ module SimpleCommand
       # @return [Object] returns the object (if any) that results from calling the command.
       #
       # @!visibility public
-      def run_command(klass_constant, parameters)
-        klass_constant.call(*parameters)
-        # rescue NameError
-        #   raise NameError.new("Class \"#{klass_constant}\" does not respond_to? method ::call.")
+      def run_command(klass_constant, *parameters, **keyword_parameters)
+        if keyword_parameters.empty?
+          klass_constant.call(*parameters)
+        else
+          klass_constant.call(*parameters, **keyword_parameters)
+        end
       end
     end
   end
