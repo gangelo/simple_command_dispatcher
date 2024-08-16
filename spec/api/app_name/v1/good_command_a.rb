@@ -4,7 +4,7 @@ module Api
   module AppName
     module V1
       # This is a custom command that does not prepend SimpleCommand.
-      class CustomCommand
+      class GoodCommandA
         def self.call(*args)
           command = new(*args)
           if command

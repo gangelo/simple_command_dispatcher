@@ -4,8 +4,7 @@ module Api
   module AppName
     module V1
       class InvalidCommand
-        # This is a custom command that does not prepend SimpleCommand, but has call method.
-        # This command should be invalid if Configuration#allow_custom_commands = false.
+        # This is a command that does not have class method .call defined
 
         def initialize(params = {})
           @param1 = params[:param1]
