@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CommandCallable
   module Utils
     # Borrowed from active_support/core_ext/array/wrap
