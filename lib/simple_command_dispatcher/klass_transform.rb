@@ -97,28 +97,29 @@ module SimpleCommand
       #   to_modules_string({ api: :api, app_name: :app_name, api_version: :v1 }, { module_titleize: true })
       #      # => "Api::AppName::V1::"
       #
-      def to_modules_string(klass_modules = [], options = {}) # rubocop:disable Metrics/CyclomaticComplexity
+      def to_modules_string(klass_modules = [], options = {})
         klass_modules = validate_klass_modules!(klass_modules)
         return '' if klass_modules.blank?
 
         options = ensure_options(options)
 
-        klass_modules_string = ''
-        case klass_modules
-        when String
-          klass_modules_string = klass_modules
-        when Array
-          klass_modules_string = klass_modules.join('::')
-        when Hash
-          klass_modules.to_a.each_with_index.map do |value, index|
-            klass_modules_string = index.zero? ? value[1].to_s : "#{klass_modules_string}::#{value[1]}"
-          end
-        end
+        klass_modules_string = to_klass_modules_string(klass_modules)
         klass_modules_string = klass_modules_string.split('::').map(&:titleize).join('::') if options[:module_titleize]
         klass_modules_string = camelize(klass_modules_string) if options[:module_camelize]
         klass_modules_string = klass_modules_string.trim_all
         klass_modules_string = "#{klass_modules_string}::" unless klass_modules_string.empty?
         klass_modules_string
+      end
+
+      def to_klass_modules_string(klass_modules)
+        case klass_modules
+        when String
+          klass_modules
+        when Array
+          klass_modules.join('::')
+        when Hash
+          klass_modules.values.join('::')
+        end
       end
 
       # Returns the klass as a string after transformations have been applied.
