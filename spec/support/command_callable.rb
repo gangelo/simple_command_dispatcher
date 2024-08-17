@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'errors'
 require_relative 'utils'
 
@@ -15,7 +17,7 @@ module CommandCallable
   end
 
   def call
-    fail NotImplementedError unless defined?(super)
+    raise NotImplementedError unless defined?(super)
 
     @called = true
     @result = super
@@ -26,7 +28,7 @@ module CommandCallable
   def success?
     called? && !failure?
   end
-  alias_method :successful?, :success?
+  alias successful? success?
 
   def failure?
     called? && errors.any?

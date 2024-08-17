@@ -1,31 +1,21 @@
-# The behavior of RuboCop can be controlled via the .rubocop.yml
-# configuration file. It makes it possible to enable/disable
-# certain cops (checks) and to alter their behavior if they accept
-# any parameters. The file can be placed either in your home
-# directory or in some project directory.
-#
-# RuboCop will start looking for the configuration file in the directory
-# where the inspected file is and continue its way up to the root directory.
-#
-# See https://docs.rubocop.org/rubocop/configuration
 require:
-#  - rubocop-performance
-#  - rubocop-rspec
+  - rubocop-performance
+  - rubocop-rspec
 
 AllCops:
-  SuggestExtensions: false
   TargetRubyVersion: 3.0.1
   NewCops: enable
   Exclude:
-    - '.git/**/*'
-    - '.idea/**/*'
-    - 'init/*'
-    - 'Rakefile'
-    - '*.gemspec'
-    - 'spec/**/*'
-    - 'vendor/**/*'
-    - 'lib/tasks/**/*'
-    - 'scratch.rb'
+    - "*.gemspec"
+    - ".git/**/*"
+    - ".idea/**/*"
+    - "Rakefile"
+    - "init/*"
+    - "lib/tasks/*"
+    - "scratch*.rb"
+    - "snippets*.rb"
+    - "vendor/**/*"
+    - "spec/**/*"
 
 # Align the elements of a hash literal if they span more than one line.
 Layout/HashAlignment:
@@ -90,7 +80,7 @@ Layout/MultilineMethodCallIndentation:
 # Allow `debug` in tasks for now
 Lint/Debugger:
   Exclude:
-    - 'RakeFile'
+    - "RakeFile"
 
 # A calculated magnitude based on number of assignments, branches, and
 #   conditions.
@@ -102,9 +92,9 @@ Metrics/AbcSize:
 # Avoid long blocks with many lines.
 Metrics/BlockLength:
   Exclude:
-    - 'RakeFile'
-    - 'db/seeds.rb'
-    - 'spec/**/*.rb'
+    - "RakeFile"
+    - "db/seeds.rb"
+    - "spec/**/*.rb"
 
 # Avoid classes longer than 100 lines of code.
 # NOTE: This is temporarily disabled until we can eliminate existing Rubocop
@@ -112,7 +102,7 @@ Metrics/BlockLength:
 Metrics/ClassLength:
   Max: 200
   Exclude:
-    - 'spec/**/*.rb'
+    - "spec/**/*.rb"
 
 # A complexity metric that is strongly correlated to the number of test cases
 #   needed to validate a method.
@@ -122,25 +112,30 @@ Metrics/CyclomaticComplexity:
 # Limit lines to 80 characters
 Layout/LineLength:
   Exclude:
-    - 'RakeFile'
-    - 'spec/**/*.rb'
+    - "RakeFile"
+    - "spec/**/*.rb"
 
 # Avoid methods longer than 15 lines of code.
 Metrics/MethodLength:
   Max: 20
-
+  AllowedMethods:
+    - swagger_path
+    - operation
 
 # A complexity metric geared towards measuring complexity for a human reader.
 Metrics/PerceivedComplexity:
   Max: 10
+
+NestedGroups:
+  Max: 4
 
 # Naming/FileName:
 #  Exclude:
 #    - 'lib/file.rb'
 
 # Allow `downcase == ` instead of forcing `casecmp`
-#Performance/Casecmp:
-#  Enabled: false
+Performance/Casecmp:
+  Enabled: false
 
 # Require children definitions to be nested or compact in classes and modules
 Style/ClassAndModuleChildren:
@@ -166,7 +161,7 @@ Style/GuardClause:
 
 Style/MixinUsage:
   Exclude:
-    - 'RakeFile'
+    - "RakeFile"
 
 # Avoid multi-line method signatures.
 Style/MultilineMethodSignature:
@@ -195,3 +190,15 @@ Style/StringMethods:
 # Checks for use of parentheses around ternary conditions.
 Style/TernaryParentheses:
   EnforcedStyle: require_parentheses_when_complex
+
+RSpec/NotToNot:
+  EnforcedStyle: to_not
+  SupportedStyles:
+    - to_not
+    - not_to
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 6

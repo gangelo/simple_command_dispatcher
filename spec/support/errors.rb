@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CommandCallable
   class NotImplementedError < ::StandardError; end
 
@@ -25,11 +27,12 @@ module CommandCallable
     end
 
     private
+
     def full_message(attribute, message)
       return message if attribute == :base
-      attr_name = attribute.to_s.tr('.', '_').capitalize
-      "%s %s" % [attr_name, message]
-    end
 
+      attr_name = attribute.to_s.tr('.', '_').capitalize
+      format('%s %s', attr_name, message)
+    end
   end
 end
