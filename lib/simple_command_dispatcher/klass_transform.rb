@@ -6,8 +6,17 @@ require_relative 'errors'
 # rubocop:disable Style/OptionHash
 module SimpleCommand
   module Dispatcher
-    # Handles class and module transformations.
-    module KlassTransform
+    # Handles class and module transformations and instantiation.
+    class KlassTransform
+      def initialize(klass, klass_modules = [], options = {})
+        @klass = klass
+        @klass_modules = klass_modules
+        @options = ensure_options(options)
+
+        validate_klass!
+        validate_klass_modules!
+      end
+
       # Returns a constantized class (as a Class constant), given the klass and klass_modules.
       #
       # @param klass [Symbol or String] the class name.
@@ -33,22 +42,26 @@ module SimpleCommand
       #
       # @example
       #
-      #   to_constantized_class("Authenticate", "Api") # => Api::Authenticate
-      #   to_constantized_class(:Authenticate, [:Api, :AppName, :V1]) # => Api::AppName::V1::Authenticate
-      #   to_constantized_class(:Authenticate, { :api :Api, app_name: :AppName, api_version: :V2 })
+      #   to_class("Authenticate", "Api") # => Api::Authenticate
+      #   to_class(:Authenticate, [:Api, :AppName, :V1]) # => Api::AppName::V1::Authenticate
+      #   to_class(:Authenticate, { :api :Api, app_name: :AppName, api_version: :V2 })
       #     # => Api::AppName::V2::Authenticate
-      #   to_constantized_class("authenticate", { :api :api, app_name: :app_name, api_version: :v1 },
+      #   to_class("authenticate", { :api :api, app_name: :app_name, api_version: :v1 },
       #     { class_titleize: true, module_titleize: true }) # => Api::AppName::V1::Authenticate
       #
-      def to_constantized_class(klass, klass_modules = [], options = {})
-        constantized_class_string = to_constantized_class_string(klass, klass_modules, options)
+      def to_class
+        qualified_class_string = to_qualified_class_string(klass, klass_modules)
 
         begin
-          constantized_class_string.constantize
+          qualified_class_string.constantize
         rescue StandardError => e
-          raise InvalidClassConstantError.new(constantized_class_string, e.message)
+          raise InvalidClassConstantError.new(qualified_class_string, e.message)
         end
       end
+
+      private
+
+      attr_accessor :klass, :klass_modules, :options
 
       # Returns a fully-qualified constantized class (as a string), given the klass and klass_modules.
       #
@@ -64,17 +77,16 @@ module SimpleCommand
       #
       # @example
       #
-      #   to_constantized_class_string("Authenticate", "Api") # => "Api::Authenticate"
-      #   to_constantized_class_string(:Authenticate, [:Api, :AppName, :V1]) # => "Api::AppName::V1::Authenticate"
-      #   to_constantized_class_string(:Authenticate, { :api :Api, app_name: :AppName, api_version: :V2 })
+      #   to_qualified_class_string("Authenticate", "Api") # => "Api::Authenticate"
+      #   to_qualified_class_string(:Authenticate, [:Api, :AppName, :V1]) # => "Api::AppName::V1::Authenticate"
+      #   to_qualified_class_string(:Authenticate, { :api :Api, app_name: :AppName, api_version: :V2 })
       #      # => "Api::AppName::V2::Authenticate"
-      #   to_constantized_class_string("authenticate", { :api :api, app_name: :app_name, api_version: :v1 },
+      #   to_qualified_class_string("authenticate", { :api :api, app_name: :app_name, api_version: :v1 },
       #      { class_titleize: true, module_titleize: true }) # => "Api::AppName::V1::Authenticate"
       #
-      def to_constantized_class_string(klass, klass_modules = [], options = {})
-        options = ensure_options(options)
-        klass_modules = to_modules_string(klass_modules, options)
-        klass_string = to_class_string(klass, options)
+      def to_qualified_class_string(klass, klass_modules)
+        klass_modules = to_modules_string(klass_modules)
+        klass_string = to_class_string(klass)
         "#{klass_modules}#{klass_string}"
       end
 
@@ -97,13 +109,10 @@ module SimpleCommand
       #   to_modules_string({ api: :api, app_name: :app_name, api_version: :v1 }, { module_titleize: true })
       #      # => "Api::AppName::V1::"
       #
-      def to_modules_string(klass_modules = [], options = {})
-        klass_modules = validate_klass_modules!(klass_modules)
+      def to_modules_string(klass_modules)
         return '' if klass_modules.blank?
 
-        options = ensure_options(options)
-
-        klass_modules_string = to_klass_modules_string(klass_modules)
+        klass_modules_string = to_klass_modules_string
         klass_modules_string = klass_modules_string.split('::').map(&:titleize).join('::') if options[:module_titleize]
         klass_modules_string = camelize(klass_modules_string) if options[:module_camelize]
         klass_modules_string = klass_modules_string.trim_all
@@ -111,7 +120,7 @@ module SimpleCommand
         klass_modules_string
       end
 
-      def to_klass_modules_string(klass_modules)
+      def to_klass_modules_string
         case klass_modules
         when String
           klass_modules
@@ -137,8 +146,7 @@ module SimpleCommand
       #   to_class_string(:MyClass) # => "MyClass"
       #   to_class_string(:myClass, { class_titleize: true }) # => "MyClass"
       #
-      def to_class_string(klass, options = {})
-        klass = validate_klass(klass, options)
+      def to_class_string(klass)
         klass = klass.titleize if options[:class_titleize]
         klass = camelize(klass) if options[:class_camelize]
         klass
@@ -159,8 +167,6 @@ module SimpleCommand
         token.titlecase.camelize.sub(/^:*/, '').trim_all unless token.empty?
       end
 
-      private
-
       # @!visibility public
       #
       # Ensures options are initialized and valid before accessing them.
@@ -178,7 +184,8 @@ module SimpleCommand
       # @return [Hash] the initialized, validated options.
       #
       def ensure_options(options)
-        options = {} unless options.instance_of? Hash
+        options = options.dup
+        options = {} unless options.instance_of?(Hash)
         options = { camelize: false, titleize: false, class_titleize: false, module_titleize: false,
                     class_camelize: false, module_camelize: false }.merge(options)
 
@@ -201,17 +208,17 @@ module SimpleCommand
       #
       # @example
       #
-      #   validate_klass(" My Class ") # => "MyClass"
-      #   validate_klass(:MyClass) # => "MyClass"
+      #   validate_klass!(" My Class ") # => "MyClass"
+      #   validate_klass!(:MyClass) # => "MyClass"
       #
-      def validate_klass(klass, _options)
+      def validate_klass!
         unless klass.is_a?(Symbol) || klass.is_a?(String)
           raise ArgumentError,
             'Class is not a String or Symbol. Class must equal the class name of the ' \
             'SimpleCommand or Command to call in the form of a String or Symbol.'
         end
 
-        klass = klass.to_s.strip
+        self.klass = klass.to_s.strip
 
         raise ArgumentError, 'Class is empty?' if klass.empty?
 
@@ -234,17 +241,15 @@ module SimpleCommand
       #   validate_klass_modules!(:Module) # => "Module"
       #   validate_klass_modules!("ModuleA::ModuleB") # => "ModuleA::ModuleB"
       #
-      def validate_klass_modules!(klass_modules)
+      def validate_klass_modules!
         return {} if klass_modules.blank?
 
-        unless valid_klass_modules_type?(klass_modules)
-          raise ArgumentError, 'Argument klass_modules is not a String, Hash or Array.'
-        end
+        raise ArgumentError, 'Argument klass_modules is not a String, Hash or Array.' unless valid_klass_modules_type?
 
         klass_modules
       end
 
-      def valid_klass_modules_type?(klass_modules)
+      def valid_klass_modules_type?
         klass_modules.instance_of?(String) || klass_modules.instance_of?(Hash) || klass_modules.instance_of?(Array)
       end
     end
