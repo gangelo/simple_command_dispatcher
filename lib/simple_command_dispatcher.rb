@@ -22,8 +22,6 @@ module SimpleCommand
   #
   module Dispatcher
     class << self
-      include KlassTransform
-
       # Calls a *Command* given the command name, the modules the command belongs to
       # and the parameters to pass to the command.
       #
@@ -69,7 +67,7 @@ module SimpleCommand
       #
       def call(command:, command_namespace: {}, request_params: nil, options: {})
         # Create a constantized class from our command and command_namespace...
-        constantized_class_object = to_constantized_class(command, command_namespace, options)
+        constantized_class_object = KlassTransform.new(command, command_namespace, options).to_class
         validate_command!(constantized_class_object)
 
         # We know we have a valid command class object if we get here. All we need to do is call the .call
