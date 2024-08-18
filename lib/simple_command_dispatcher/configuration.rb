@@ -1,35 +1,39 @@
 # frozen_string_literal: true
 
-module SimpleCommand
-  module Dispatcher
-    # Gem configuration settings class. Use this class to configure this gem.
-    #
-    # To configure this gem in your application, simply add the following code in your application and set the
-    # appropriate configuration settings.
-    #
-    # @example
-    #
-    #    SimpleCommand::Dispatcher.configure do |config|
-    #       config.allow_custom_commands = true
-    #    end
-    #
-    class Configuration
-      # TODO: Add configuration options here.
-      # attr_accessor :some_config_option
+# This is the configuration for SimpleCommandDispatcher.
+module SimpleCommandDispatcher
+  class << self
+    attr_reader :configuration
 
-      def initialize
-        reset
-      end
+    # Example:
+    #
+    # SimpleCommandDispatcher.configure do |config|
+    #  config.some_option = 'some value'
+    # end
+    def configure
+      self.configuration ||= Configuration.new
 
-      # Resets the configuration to use the default values.
-      #
-      # @return [nil] returns nil.
-      #
-      def reset
-        # TODO: Reset configuration to default values here.
-        # @some_config_option = false
-        nil
-      end
+      yield(configuration) if block_given?
+
+      configuration
+    end
+
+    private
+
+    attr_writer :configuration
+  end
+
+  # This class encapsulates the configuration properties for this gem and
+  # provides methods and attributes that allow for management of the same.
+  class Configuration
+    # TODO: Add attr_xxx here
+
+    def initialize
+      reset
+    end
+
+    def reset
+      # TODO: Reset our attributes here e.g. @attr = nil
     end
   end
 end

@@ -17,4 +17,5 @@
 *.code-workspace
 
 scratch.rb
+snippets.rb
 readme.txt

@@ -2,7 +2,7 @@
 
 require_relative '../support/command_callable'
 
-class NoQualifiersCommand
+class NoNamespacesCommand
   prepend CommandCallable
 
   def initialize(params = {})

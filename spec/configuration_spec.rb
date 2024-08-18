@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SimpleCommand::Dispatcher do
+describe SimpleCommandDispatcher do
   describe '.configure' do
     it 'does nothing at the moment' do
       expect do
