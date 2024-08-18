@@ -2,61 +2,92 @@
 
 require 'spec_helper'
 
-RSpec.describe SimpleCommand::Dispatcher, type: :module do
+RSpec.describe SimpleCommandDispatcher, type: :module do
   it 'has a version number' do
-    expect(SimpleCommand::Dispatcher::VERSION).to_not be_nil
+    expect(SimpleCommandDispatcher::VERSION).to_not be_nil
   end
 
   describe '.call' do
-    context 'when keyword argument :command is an empty string' do
-      it 'raises an error' do
+    context 'when keyword argument :command is blank?' do
+      it 'raises an ArgumentError when an empty string' do
         expect do
           described_class.call(
             command: '',
             command_namespace: { api: :Api, app_name: :AppName, api_version: :V1 },
             request_params: { param1: :param1, param2: :param2, param3: :param3 }
           )
-        end.to raise_error(ArgumentError, 'Class is empty?')
+        end.to raise_error(ArgumentError, 'command is empty?')
       end
-    end
 
-    context 'when keyword argument :command is nil' do
-      it 'raises an error' do
+      it 'raises an ArgumentError when nil' do
         expect do
           described_class.call(
             command: nil,
             command_namespace: { api: :Api, app_name: :AppName, api_version: :V1 },
             request_params: { param1: :param1, param2: :param2, param3: :param3 }
           )
-        end.to raise_error(ArgumentError, /Class is not a String or Symbol/)
+        end.to raise_error(ArgumentError, /command is not a String or Symbol/)
       end
     end
 
     context 'when keyword argument :command is not a valid command' do
-      it 'raises a InvalidClassConstantError error' do
+      it 'raises a Errors::InvalidClassConstantError error' do
         expect do
           described_class.call(
             command: :BadCommand,
             command_namespace: { api: :Api, app_name: :AppName, api_version: :V1 },
             request_params: { param1: :param1, param2: :param2, param3: :param3 }
           )
-        end.to raise_error(SimpleCommand::Dispatcher::InvalidClassConstantError, /"Api::AppName::V1::BadCommand" is not a valid class constant/)
+        end.to raise_error(SimpleCommandDispatcher::Errors::InvalidClassConstantError, /"Api::AppName::V1::BadCommand" is not a valid class constant/)
+      end
+    end
+
+    context 'when keyword argument :command_namespace is blank?' do
+      it 'does not raise an error when an empty string' do
+        expect do
+          described_class.call(
+            command: :NoNamespacesCommand,
+            command_namespace: '',
+            request_params: { param1: :param1, param2: :param2, param3: :param3 }
+          )
+        end.to_not raise_error
+      end
+
+      it 'does not raise an error when nil' do
+        expect do
+          described_class.call(
+            command: :NoNamespacesCommand,
+            command_namespace: nil,
+            request_params: { param1: :param1, param2: :param2, param3: :param3 }
+          )
+        end.to_not raise_error
+      end
+    end
+
+    context 'when keyword argument :command_namespace is not a String, Hash or Array' do
+      it 'raises an Argument error' do
+        expect do
+          described_class.call(
+            command: :GoodCommandB,
+            command_namespace: :bad_namespace
+          )
+        end.to raise_error(ArgumentError, 'Argument command_namespace is not a String, Hash or Array.')
       end
     end
 
     context 'when keyword argument :command_namespace is not a valid command' do
-      it 'raises a InvalidClassConstantError error' do
+      it 'raises a Errors::InvalidClassConstantError error' do
         expect do
           described_class.call(
             command: :GoodCommandB,
             command_namespace: %i[Api BadAppName V1],
             request_params: { param1: :param1, param2: :param2, param3: :param3 }
           )
-        end.to raise_error(SimpleCommand::Dispatcher::InvalidClassConstantError, /"Api::BadAppName::V1::GoodCommandB" is not a valid class constant/)
+        end.to raise_error(SimpleCommandDispatcher::Errors::InvalidClassConstantError, /"Api::BadAppName::V1::GoodCommandB" is not a valid class constant/)
       end
     end
 
-    context 'when the arguments are valid' do
+    context 'when all the keyword arguments are valid' do
       it 'does not raise an error' do
         expect do
           described_class.call(
@@ -117,54 +148,47 @@ RSpec.describe SimpleCommand::Dispatcher, type: :module do
 
     it 'works with commands that are not embedded in any modules' do
       command = described_class.call(
-        command: :NoQualifiersCommand,
+        command: :NoNamespacesCommand,
         request_params: { param1: :param1, param2: :param2, param3: :param3 }
       )
       expect(command.success?).to be(true)
     end
   end
 
-  context 'options Parameter' do
-    it 'works if command modules are lower-case and module_titleize option is set to true' do
-      command = described_class.call(
-        command: :GoodCommandB,
-        command_namespace: [:api, 'appName', :v1],
-        request_params: { param1: :param1, param2: :param2, param3: :param3 },
-        options: { module_titleize: true }
-      )
-      expect(command.success?).to be(true)
-    end
+  it 'works if command modules are lower-case' do
+    command = described_class.call(
+      command: :GoodCommandB,
+      command_namespace: [:api, 'appName', :v1],
+      request_params: { param1: :param1, param2: :param2, param3: :param3 }
+    )
+    expect(command.success?).to be(true)
+  end
 
-    it 'works if command module is a route and camelize option is set to true' do
-      command = described_class.call(
-        command: 'good_command_b',
-        command_namespace: '/api/app_name/v1',
-        request_params: { param1: :param1, param2: :param2, param3: :param3 },
-        options: { camelize: true }
-      )
-      expect(command.success?).to be(true)
-    end
+  it 'works if command is a route' do
+    command = described_class.call(
+      command: '/api/app_name/v1/good_command_b',
+      request_params: { param1: :param1, param2: :param2, param3: :param3 }
+    )
+    expect(command.success?).to be(true)
+  end
 
-    it 'works if command is a route and camelize option is set to true' do
-      command = described_class.call(
-        command: '/api/app_name/v1/good_command_b',
-        command_namespace: '',
-        request_params: { param1: :param1, param2: :param2, param3: :param3 },
-        options: { camelize: true }
-      )
-      expect(command.success?).to be(true)
-    end
+  it 'works if command namespace is a route' do
+    command = described_class.call(
+      command: 'good_command_b',
+      command_namespace: '/api/app_name/v1',
+      request_params: { param1: :param1, param2: :param2, param3: :param3 }
+    )
+    expect(command.success?).to be(true)
+  end
 
-    it 'works if command is a route that has a format associated with it and camelize option is set to true' do
-      route = '/api/app_name/v1/something_else.json'.split('/').slice(0, 4).join('/')
-      command = described_class.call(
-        command: :GoodCommandB,
-        command_namespace: route,
-        request_params: { param1: :param1, param2: :param2, param3: :param3 },
-        options: { camelize: true }
-      )
-      expect(command.success?).to be(true)
-    end
+  it 'works if command_namespace is a route that has a format associated with it' do
+    route = '/api/app_name/v1/something_else.json'.split('/').slice(0, 4).join('/')
+    command = described_class.call(
+      command: :GoodCommandB,
+      command_namespace: route,
+      request_params: { param1: :param1, param2: :param2, param3: :param3 }
+    )
+    expect(command.success?).to be(true)
   end
 
   context 'Commands' do
@@ -181,26 +205,47 @@ RSpec.describe SimpleCommand::Dispatcher, type: :module do
     end
 
     context 'when the command evaluates to an invalid command' do
-      it "raises a InvalidClassConstantError if doesn't respond_to? class method .call" do
+      it "raises a Errors::InvalidClassConstantError if doesn't respond_to? class method .call" do
         expect do
           described_class.call(
             command: :InvalidCommand,
             command_namespace: { api: :Api, app_name: :AppName, api_version: :V2 },
             request_params: { param1: :param1, param2: :param2, param3: :param3 }
           )
-        end.to raise_error(SimpleCommand::Dispatcher::RequiredClassMethodMissingError, 'Class "Api::AppName::V2::InvalidCommand" does not respond_to? class method "call".')
+        end.to raise_error(SimpleCommandDispatcher::Errors::RequiredClassMethodMissingError, 'Class "Api::AppName::V2::InvalidCommand" does not respond_to? class method "call".')
       end
     end
 
     context 'when the command does not define class method .call' do
-      it 'raises a RequiredClassMethodMissingError' do
+      it 'raises a Errors::RequiredClassMethodMissingError' do
         expect do
           described_class.call(
             command: :InvalidCommand,
             command_namespace: { api: :Api, app_name: :AppName, api_version: :V2 },
             request_params: { param1: :param1, param2: :param2, param3: :param3 }
           )
-        end.to raise_error(SimpleCommand::Dispatcher::RequiredClassMethodMissingError, 'Class "Api::AppName::V2::InvalidCommand" does not respond_to? class method "call".')
+        end.to raise_error(SimpleCommandDispatcher::Errors::RequiredClassMethodMissingError, 'Class "Api::AppName::V2::InvalidCommand" does not respond_to? class method "call".')
+      end
+    end
+
+    context 'when the command has no request_params' do
+      it 'does not raise an error' do
+        expect do
+          described_class.call(
+            command: :NoNamespacesNoParamsCommand
+          )
+        end.to_not raise_error
+      end
+    end
+
+    context 'when the command has one request_params' do
+      it 'does not raise an error' do
+        expect do
+          described_class.call(
+            command: :NoNamespacesOneParamCommand,
+            request_params: :param
+          )
+        end.to_not raise_error
       end
     end
   end

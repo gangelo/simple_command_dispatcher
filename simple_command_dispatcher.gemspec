@@ -6,7 +6,7 @@ require 'simple_command_dispatcher/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'simple_command_dispatcher'
-  spec.version       = SimpleCommand::Dispatcher::VERSION
+  spec.version       = SimpleCommandDispatcher::VERSION
   spec.authors       = ['Gene M. Angelo, Jr.']
   spec.email         = ['public.gma@gmail.com']
 
@@ -35,7 +35,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version = Gem::Requirement.new('>= 3.0.1', '< 4.0')
+  spec.required_ruby_version = Gem::Requirement.new('>= 3.1.6', '< 4.0')
 
   spec.add_runtime_dependency 'activesupport', '>= 7.0.8', '< 8.0'
 end

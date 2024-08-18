@@ -1,9 +1,10 @@
 require:
   - rubocop-performance
   - rubocop-rspec
+  - rubocop-rake
 
 AllCops:
-  TargetRubyVersion: 3.0.1
+  TargetRubyVersion: 3.1.6
   NewCops: enable
   Exclude:
     - "*.gemspec"
@@ -11,7 +12,7 @@ AllCops:
     - ".idea/**/*"
     - "Rakefile"
     - "init/*"
-    - "lib/tasks/*"
+    # - "lib/tasks/*"
     - "scratch*.rb"
     - "snippets*.rb"
     - "vendor/**/*"

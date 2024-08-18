@@ -13,6 +13,7 @@ group :development do
   gem 'pry-byebug', '>= 3.9', '< 4.0'
   gem 'rubocop', '>= 1.62', '< 2.0'
   gem 'rubocop-performance', '>= 1.20', '< 2.0'
+  gem 'rubocop-rake', '>= 0.6', '< 1.0'
   gem 'rubocop-rspec', '~> 3.0', '>= 3.0.3'
 end
 

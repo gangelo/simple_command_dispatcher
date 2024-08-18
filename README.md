@@ -139,7 +139,7 @@ end
 
 # Optionally set our configuration setting to allow
 # for custom command execution.
-SimpleCommand::Dispatcher.configure do |config|
+SimpleCommandDispatcher.configure do |config|
    config.allow_custom_commands = true
 end
 ```
@@ -177,7 +177,7 @@ class ApplicationController < ActionController::API
       # (e.g. request.headers, which contains ["Authorization"], out authorization token).
       # Consequently, the correlation between our routes and command class module structure
       # was no coincidence.
-      command = SimpleCommand::Dispatcher.call(:AuthenticateRequest, get_command_path, { camelize: true}, request.headers)
+      command = SimpleCommandDispatcher.call(:AuthenticateRequest, get_command_path, { camelize: true}, request.headers)
       if command.success?
          @current_user = command.result
       else
@@ -250,7 +250,7 @@ end
 # In your rails, rails-api app, etc...
 # /config/initializers/simple_command_dispatcher.rb
 
-SimpleCommand::Dispatcher.configure do |config|
+SimpleCommandDispatcher.configure do |config|
     config.allow_custom_commands = true
 end
 ```
@@ -268,7 +268,7 @@ class SomeController < ApplicationController::API
    public
 
    def some_api
-      success = SimpleCommand::Dispatcher.call(:GoodCommandA, get_command_path, { camelize: true}, request.headers)
+      success = SimpleCommandDispatcher.call(:GoodCommandA, get_command_path, { camelize: true}, request.headers)
       if success
          # Do something...
       else
