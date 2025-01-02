@@ -1,9 +1,9 @@
 pipeline {
-  agent { docker { image 'ruby:2.3.1' } }
+  agent { docker { image 'ruby:3.2.6' } }
   stages {
     stage('requirements') {
       steps {
-        sh 'gem install bundler -v 1.16.1'
+        sh 'gem install bundler -v 2.5.6'
       }
     }
     stage('build') {
