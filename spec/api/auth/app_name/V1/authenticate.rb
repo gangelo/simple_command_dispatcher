@@ -6,7 +6,6 @@ module Api
   module Auth
     module AppName
       module V1
-        # This is a custom command that does not prepend SimpleCommand.
         class Authenticate
           prepend CommandCallable
 
@@ -24,9 +23,7 @@ module Api
           attr_accessor :username, :password
 
           def execute
-            return true if username == :username && password == :password
-
-            false
+            username == :username && password == :password
           end
         end
       end

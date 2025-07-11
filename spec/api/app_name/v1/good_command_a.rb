@@ -5,7 +5,6 @@ require_relative '../../../support/command_callable'
 module Api
   module AppName
     module V1
-      # This is a custom command that does not prepend SimpleCommand.
       class GoodCommandA
         prepend CommandCallable
 
