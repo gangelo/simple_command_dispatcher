@@ -1,13 +1,13 @@
 # CHANGELOG
 
-## Version 4.0.0 - 2024-08-16
+## Version 4.0.0 - 2025-01-02
 
 - **Breaking Change**:
-  - Minimum ruby version changed from 3.0.1 to 3.2.6.
+  - Minimum ruby version changed from 3.0.1 to 3.1.0.
   - Remove dependency on `simple_command` gem.
   - Remove `allow_custom_commands` configuration option as it's unnecessary due to the aforementioned.
   - `SimpleCommandDispatcher.call` method signature changed to accept keyword arguments that are more descriptive: `command:`, `command_namespace:`, `request_params:` and `options:` respectively.
-  - Changed gem namespace from `SimpleCommandDispatcher` to `SimpleCommandDispatcher`.
+  - Combined gem namespaces from `SimpleCommand::Dispatcher` to `SimpleCommandDispatcher`.
   - `SimpleCommandDispatcher.call`: keyword argument `options:` has been removed (i.e. options `camelize`, `class_camelize`, `module_camelize`, `titleize`, `class_titleize`, `module_titleize` are unnecessary, as `camelize` is now called unconditionally on the `command` and `command_namespace`.
 
 ## Version 3.0.3 - 2024-08-03

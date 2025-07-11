@@ -12,13 +12,7 @@
 
 ## Overview
 
-**simple_command_dispatcher** (SCD) allows you to execute **simple_command** commands (and now _custom commands_ as of version 1.2.1) in a more dynamic way. If you are not familiar with the _simple_command_ gem, check it out [here][simple-command]. SCD was written specifically with the [rails-api][rails-api] in mind; however, you can use SDC wherever you would use simple_command commands.
-
-## Update as of Version 1.2.1
-
-### Custom Commands
-
-SCD now allows you to execute _custom commands_ (i.e. classes that do not prepend the _SimpleCommand_ module) by setting `Configuration#allow_custom_commands = true` (see the **Custom Commands** section below for details).
+**simple_command_dispatcher** (SCD) allows your rails or rails API application to _dynamically_ call backend command services, from your rails controller actions.
 
 ## Example
 
@@ -28,11 +22,11 @@ This example assumes the following:
 
 - `application_controller` is a base class, inherited by all other controllers. The `#authenticate_request` method is called for every request in order to make sure the request is authorized (`before_action :authenticate_request`).
 - `request.headers` will contain the authorization token to authorize all requests (`request.headers["Authorization"]`)
-- This application uses the following folder structure to manage its _simple_command_ commands:
+- This example application uses the following folder structure to manage its backend command services:
 
 ![N|Solid](https://cldup.com/1UeyWzOLic.png)
 
-Command classes (and the modules they reside under) are named _**according to their file name and respective location within the above folder structure**_; for example, the command class defined in the `/api/my_app1/v1/authenticate_request.rb` file would be defined in this manner:
+SCD works best using the _convention over configuration_ paradigm. Consequently, backend command service classes, and the modules they reside under, are best named **according to their file name and location within their respective folder structure**. For example, in our example app, the command service class in the `/api/my_app1/v1/authenticate_request.rb` file, would be defined in this manner:
 
 ```ruby
 # /api/my_app1/v1/authenticate_request.rb
@@ -47,7 +41,7 @@ module Api
 end
 ```
 
-Likewise, the command class defined in the `/api/my_app2/v2/update_user.rb` file would be defined in this manner, and so on:
+Likewise, the command service class defined in the `/api/my_app2/v2/update_user.rb` file would be defined in this manner, and so on:
 
 ```ruby
 # /api/my_app2/v2/update_user.rb

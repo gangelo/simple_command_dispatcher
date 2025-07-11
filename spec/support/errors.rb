@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'utils'
+
 module CommandCallable
   class NotImplementedError < ::StandardError; end
 
@@ -12,7 +14,7 @@ module CommandCallable
 
     def add_multiple_errors(errors_hash)
       errors_hash.each do |key, values|
-        SimpleCommand::Utils.array_wrap(values).each { |value| add key, value }
+        CommandCallable::Utils.array_wrap(values).each { |value| add key, value }
       end
     end
 
