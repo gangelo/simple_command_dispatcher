@@ -1,8 +1,19 @@
 # frozen_string_literal: true
 
 module Kernel
-  # Define an eigenclass method for the Kernel module so that classes can
-  # reference themselves at the class level.
+  # Returns the eigenclass (singleton class) of the current object.
+  # This allows classes to reference their own class-level methods and variables.
+  #
+  # @return [Class] the eigenclass of the current object
+  #
+  # @example
+  #   class MyClass
+  #     def self.test
+  #       eigenclass
+  #     end
+  #   end
+  #   MyClass.test # => #<Class:MyClass>
+  #
   def eigenclass
     class << self
       self

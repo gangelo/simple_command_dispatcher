@@ -15,27 +15,12 @@ module SimpleCommandDispatcher
         @command_namespace = validate_command_namespace(command_namespace:)
       end
 
-      # Returns a constantized class (as a Class constant), given the command and command_namespace.
+      # Returns a constantized class (as a Class constant), given the command and command_namespace
+      # that were provided during initialization.
       #
-      # @param command [Symbol or String] the class name.
-      # @param command_namespace [Hash, Array or String] the modules command belongs to.
-      # @param options [Hash] the options that determine how command_namespace is transformed.
-      # @option options [Boolean] :camelize (false) determines whether or not both command and command_namespace
-      #    should be camelized.
-      # @option options [Boolean] :titleize (false) determines whether or not both command and command_namespace
-      #    should be titleized.
-      # @option options [Boolean] :titleize_class (false) determines whether or not command names should be
-      #    titleized.
-      # @option options [Boolean] :class_camelized (false) determines whether or not command names should be
-      #    camelized.
-      # @option options [Boolean] :titleize_module (false) determines whether or not command_namespace names
-      #    should be titleized.
-      # @option options [Boolean] :module_camelized (false) determines whether or not command_namespace names
-      #    should be camelized.
+      # @return [Class] the class constant.
       #
-      # @return [Class] the class constant. Can be used to call ClassConstant.constantize.
-      #
-      # @raise [NameError] if the constantized class string cannot be constantized; that is, if it is not
+      # @raise [Errors::InvalidClassConstantError] if the constantized class string cannot be constantized; that is, if it is not
       #    a valid class constant.
       #
       # @example
@@ -62,25 +47,19 @@ module SimpleCommandDispatcher
       attr_accessor :command, :command_namespace
 
       # Returns a fully-qualified constantized class (as a string), given the command and command_namespace.
+      # Both parameters are automatically camelized/titleized during processing.
       #
-      # @param [Symbol or String] command the class name.
-      # @param [Hash, Array or String] command_namespace the modules command belongs to.
-      # @param [Hash] options the options that determine how command_namespace is transformed.
-      # @option options [Boolean] :titleize_class (false) Determines whether or not command should be
-      #    titleized.
-      # @option options [Boolean] :titleize_module (false) Determines whether or not command_namespace
-      #    should be titleized.
+      # @param command [Symbol, String] the class name.
+      # @param command_namespace [Hash, Array, String] the modules command belongs to.
       #
       # @return [String] the fully qualified class, which includes module(s) and class name.
       #
       # @example
       #
-      #   to_qualified_class_string("Authenticate", "Api") # => "Api::Authenticate"
+      #   to_qualified_class_string("authenticate", "api") # => "Api::Authenticate"
       #   to_qualified_class_string(:Authenticate, [:Api, :AppName, :V1]) # => "Api::AppName::V1::Authenticate"
-      #   to_qualified_class_string(:Authenticate, { :api :Api, app_name: :AppName, api_version: :V2 })
-      #      # => "Api::AppName::V2::Authenticate"
-      #   to_qualified_class_string("authenticate", { :api :api, app_name: :app_name, api_version: :v1 },
-      #      { titleize_class: true, titleize_module: true }) # => "Api::AppName::V1::Authenticate"
+      #   to_qualified_class_string(:authenticate, { api: :api, app_name: :app_name, api_version: :v1 })
+      #      # => "Api::AppName::V1::Authenticate"
       #
       def to_qualified_class_string(command, command_namespace)
         class_modules_string = CommandNamespaceService.new(command_namespace:).to_class_modules_string
@@ -89,19 +68,18 @@ module SimpleCommandDispatcher
       end
 
       # Returns the command as a string after transformations have been applied.
+      # The command is automatically camelized/titleized during processing.
       #
-      # @param [Symbol or String] command the class name to be transformed.
-      # @param [Hash] options the options that determine how command will be transformed.
-      # @option options [Boolean] :titleize_class (false) Determines whether or not command should be titleized.
+      # @param command [Symbol, String] the class name to be transformed.
       #
       # @return [String] the transformed class as a string.
       #
       # @example
       #
-      #   to_class_string("MyClass") # => "MyClass"
-      #   to_class_string("myClass", { titleize_class: true }) # => "MyClass"
-      #   to_class_string(:MyClass) # => "MyClass"
-      #   to_class_string(:myClass, { titleize_class: true }) # => "MyClass"
+      #   to_class_string(command: "MyClass") # => "MyClass"
+      #   to_class_string(command: "my_class") # => "MyClass"
+      #   to_class_string(command: :MyClass) # => "MyClass"
+      #   to_class_string(command: :my_class) # => "MyClass"
       #
       def to_class_string(command:)
         camelize(command)
@@ -141,16 +119,16 @@ module SimpleCommandDispatcher
       #
       # Validates and returns command_namespace.
       #
-      # @param [Symbol, Array or String] command_namespace the module(s) to be validated.
+      # @param [Hash, Array or String] command_namespace the module(s) to be validated.
       #
-      # @return [Symbol, Array or String] the validated module(s).
+      # @return [Hash, Array or String] the validated module(s).
       #
       # @raise [ArgumentError] if the command_namespace is not of type String, Hash or Array.
       #
       # @example
       #
       #   validate_command_namespace(" Module ") # => " Module "
-      #   validate_command_namespace(:Module) # => "Module"
+      #   validate_command_namespace(:Module) # => :Module
       #   validate_command_namespace("ModuleA::ModuleB") # => "ModuleA::ModuleB"
       #
       def validate_command_namespace(command_namespace:)

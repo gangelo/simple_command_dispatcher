@@ -5,7 +5,12 @@ module SimpleCommandDispatcher
   class << self
     attr_reader :configuration
 
-    # Example:
+    # Configures SimpleCommandDispatcher by yielding the configuration object to the block.
+    #
+    # @yield [Configuration] yields the configuration object to the block
+    # @return [Configuration] returns the configuration object
+    #
+    # @example
     #
     # SimpleCommandDispatcher.configure do |config|
     #  config.some_option = 'some value'
@@ -28,10 +33,12 @@ module SimpleCommandDispatcher
   class Configuration
     # TODO: Add attr_xxx here
 
+    # Initializes a new Configuration instance with default values
     def initialize
       reset
     end
 
+    # Resets all configuration attributes to their default values
     def reset
       # TODO: Reset our attributes here e.g. @attr = nil
     end

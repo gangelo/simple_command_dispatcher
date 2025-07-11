@@ -8,14 +8,12 @@ module SimpleCommandDispatcher
     # Returns a string of modules that can be subsequently prepended to a class, to create a fully qualified,
     # constantized class.
     #
-    # @param [Hash, Array or String] command_modules the modules a class belongs to.
-    # @param [Hash] options the options that determine how command_modules is transformed.
-    # @option options [Boolean] :titleize_module (false) Determines whether or not command_modules should be titleized.
+    # The command_namespace is provided during initialization and can be a Hash, Array, or String.
     #
     # @return [String] a string of modules that can be subsequently prepended to a class, to create a
     #    constantized class.
     #
-    # @raise [ArgumentError] if the command_modules is not of type String, Hash or Array.
+    # @raise [ArgumentError] if the command_namespace is not of type String, Hash or Array.
     #
     # @example
     #
