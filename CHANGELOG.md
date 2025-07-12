@@ -1,12 +1,15 @@
 # CHANGELOG
 
-## Version 4.0.0 - 2025-07-10
+## Version 4.0.0 - 2025-07-12
 
-- **Documentation Improvements**:
+- **Documentation Overhaul**:
+  - Completely rewrote README.md with modern examples and comprehensive Rails integration guides
   - Fixed documentation accuracy issues across all modules and classes
   - Corrected method signatures and parameter types in YARD documentation
-  - Updated examples to match actual implementation behavior
+  - Updated all examples to use keyword arguments and match current implementation
   - Added comprehensive documentation for helper methods and error classes
+  - Added migration guide from v3.x to v4.x with breaking change explanations
+  - Included advanced usage patterns (route-based dispatch, batch execution, dynamic versioning)
 
 - **Test Coverage Enhancements**:
   - Added comprehensive test suite for `CommandNamespaceService` (previously untested)
@@ -14,21 +17,29 @@
   - Added thorough test coverage for `Kernel#eigenclass` extension
   - Created direct unit tests for custom error classes with edge case testing
   - Improved overall test coverage with real-world scenarios and Unicode support
+  - Added extensive edge case testing for input validation and error conditions
 
 - **Helper Method Improvements**:
   - Enhanced `Camelize` helper to better handle RESTful route conversion to Ruby constants
   - Improved `TrimAll` helper with Unicode whitespace support using `\p{Space}` regex
   - Added robust error handling and edge case management for various input types
-  - Optimized performance for route-to-constant transformations
+  - Optimized performance for route-to-constant transformations using Rails' proven methods
+  - Better handling of mixed separators (hyphens, dots, spaces, colons)
 
-- **Breaking Change**:
-  - Minimum ruby version changed from 3.0.1 to 3.1.0.
-  - Remove dependency on `simple_command` gem.
-  - Remove `allow_custom_commands` configuration option as it's unnecessary due to the aforementioned.
-  - `SimpleCommandDispatcher.call` method signature changed to accept keyword arguments that are more descriptive: `command:`, `command_namespace:`, and `request_params:` respectively.
-  - Changed/combined gem namespaces from `SimpleCommand::Dispatcher` to `SimpleCommandDispatcher`.
-  - `SimpleCommandDispatcher.call`: keyword argument `options:` has been removed (i.e. options `camelize`, `class_camelize`, `module_camelize`, `titleize`, `class_titleize`, `module_titleize` are unnecessary, as `camelize` is now called unconditionally on the `command` and `command_namespace`.
-  - Removed duplicate `Errors` namespacing on error classes under `SimpleCommandDispatcher::Errors`.
+- **Code Quality & Tooling**:
+  - Fixed RuboCop configuration errors (typo in `plugins`, removed deprecated `RSpec/NotToNot`)
+  - Added proper `RSpec/NestedGroups` configuration
+  - All RuboCop checks now pass with zero offenses
+  - Improved code organization and consistency
+
+- **Breaking Changes**:
+  - Minimum ruby version changed from 3.0.1 to 3.1.0
+  - Removed dependency on `simple_command` gem for lighter footprint
+  - Removed `allow_custom_commands` configuration option (all commands are now "custom")
+  - `SimpleCommandDispatcher.call` method signature changed to accept keyword arguments: `command:`, `command_namespace:`, and `request_params:`
+  - Changed gem namespace from `SimpleCommand::Dispatcher` to `SimpleCommandDispatcher`
+  - Removed `options:` parameter and all camelization options (camelization is now automatic)
+  - Fixed duplicate `Errors` namespacing on error classes under `SimpleCommandDispatcher::Errors`
 
 ## Version 3.0.3 - 2024-08-03
 
