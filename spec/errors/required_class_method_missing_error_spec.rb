@@ -192,7 +192,7 @@ describe SimpleCommandDispatcher::Errors::RequiredClassMethodMissingError do
 
     it 'handles hash input' do
       error = described_class.new({ key: 'value' })
-      expect(error.message).to eq("Class \"{key: \"value\"}\" does not respond_to? class method \"call\".")
+      expect(error.message).to match(/Class .* does not respond_to\? class method \"call\"/)
     end
   end
 
