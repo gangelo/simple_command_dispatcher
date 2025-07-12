@@ -26,7 +26,7 @@ jobs:
             windows-latest,
           ]
         # Use `rbenv install --list` to determine what stable ruby versions to test against.
-        ruby: ["3.1", "3.2", "3.3", "3.4"]
+        ruby: ["3.3", "3.4"]
 
     steps:
       - uses: actions/checkout@v3

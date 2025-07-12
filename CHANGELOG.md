@@ -3,6 +3,7 @@
 ## Version 4.0.0 - 2025-07-12
 
 - **Documentation Overhaul**:
+
   - Completely rewrote README.md with modern examples and comprehensive Rails integration guides
   - Fixed documentation accuracy issues across all modules and classes
   - Corrected method signatures and parameter types in YARD documentation
@@ -12,6 +13,7 @@
   - Included advanced usage patterns (route-based dispatch, batch execution, dynamic versioning)
 
 - **Test Coverage Enhancements**:
+
   - Added comprehensive test suite for `CommandNamespaceService` (previously untested)
   - Replaced placeholder tests with full implementations for `Camelize` and `TrimAll` helpers
   - Added thorough test coverage for `Kernel#eigenclass` extension
@@ -20,6 +22,7 @@
   - Added extensive edge case testing for input validation and error conditions
 
 - **Helper Method Improvements**:
+
   - Enhanced `Camelize` helper to better handle RESTful route conversion to Ruby constants
   - Improved `TrimAll` helper with Unicode whitespace support using `\p{Space}` regex
   - Added robust error handling and edge case management for various input types
@@ -27,13 +30,14 @@
   - Better handling of mixed separators (hyphens, dots, spaces, colons)
 
 - **Code Quality & Tooling**:
+
   - Fixed RuboCop configuration errors (typo in `plugins`, removed deprecated `RSpec/NotToNot`)
   - Added proper `RSpec/NestedGroups` configuration
   - All RuboCop checks now pass with zero offenses
   - Improved code organization and consistency
 
 - **Breaking Changes**:
-  - Minimum ruby version changed from 3.0.1 to 3.1.0
+  - Minimum ruby version changed from 3.0.1 to 3.3
   - Removed dependency on `simple_command` gem for lighter footprint
   - Removed `allow_custom_commands` configuration option (all commands are now "custom")
   - `SimpleCommandDispatcher.call` method signature changed to accept keyword arguments: `command:`, `command_namespace:`, and `request_params:`
