@@ -40,12 +40,12 @@ module SimpleCommandDispatcher
     #
     #  # Below equates to the following: Api::Carz4Rent::V2::Authenticate.call('sam@gmail.com', 'AskM3!')
     #  SimpleCommandDispatcher.call(command: :Authenticate,
-    #     command_namespace: ['Api', 'Carz4Rent', 'V2'], 
+    #     command_namespace: ['Api', 'Carz4Rent', 'V2'],
     #     request_params: ['sam@gmail.com', 'AskM3!']) # => Command result
     #
     #  # Below equates to the following:
     #  # Api::Auth::JazzMeUp::V1::Authenticate.call('jazz_me@gmail.com', 'JazzM3!')
-    #  SimpleCommandDispatcher.call(command: :Authenticate, 
+    #  SimpleCommandDispatcher.call(command: :Authenticate,
     #     command_namespace: ['Api::Auth::JazzMeUp', :V1],
     #     request_params: ['jazz_me@gmail.com', 'JazzM3!']) # => Command result
     #

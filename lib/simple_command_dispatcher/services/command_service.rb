@@ -20,8 +20,8 @@ module SimpleCommandDispatcher
       #
       # @return [Class] the class constant.
       #
-      # @raise [Errors::InvalidClassConstantError] if the constantized class string cannot be constantized; that is, if it is not
-      #    a valid class constant.
+      # @raise [Errors::InvalidClassConstantError] if the constantized class string cannot be constantized; that is,
+      #    if it is not a valid class constant.
       #
       # @example
       #

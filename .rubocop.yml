@@ -1,10 +1,10 @@
-require:
+plugins:
   - rubocop-performance
   - rubocop-rspec
   - rubocop-rake
 
 AllCops:
-  TargetRubyVersion: 3.2.6
+  TargetRubyVersion: 3.4
   NewCops: enable
   Exclude:
     - "*.gemspec"
@@ -127,17 +127,6 @@ Metrics/MethodLength:
 Metrics/PerceivedComplexity:
   Max: 10
 
-NestedGroups:
-  Max: 4
-
-# Naming/FileName:
-#  Exclude:
-#    - 'lib/file.rb'
-
-# Allow `downcase == ` instead of forcing `casecmp`
-Performance/Casecmp:
-  Enabled: false
-
 # Require children definitions to be nested or compact in classes and modules
 Style/ClassAndModuleChildren:
   Enabled: false
@@ -192,14 +181,12 @@ Style/StringMethods:
 Style/TernaryParentheses:
   EnforcedStyle: require_parentheses_when_complex
 
-RSpec/NotToNot:
-  EnforcedStyle: to_not
-  SupportedStyles:
-    - to_not
-    - not_to
-
+# RSpec cops configuration
 RSpec/MultipleExpectations:
   Enabled: false
 
 RSpec/MultipleMemoizedHelpers:
   Max: 6
+
+RSpec/NestedGroups:
+  Max: 4
