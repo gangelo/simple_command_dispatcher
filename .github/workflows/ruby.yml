@@ -15,7 +15,16 @@ jobs:
     strategy:
       matrix:
         # See https://github.com/actions/runner-images
-        os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14, macos-15]
+        os:
+          [
+            ubuntu-22.04,
+            ubuntu-latest,
+            macos-13,
+            macos-14,
+            macos-15,
+            windows-2022,
+            windows-latest,
+          ]
         # Use `rbenv install --list` to determine what stable ruby versions to test against.
         ruby: ["3.1", "3.2", "3.3", "3.4"]
 
