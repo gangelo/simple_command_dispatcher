@@ -6,271 +6,21 @@
 [![Report Issues](https://img.shields.io/badge/report-issues-red.svg)](https://github.com/gangelo/simple_command_dispatcher/issues)
 [![License](http://img.shields.io/badge/license-MIT-yellowgreen.svg)](#license)
 
-# Q. simple_command_dispatcher - what is it?
-
-# A. It's a Ruby gem!!!
+# simple_command_dispatcher
 
 ## Overview
 
-**simple_command_dispatcher** (SCD) allows your rails or rails API application to _dynamically_ call backend command services, from your rails controller actions.
+**simple_command_dispatcher** (SCD) allows your Rails or Rails API application to _dynamically_ call backend command services from your Rails controller actions using a flexible, convention-over-configuration approach.
 
-## Example
+## Features
 
-The below example is from a `rails-api` API that uses token-based authentication and services two mobile applications, identified as _**my_app1**_ and _**my_app2**_, in this example.
-
-This example assumes the following:
-
-- `application_controller` is a base class, inherited by all other controllers. The `#authenticate_request` method is called for every request in order to make sure the request is authorized (`before_action :authenticate_request`).
-- `request.headers` will contain the authorization token to authorize all requests (`request.headers["Authorization"]`)
-- This example application uses the following folder structure to manage its backend command services:
-
-![N|Solid](https://cldup.com/1UeyWzOLic.png)
-
-SCD works best using the _convention over configuration_ paradigm. Consequently, backend command service classes, and the modules they reside under, are best named **according to their file name and location within their respective folder structure**. For example, in our example app, the command service class in the `/api/my_app1/v1/authenticate_request.rb` file, would be defined in this manner:
-
-```ruby
-# /api/my_app1/v1/authenticate_request.rb
-
-module Api
-   module MyApp1
-      module V1
-         class AuthenticateRequest
-         end
-     end
-   end
-end
-```
-
-Likewise, the command service class defined in the `/api/my_app2/v2/update_user.rb` file would be defined in this manner, and so on:
-
-```ruby
-# /api/my_app2/v2/update_user.rb
-
-module Api
-   module MyApp2
-      module V2
-         class UpdateUser
-         end
-     end
-   end
-end
-```
-
-The **routes used in this example**, conform to the following format: `"/api/[app_name]/[app_version]/[controller]"` where `[app_name]` = the _application name_,`[app_version]` = the _application version_, and `[controller]` = the _controller_; therefore, running `$ rake routes` for this example would output the following sample route information:
-
-|                           Prefix | Verb  | URI Pattern                                 | Controller#Action                    |
-| -------------------------------: | :---- | :------------------------------------------ | :----------------------------------- |
-| api_my_app1_v1_user_authenticate | POST  | /api/my_app1/v1/user/authenticate(.:format) | api/my_app1/v1/authentication#create |
-| api_my_app1_v2_user_authenticate | POST  | /api/my_app1/v2/user/authenticate(.:format) | api/my_app1/v2/authentication#create |
-| api_my_app2_v1_user_authenticate | POST  | /api/my_app2/v1/user/authenticate(.:format) | api/my_app2/v1/authentication#create |
-|              api_my_app2_v2_user | PATCH | /api/my_app2/v2/users/:id(.:format)         | api/my_app2/v2/users#update          |
-|                                  | PUT   | /api/my_app2/v2/users/:id(.:format)         | api/my_app2/v2/users#update          |
-
-### Request Authentication Code Snippet
-
-```ruby
-# /config/initializers/simple_command_dispatcher.rb
-
-# See: http://pothibo.com/2013/07/namespace-stuff-in-your-app-folder/
-
-=begin
-# Uncomment this code if you want to namespace your commands in the following manner, for example:
-#
-#   class Api::MyApp1::V1::AuthenticateRequest; end
-#
-# As opposed to this:
-#
-#   module Api
-#      module MyApp1
-#         module V1
-#            class AuthenticateRequest
-#            end
-#         end
-#     end
-#   end
-#
-module Helpers
-   def self.ensure_namespace(namespace, scope = "::")
-      namespace_parts = namespace.split("::")
-
-      namespace_chain = ""
-
-      namespace_parts.each { | part |
-         namespace_chain = (namespace_chain.empty?) ? part : "#{namespace_chain}::#{part}"
-         eval("module #{scope}#{namespace_chain}; end")
-      }
-   end
-end
-
-Helpers.ensure_namespace("Api::MyApp1::V1")
-Helpers.ensure_namespace("Api::MyApp1::V2")
-Helpers.ensure_namespace("Api::MyApp2::V1")
-Helpers.ensure_namespace("Api::MyApp2::V2")
-=end
-
-# simple_command_dispatcher creates commands dynamically; therefore we need
-# to make sure the namespaces and command classes are loaded before we construct and
-# call them. The below code traverses the 'app/api' and all subfolders, and
-# autoloads them so that we do not get any NameError exceptions due to
-# uninitialized constants.
-Rails.application.config.to_prepare do
-   path = Rails.root + "app/api"
-   ActiveSupport::Dependencies.autoload_paths -= [path.to_s]
-
-   reloader = ActiveSupport::FileUpdateChecker.new [], path.to_s => [:rb] do
-      ActiveSupport::DescendantsTracker.clear
-      ActiveSupport::Dependencies.clear
-
-      Dir[path + "**/*.rb"].each do |file|
-         ActiveSupport.require_or_load file
-      end
-   end
-
-   Rails.application.reloaders << reloader
-   ActionDispatch::Reloader.to_prepare { reloader.execute_if_updated }
-   reloader.execute
-end
-
-# Optionally set our configuration setting to allow
-# for custom command execution.
-SimpleCommandDispatcher.configure do |config|
-   config.allow_custom_commands = true
-end
-```
-
-```ruby
-# /app/controllers/application_controller.rb
-
-require 'simple_command_dispatcher'
-
-class ApplicationController < ActionController::API
-   before_action :authenticate_request
-   attr_reader :current_user
-
-   protected
-
-   def get_command_path
-      # request.env['PATH_INFO'] could return any number of paths. The important
-      # thing (in the case of our example), is that we get the portion of the
-      # path that uniquely identifies the SimpleCommand we need to call; this
-      # would include the application, the API version and the SimpleCommand
-      # name itself.
-      command_path = request.env['PATH_INFO'] # => "/api/[app name]/v1/[action]”
-      command_path = command_path.split('/').slice(0,4).join('/') # => "/api/[app name]/v1/"
-   end
-
-   private
-
-   def authenticate_request
-      # The parameters and options we are passing to the dispatcher, wind up equating
-      # to the following: Api::MyApp1::V1::AuthenticateRequest.call(request.headers).
-      # Explaination: @param command_namespace (e.g. path, "/api/my_app1/v1/"), in concert with @param
-      # options { camelize: true }, is transformed into "Api::MyApp1::V1" and prepended to the
-      # @param command, which becomes "Api::MyApp1::V1::AuthenticateRequest." This string is then
-      # simply constantized; #call is then executed, passing the @param params
-      # (e.g. request.headers, which contains ["Authorization"], out authorization token).
-      # Consequently, the correlation between our routes and command class module structure
-      # was no coincidence.
-      command = SimpleCommandDispatcher.call(:AuthenticateRequest, get_command_path, { camelize: true}, request.headers)
-      if command.success?
-         @current_user = command.result
-      else
-         render json: { error: 'Not Authorized' }, status: 401
-      end
-    end
-end
-```
-
-## Custom Commands
-
-As of **Version 1.2.1** simple*command_dispatcher (SCD) allows you to execute \_custom commands* (i.e. classes that do not prepend the _SimpleCommand_ module) by setting `Configuration#allow_custom_commands = true`.
-
-In order to execute _custom commands_, there are three (3) requirements:
-
-1.  Create a _custom command_. Your _custom command_ class must expose a public `::call` class method.
-2.  Set the `Configuration#allow_custom_commands` property to `true`.
-3.  Execute your _custom command_ by calling the `::call` class method.
-
-### Custom Command Example
-
-#### 1. Create a Custom Command
-
-```ruby
-# /api/my_app/v1/custom_command.rb
-
-module Api
-   module MyApp
-         module V1
-
-            # This is a custom command that does not prepend SimpleCommand.
-            class GoodCommandA
-
-               def self.call(*args)
-                  command = self.new(*args)
-                  if command
-                     command.send(:execute)
-                  else
-                     false
-                  end
-               end
-
-               private
-
-               def initialize(params = {})
-                  @param1 = params[:param1]
-               end
-
-               private
-
-               attr_accessor :param1
-
-               def execute
-                  if (param1 == :param1)
-                     return true
-                  end
-
-                  return false
-               end
-            end
-
-      end
-   end
-end
-```
-
-#### 2. Set the `Configuration#allow_custom_commands` property to `true`
-
-```ruby
-# In your rails, rails-api app, etc...
-# /config/initializers/simple_command_dispatcher.rb
-
-SimpleCommandDispatcher.configure do |config|
-    config.allow_custom_commands = true
-end
-```
-
-#### 3. Execute your _Custom Command_
-
-Executing your _custom command_ is no different than executing a **SimpleCommand** command with the exception that you must properly handle the return object that results from calling your _custom command_; being a _custom command_, there is no guarantee that the return object will be the command object as is the case when calling a SimpleCommand command.
-
-```ruby
-# /app/controllers/some_controller.rb
-
-require 'simple_command_dispatcher'
-
-class SomeController < ApplicationController::API
-   public
-
-   def some_api
-      success = SimpleCommandDispatcher.call(:GoodCommandA, get_command_path, { camelize: true}, request.headers)
-      if success
-         # Do something...
-      else
-         # Do something else...
-      end
-    end
-end
-```
+- 🚀 **Dynamic Command Dispatch**: Call command classes by name with flexible namespacing
+- 🔄 **Automatic Camelization**: Converts RESTful routes to Ruby constants automatically
+- 🌐 **Unicode Support**: Handles Unicode characters and whitespace properly
+- 🎯 **Multiple Input Formats**: Accepts strings, arrays, hashes for commands and namespaces
+- ⚡ **Performance Optimized**: Uses Rails' proven camelization methods for speed
+- 🔧 **Flexible Parameters**: Supports Hash, Array, and single object parameters
+- 📦 **No Dependencies**: Removed simple_command dependency for lighter footprint
 
 ## Installation
 
@@ -288,15 +38,416 @@ Or install it yourself as:
 
     $ gem install simple_command_dispatcher
 
-## Usage
+## Requirements
 
-See the example above.
+- Ruby >= 3.1.0
+- Rails (optional, but optimized for Rails applications)
 
-## Development
+## Basic Usage
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+### Simple Command Dispatch
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```ruby
+# Basic command call
+result = SimpleCommandDispatcher.call(
+  command: 'AuthenticateUser',
+  command_namespace: 'Api::V1',
+  request_params: { email: 'user@example.com', password: 'secret' }
+)
+
+# This calls: Api::V1::AuthenticateUser.call(email: 'user@example.com', password: 'secret')
+```
+
+### Automatic Camelization
+
+Command names and namespaces are automatically camelized using optimized RESTful route conversion, allowing flexible input formats:
+
+```ruby
+# All of these are equivalent and call: Api::UserSessions::V1::CreateCommand.call
+
+# Lowercase strings with various separators
+SimpleCommandDispatcher.call(
+  command: 'create_command',
+  command_namespace: 'api::user_sessions::v1'
+)
+
+# Mixed case array
+SimpleCommandDispatcher.call(
+  command: :CreateCommand,
+  command_namespace: ['api', 'UserSessions', 'v1']
+)
+
+# Route-like strings (optimized for Rails controllers)
+SimpleCommandDispatcher.call(
+  command: '/create_command',
+  command_namespace: '/api/user_sessions/v1'
+)
+
+# Mixed separators (hyphens, dots, spaces)
+SimpleCommandDispatcher.call(
+  command: 'create-command',
+  command_namespace: 'api.user-sessions/v1'
+)
+```
+
+The camelization handles Unicode characters and removes all whitespace (including Unicode whitespace):
+
+```ruby
+# Unicode support
+SimpleCommandDispatcher.call(
+  command: 'café_command',
+  command_namespace: 'api :: café :: v1'  # Spaces are removed
+)
+# Calls: Api::Café::V1::CaféCommand.call
+```
+
+### Parameter Handling
+
+The dispatcher supports multiple parameter formats:
+
+```ruby
+# Hash parameters (passed as keyword arguments)
+SimpleCommandDispatcher.call(
+  command: 'CreateUser',
+  command_namespace: 'Api::V1',
+  request_params: { name: 'John', email: 'john@example.com' }
+)
+# Calls: Api::V1::CreateUser.call(name: 'John', email: 'john@example.com')
+
+# Array parameters (passed as positional arguments)
+SimpleCommandDispatcher.call(
+  command: 'ProcessData',
+  command_namespace: 'Services',
+  request_params: ['data1', 'data2', 'data3']
+)
+# Calls: Services::ProcessData.call('data1', 'data2', 'data3')
+
+# Single parameter
+SimpleCommandDispatcher.call(
+  command: 'SendEmail',
+  command_namespace: 'Mailers',
+  request_params: 'user@example.com'
+)
+# Calls: Mailers::SendEmail.call('user@example.com')
+
+# No parameters
+SimpleCommandDispatcher.call(
+  command: 'HealthCheck',
+  command_namespace: 'System'
+)
+# Calls: System::HealthCheck.call
+```
+
+## Rails Integration Example
+
+Here's a comprehensive example showing how to integrate SCD with a Rails API application:
+
+### Application Controller
+
+```ruby
+# app/controllers/application_controller.rb
+require 'simple_command_dispatcher'
+
+class ApplicationController < ActionController::API
+  before_action :authenticate_request
+  attr_reader :current_user
+
+  protected
+
+  def get_command_namespace
+    # Extract namespace from request path: "/api/my_app/v1/users" → "api/my_app/v1"
+    path_segments = request.path.split('/').reject(&:empty?)
+    path_segments.take(3).join('/')
+  end
+
+  private
+
+  def authenticate_request
+    result = SimpleCommandDispatcher.call(
+      command: 'AuthenticateRequest',
+      command_namespace: get_command_namespace,
+      request_params: { headers: request.headers }
+    )
+
+    if result.success?
+      @current_user = result.user
+    else
+      render json: { error: 'Not Authorized' }, status: 401
+    end
+  end
+end
+```
+
+### Controller Actions
+
+```ruby
+# app/controllers/api/my_app/v1/users_controller.rb
+class Api::MyApp::V1::UsersController < ApplicationController
+  def create
+    result = SimpleCommandDispatcher.call(
+      command: 'CreateUser',
+      command_namespace: get_command_namespace,
+      request_params: user_params
+    )
+
+    if result.success?
+      render json: result.user, status: :ok
+    else
+      render json: { errors: result.errors }, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    result = SimpleCommandDispatcher.call(
+      command: 'UpdateUser',
+      command_namespace: get_command_namespace,
+      request_params: { id: params[:id], **user_params }
+    )
+
+    if result.success?
+      render json: result.user
+    else
+      render json: { errors: result.errors }, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:name, :email, :phone)
+  end
+end
+```
+
+### Command Classes
+
+```ruby
+# app/commands/api/my_app/v1/authenticate_request.rb
+module Api
+  module MyApp
+    module V1
+      class AuthenticateRequest
+        def self.call(headers:)
+          new(headers: headers).call
+        end
+
+        def initialize(headers:)
+          @headers = headers
+        end
+
+        def call
+          user = authenticate_with_token
+          if user
+            OpenStruct.new(success?: true, user: user)
+          else
+            OpenStruct.new(success?: false, errors: ['Invalid token'])
+          end
+        end
+
+        private
+
+        attr_reader :headers
+
+        def authenticate_with_token
+          token = headers['Authorization']&.gsub('Bearer ', '')
+          return nil unless token
+
+          # Your authentication logic here
+          User.find_by(auth_token: token)
+        end
+      end
+    end
+  end
+end
+```
+
+```ruby
+# app/commands/api/my_app/v1/create_user.rb
+module Api
+  module MyApp
+    module V1
+      class CreateUser
+        def self.call(**params)
+          new(**params).call
+        end
+
+        def initialize(name:, email:, phone: nil)
+          @name = name
+          @email = email
+          @phone = phone
+        end
+
+        def call
+          user = User.new(name: name, email: email, phone: phone)
+
+          if user.save
+            OpenStruct.new(success?: true, user: user)
+          else
+            OpenStruct.new(success?: false, errors: user.errors.full_messages)
+          end
+        end
+
+        private
+
+        attr_reader :name, :email, :phone
+      end
+    end
+  end
+end
+```
+
+### Autoloading Commands
+
+To ensure your command classes are properly loaded:
+
+```ruby
+# config/initializers/simple_command_dispatcher.rb
+
+# Autoload command classes
+Rails.application.config.to_prepare do
+  commands_path = Rails.root.join('app', 'commands')
+
+  if commands_path.exist?
+    Dir[commands_path.join('**', '*.rb')].each do |file|
+      require_dependency file
+    end
+  end
+end
+```
+
+## Error Handling
+
+The dispatcher provides specific error classes for different failure scenarios:
+
+```ruby
+begin
+  result = SimpleCommandDispatcher.call(
+    command: 'NonExistentCommand',
+    command_namespace: 'Api::V1'
+  )
+rescue SimpleCommandDispatcher::Errors::InvalidClassConstantError => e
+  # Command class doesn't exist
+  puts "Command not found: #{e.message}"
+rescue SimpleCommandDispatcher::Errors::RequiredClassMethodMissingError => e
+  # Command class exists but doesn't have a .call method
+  puts "Invalid command: #{e.message}"
+rescue ArgumentError => e
+  # Invalid arguments (empty command, wrong parameter types, etc.)
+  puts "Invalid arguments: #{e.message}"
+end
+```
+
+## Advanced Usage
+
+### Route-Based Command Dispatch
+
+For RESTful APIs, you can map routes directly to commands:
+
+```ruby
+# Extract command from route
+def dispatch_from_route
+  # Route: "/api/my_app/v1/users/create"
+  path_segments = request.path.split('/').reject(&:empty?)
+
+  namespace = path_segments.take(3).join('/')     # "api/my_app/v1"
+  command = path_segments.last                    # "create"
+
+  SimpleCommandDispatcher.call(
+    command: "#{command}_#{controller_name.singularize}",  # "create_user"
+    command_namespace: namespace,
+    request_params: request_params
+  )
+end
+```
+
+### Dynamic API Versioning
+
+```ruby
+# Handle multiple API versions dynamically
+def call_versioned_command(command_name, version = 'v1')
+  SimpleCommandDispatcher.call(
+    command: command_name,
+    command_namespace: ['api', app_name, version],
+    request_params: request_params
+  )
+end
+
+# Usage
+result = call_versioned_command('authenticate_user', 'v2')
+```
+
+### Batch Command Execution
+
+```ruby
+# Execute multiple related commands
+def process_user_registration(user_data)
+  commands = [
+    { command: 'validate_user', params: user_data },
+    { command: 'create_user', params: user_data },
+    { command: 'send_welcome_email', params: { email: user_data[:email] } }
+  ]
+
+  results = commands.map do |cmd|
+    SimpleCommandDispatcher.call(
+      command: cmd[:command],
+      command_namespace: 'user_registration',
+      request_params: cmd[:params]
+    )
+  end
+
+  # Check if all commands succeeded
+  if results.all?(&:success?)
+    { success: true, user: results[1].user }
+  else
+    { success: false, errors: results.map(&:errors).flatten.compact }
+  end
+end
+```
+
+## Configuration
+
+The gem can be configured in an initializer:
+
+```ruby
+# config/initializers/simple_command_dispatcher.rb
+SimpleCommandDispatcher.configure do |config|
+  # Configuration options will be added in future versions
+end
+```
+
+## Migration from v3.x
+
+If you're upgrading from v3.x, here are the key changes:
+
+### Breaking Changes
+
+1. **Method signature changed to keyword arguments:**
+
+   ```ruby
+   # v3.x (old)
+   SimpleCommandDispatcher.call(:CreateUser, 'Api::V1', { options }, params)
+
+   # v4.x (new)
+   SimpleCommandDispatcher.call(
+     command: :CreateUser,
+     command_namespace: 'Api::V1',
+     request_params: params
+   )
+   ```
+
+2. **Removed simple_command dependency:**
+
+   - Commands no longer need to include SimpleCommand
+   - Commands must implement a `.call` class method
+   - Return value is whatever your command returns (no automatic Result object)
+
+3. **Removed configuration options:**
+
+   - `allow_custom_commands` option removed (all commands are "custom" now)
+   - Camelization options removed (always enabled)
+
+4. **Namespace changes:**
+   - Error classes: `SimpleCommand::Dispatcher::Errors::*` → `SimpleCommandDispatcher::Errors::*`
 
 ## Contributing
 
@@ -306,5 +457,6 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/gangel
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
-[simple-command]: https://rubygems.org/gems/simple_command
-[rails-api]: https://rubygems.org/gems/rails-api
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for version history and breaking changes.

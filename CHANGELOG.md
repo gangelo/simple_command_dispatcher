@@ -2,7 +2,24 @@
 
 ## Version 4.0.0 - 2025-07-10
 
-- Update code documentation.
+- **Documentation Improvements**:
+  - Fixed documentation accuracy issues across all modules and classes
+  - Corrected method signatures and parameter types in YARD documentation
+  - Updated examples to match actual implementation behavior
+  - Added comprehensive documentation for helper methods and error classes
+
+- **Test Coverage Enhancements**:
+  - Added comprehensive test suite for `CommandNamespaceService` (previously untested)
+  - Replaced placeholder tests with full implementations for `Camelize` and `TrimAll` helpers
+  - Added thorough test coverage for `Kernel#eigenclass` extension
+  - Created direct unit tests for custom error classes with edge case testing
+  - Improved overall test coverage with real-world scenarios and Unicode support
+
+- **Helper Method Improvements**:
+  - Enhanced `Camelize` helper to better handle RESTful route conversion to Ruby constants
+  - Improved `TrimAll` helper with Unicode whitespace support using `\p{Space}` regex
+  - Added robust error handling and edge case management for various input types
+  - Optimized performance for route-to-constant transformations
 
 - **Breaking Change**:
   - Minimum ruby version changed from 3.0.1 to 3.1.0.
