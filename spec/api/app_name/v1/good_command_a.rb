@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require_relative '../../../support/command_callable'
-
 module Api
   module AppName
     module V1
       class GoodCommandA
-        prepend CommandCallable
+        prepend SimpleCommandDispatcher::Commands::CommandCallable
 
         def call
           execute

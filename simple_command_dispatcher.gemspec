@@ -10,12 +10,11 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Gene M. Angelo, Jr.']
   spec.email         = ['public.gma@gmail.com']
 
-  spec.summary       = 'Provides a way to dispatch simple_command (ruby gem) commands or your own custom commands (service objects) in a more dynamic manner
-                          within your service API. Ideal for rails-api.'
-  spec.description   = 'Within a services API (rails-api for instance), you may have a need to execute different simple_commands or your own custom commands (service objects)
-                          based on one or more factors: multiple application, API version, user type, user credentials, etc. For example,
-                          your service API may need to execute either Api::Auth::V1::AuthenticateCommand.call(...) or Api::Auth::V2::AuthenticateCommand.call(...)
-                          based on the API version. simple_command_dispatcher allows you to execute either command with one line of code dynamically.'.gsub(/\s+/, ' ')
+  spec.summary       = 'Dynamic command dispatch for Rails and Rails API applications using the Command Pattern with convention over configuration.'
+  spec.description   = 'A lightweight Ruby gem that enables Rails and Rails API applications to dynamically dispatch command objects using flexible string-based naming. ' \
+                       'Perfect for implementing the Command Pattern with convention over configuration, RESTful route conversion, and flexible namespacing. ' \
+                       'Supports multiple input formats, Unicode handling, and works seamlessly with Rails controllers, background jobs, and service layers. ' \
+                       'No external dependencies beyond ActiveSupport. Ideal for clean, maintainable Rails applications.'
   spec.homepage      = 'https://github.com/gangelo/simple_command_dispatcher'
   spec.license       = 'MIT'
 
@@ -37,5 +36,5 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = Gem::Requirement.new('>= 3.3', '< 4.0')
 
-  spec.add_runtime_dependency 'activesupport', '>= 7.0.8', '< 8.0'
+  spec.add_runtime_dependency 'activesupport', '>= 7.0.8', '< 9.0'
 end

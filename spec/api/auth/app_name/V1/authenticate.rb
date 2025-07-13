@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-require_relative '../../../../support/command_callable'
-
 module Api
   module Auth
     module AppName
       module V1
         class Authenticate
-          prepend CommandCallable
+          prepend SimpleCommandDispatcher::Commands::CommandCallable
 
           def initialize(params = {})
             @username = params[:username]

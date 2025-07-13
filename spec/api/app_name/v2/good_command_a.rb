@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require_relative '../../../support/command_callable'
-
 module Api
   module AppName
     module V2
       class GoodCommandA
-        prepend CommandCallable
+        prepend SimpleCommandDispatcher::Commands::CommandCallable
 
         def initialize(param1, param2, param3, **_kwargs)
           @param1 = param1

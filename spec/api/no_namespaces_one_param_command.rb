@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-require_relative '../support/command_callable'
-
 class NoNamespacesOneParamCommand
-  prepend CommandCallable
+  prepend SimpleCommandDispatcher::Commands::CommandCallable
 
   def initialize(param)
     @param = param

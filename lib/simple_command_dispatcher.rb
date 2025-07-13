@@ -3,6 +3,7 @@
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/string/inflections'
 require 'core_ext/kernel'
+require 'simple_command_dispatcher/commands/command_callable'
 require 'simple_command_dispatcher/configuration'
 require 'simple_command_dispatcher/errors'
 require 'simple_command_dispatcher/services/command_service'
