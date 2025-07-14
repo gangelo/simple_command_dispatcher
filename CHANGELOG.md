@@ -1,5 +1,30 @@
 # CHANGELOG
 
+## Version 4.1.0 - 2025-07-14
+
+- **New Feature: CommandCallable Module**:
+  
+  - Introduced `SimpleCommandDispatcher::Commands::CommandCallable` module for standardizing command classes
+  - Provides automatic `.call` class method generation that instantiates and calls your command
+  - Built-in success/failure tracking with `success?` and `failure?` methods based on error state
+  - Automatic result tracking - command return values stored in `command.result`
+  - Consistent error handling with built-in `errors` object for error collection and management
+  - Call tracking to ensure methods work correctly and commands are properly executed
+  - Completely optional but recommended for building robust, maintainable commands
+
+- **Enhanced Documentation**:
+
+  - Major README.md overhaul with real-world examples showcasing dynamic command execution
+  - Added comprehensive examples demonstrating convention over configuration approach
+  - Included versioned API command examples (V1 vs V2) showing practical usage patterns
+  - Added controller examples showing how to use `request.path` and `params` for dynamic routing
+  - Enhanced payment processing example with proper error handling and rescue patterns
+  - Added efficient database query examples using ActiveRecord scopes
+  - Improved parameter handling documentation showing kwargs vs single hash approaches
+  - Added alternative command splitting approach for more granular control
+  - Updated all examples to use `command` variable instead of `result` for clarity
+  - Added custom command guidance for users who prefer to roll their own implementations
+
 ## Version 4.0.0 - 2025-07-12
 
 - **Documentation Overhaul**:
