@@ -10,11 +10,11 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Gene M. Angelo, Jr.']
   spec.email         = ['public.gma@gmail.com']
 
-  spec.summary       = 'Dynamic command dispatch for Rails and Rails API applications using the Command Pattern with convention over configuration.'
-  spec.description   = 'A lightweight Ruby gem that enables Rails and Rails API applications to dynamically dispatch command objects using flexible string-based naming. ' \
-                       'Perfect for implementing the Command Pattern with convention over configuration, RESTful route conversion, and flexible namespacing. ' \
-                       'Supports multiple input formats, Unicode handling, and works seamlessly with Rails controllers, background jobs, and service layers. ' \
-                       'No external dependencies beyond ActiveSupport. Ideal for clean, maintainable Rails applications.'
+  spec.summary       = 'Dynamic command execution for Rails applications using convention over configuration - automatically maps request routes to command classes.'
+  spec.description   = 'A lightweight Ruby gem that enables Rails applications to dynamically execute command objects using convention over configuration. ' \
+                       'Automatically transforms request paths into Ruby class constants, allowing controllers to dispatch commands based on routes and parameters. ' \
+                       'Features the optional CommandCallable module for standardized command interfaces with built-in success/failure tracking and error handling. ' \
+                       'Perfect for clean, maintainable Rails APIs with RESTful route-to-command mapping. Only depends on ActiveSupport for reliable camelization.'
   spec.homepage      = 'https://github.com/gangelo/simple_command_dispatcher'
   spec.license       = 'MIT'
 
