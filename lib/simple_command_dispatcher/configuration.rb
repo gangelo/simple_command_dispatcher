@@ -3,8 +3,6 @@
 # This is the configuration for SimpleCommandDispatcher.
 module SimpleCommandDispatcher
   class << self
-    attr_reader :configuration
-
     # Configures SimpleCommandDispatcher by yielding the configuration object to the block.
     #
     # @yield [Configuration] yields the configuration object to the block
@@ -13,7 +11,7 @@ module SimpleCommandDispatcher
     # @example
     #
     # SimpleCommandDispatcher.configure do |config|
-    #  config.some_option = 'some value'
+    #  config.logger = Rails.logger
     # end
     def configure
       self.configuration ||= Configuration.new
@@ -21,6 +19,13 @@ module SimpleCommandDispatcher
       yield(configuration) if block_given?
 
       configuration
+    end
+
+    # Returns the configuration object, initializing it if necessary
+    #
+    # @return [Configuration] the configuration object
+    def configuration
+      @configuration ||= Configuration.new
     end
 
     private
@@ -31,7 +36,7 @@ module SimpleCommandDispatcher
   # This class encapsulates the configuration properties for this gem and
   # provides methods and attributes that allow for management of the same.
   class Configuration
-    # TODO: Add attr_xxx here
+    attr_accessor :logger
 
     # Initializes a new Configuration instance with default values
     def initialize
@@ -40,7 +45,18 @@ module SimpleCommandDispatcher
 
     # Resets all configuration attributes to their default values
     def reset
-      # TODO: Reset our attributes here e.g. @attr = nil
+      @logger = default_logger
+    end
+
+    private
+
+    def default_logger
+      if defined?(Rails) && Rails.respond_to?(:logger)
+        Rails.logger
+      else
+        require 'logger'
+        ::Logger.new($stdout)
+      end
     end
   end
 end
