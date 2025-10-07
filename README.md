@@ -53,20 +53,20 @@ Or install it yourself as:
 # Basic command calls
 
 command = SimpleCommandDispatcher.call(
-  command: '/api/v1/authenticate_user'
+  command: '/api/v1/authenticate_user',
   # No `command_namespace:` param
   request_params: { email: 'user@example.com', password: 'secret' }
 )
 
 command = SimpleCommandDispatcher.call(
   command: :authenticate_user,
-  command_namespace: '/api/v1'
+  command_namespace: '/api/v1',
   request_params: { email: 'user@example.com', password: 'secret' }
 )
 
 command = SimpleCommandDispatcher.call(
   command: 'AuthenticateUser',
-  command_namespace: %w[api v1]
+  command_namespace: %w[api v1],
   request_params: { email: 'user@example.com', password: 'secret' }
 )
 
@@ -371,7 +371,44 @@ The gem can be configured in an initializer:
 ```ruby
 # config/initializers/simple_command_dispatcher.rb
 SimpleCommandDispatcher.configure do |config|
-  # Configuration options will be added in future versions
+  # Configure the logger (defaults to Rails.logger in Rails apps, or Logger.new($stdout) otherwise)
+  config.logger = Rails.logger
+
+  # Or use a custom logger
+  # config.logger = Logger.new('log/commands.log')
+end
+```
+
+### Logging and Debug Mode
+
+The gem includes built-in logging support that can be enabled using the `pretend` option. This is useful for debugging command execution:
+
+```ruby
+# Enable debug logging for a single command
+command = SimpleCommandDispatcher.call(
+  command: :authenticate_user,
+  command_namespace: '/api/v1',
+  request_params: { email: 'user@example.com', password: 'secret' },
+  options: { pretend: true }
+)
+
+# The pretend mode logs:
+# - Begin dispatching command (with command and namespace details)
+# - Command to execute (the fully qualified class name)
+# - Constantized command (the actual class constant)
+# - End dispatching command
+```
+
+The pretend mode **does not** skip execution—it still runs your command and returns results, but with detailed debug output to help you understand what's happening internally.
+
+**Configure logging level:**
+
+```ruby
+# In your Rails initializer or application setup
+SimpleCommandDispatcher.configure do |config|
+  logger = Logger.new($stdout)
+  logger.level = Logger::DEBUG  # Set appropriate level
+  config.logger = logger
 end
 ```
 

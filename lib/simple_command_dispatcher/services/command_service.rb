@@ -2,6 +2,7 @@
 
 require_relative '../errors'
 require_relative '../helpers/camelize'
+require_relative '../logger'
 require_relative 'command_namespace_service'
 
 module SimpleCommandDispatcher
@@ -9,6 +10,7 @@ module SimpleCommandDispatcher
     # Handles class and module transformations and instantiation.
     class CommandService
       include Helpers::Camelize
+      include Logger
 
       def initialize(command:, command_namespace: {}, options: {})
         @options = options

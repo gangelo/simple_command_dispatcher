@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 describe SimpleCommandDispatcher::Services::CommandService do
+  let(:options) { SimpleCommandDispatcher::Services::OptionsService.new(options: {}) }
+
   subject(:command_service) do
-    SimpleCommandDispatcher::Services::CommandService.new(command:, command_namespace:)
+    SimpleCommandDispatcher::Services::CommandService.new(command:, command_namespace:, options:)
   end
 
   # describe 'when passing bad class modules' do
