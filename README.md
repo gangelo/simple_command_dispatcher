@@ -50,14 +50,27 @@ Or install it yourself as:
 ### Simple Command Dispatch
 
 ```ruby
-# Basic command call
+# Basic command calls
+
 command = SimpleCommandDispatcher.call(
-  command: 'AuthenticateUser',
-  command_namespace: 'Api::V1',
+  command: '/api/v1/authenticate_user'
+  # No `command_namespace:` param
   request_params: { email: 'user@example.com', password: 'secret' }
 )
 
-# This executes: Api::V1::AuthenticateUser.call(email: 'user@example.com', password: 'secret')
+command = SimpleCommandDispatcher.call(
+  command: :authenticate_user,
+  command_namespace: '/api/v1'
+  request_params: { email: 'user@example.com', password: 'secret' }
+)
+
+command = SimpleCommandDispatcher.call(
+  command: 'AuthenticateUser',
+  command_namespace: %w[api v1]
+  request_params: { email: 'user@example.com', password: 'secret' }
+)
+
+# All the above will execute: Api::V1::AuthenticateUser.call(email: 'user@example.com', password: 'secret')
 ```
 
 ## Command Standardization with CommandCallable
@@ -73,7 +86,7 @@ Here's how it works with a real controller example:
 ```ruby
 # app/controllers/api/mechs_controller.rb
 class Api::MechsController < ApplicationController
-  before_action :route_request, except: [:index]
+  before_action :route_request, except: [:destroy, :index]
 
   def index
     render json: { mechs: Mech.all }
@@ -88,7 +101,8 @@ class Api::MechsController < ApplicationController
   def route_request
     command = SimpleCommandDispatcher.call(
       command: request.path,        # "/api/v1/mechs/search"
-      command_namespace: nil,       # nil since the command namespace can be gleaned directly from `command: request.path`
+      # No need to use the `command_namespace` param, since the command namespace
+      # can be gleaned directly from `command: request.path`.
       request_params: params        # Full Rails params hash
     )
 
@@ -101,17 +115,29 @@ class Api::MechsController < ApplicationController
 end
 ```
 
-**The Convention:** Request path `/api/v1/mechs/search` automatically maps to command class `Api::V1::Mechs::Search`
+**The Convention:** Request path `/api/v1/mechs/search` automatically maps to command class `Api::V1::Mechs::Search`.
 
-**Alternative approach** if you need more control over command name and namespace:
+**Alternative approach** for handling nested resource routes with dynamic actions:
 
 ```ruby
-# Split the path manually
+# Handle routes like: /api/v1/mechs/123/variants/456/update
+# Extract resource action and build namespace from nested resources
+path_parts = request.path.split("/")
+action = path_parts.last                    # "update"
+resource_path = path_parts[0...-1]          # ["/api", "v1", "mechs", "123", "variants", "456"]
+
+# Build namespace from resource path, filtering out IDs
+namespace_parts = resource_path.select { |part| !part.match?(/^\d+$/) }
+
 command = SimpleCommandDispatcher.call(
-  command: request.path.split("/").last,           # "search"
-  command_namespace: request.path.split("/")[0..2], # "/api/v1/mechs"
-  request_params: params
+  command: action,                          # "update"
+  command_namespace: namespace_parts,       # ["/api", "v1", "mechs", "variants"]
+  request_params: params.merge(
+    mech_id: path_parts[4],                 # "123"
+    variant_id: path_parts[6]               # "456"
+  )
 )
+# Calls: Api::V1::Mechs::Variants::Update.call(mech_id: "123", variant_id: "456", ...)
 ```
 
 ### Versioned Command Examples

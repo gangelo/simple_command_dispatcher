@@ -6,10 +6,14 @@ require 'core_ext/kernel'
 require 'simple_command_dispatcher/commands/command_callable'
 require 'simple_command_dispatcher/configuration'
 require 'simple_command_dispatcher/errors'
+require 'simple_command_dispatcher/logger'
 require 'simple_command_dispatcher/services/command_service'
+require 'simple_command_dispatcher/services/options_service'
 require 'simple_command_dispatcher/version'
 
 module SimpleCommandDispatcher
+  extend Logger
+
   # Provides a way to call your custom commands dynamically.
   #
   class << self
@@ -50,19 +54,42 @@ module SimpleCommandDispatcher
     #     command_namespace: ['Api::Auth::JazzMeUp', :V1],
     #     request_params: ['jazz_me@gmail.com', 'JazzM3!']) # => Command result
     #
-    def call(command:, command_namespace: {}, request_params: nil)
+    def call(command:, command_namespace: {}, request_params: nil, options: {})
+      @options = Services::OptionsService.new(options:)
+
+      if @options.pretend?
+        log_debug <<~DEBUG
+          Begin dispatching command
+            command: #{command.inspect}
+            command_namespace: #{command_namespace.inspect}
+        DEBUG
+      end
+
       # Create a constantized class from our command and command_namespace...
-      constantized_class_object = Services::CommandService.new(command:, command_namespace:).to_class
+      constantized_class_object = Services::CommandService.new(command:, command_namespace:, options: @options).to_class
+
+      if @options.pretend?
+        log_debug <<~DEBUG
+          Constantized command: #{constantized_class_object.inspect}
+        DEBUG
+      end
+
       validate_command!(constantized_class_object)
 
       # We know we have a valid command class object if we get here. All we need to do is call the .call
       # class method, pass the request_params arguments depending on the request_params data type, and
       # return the results.
 
-      call_command(constantized_class_object:, request_params:)
+      call_command_results = call_command(constantized_class_object:, request_params:)
+
+      log_debug 'End dispatching command' if @options.pretend?
+
+      call_command_results
     end
 
     private
+
+    attr_reader :options
 
     def call_command(constantized_class_object:, request_params:)
       if request_params.is_a?(Hash)

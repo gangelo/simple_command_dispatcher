@@ -10,7 +10,8 @@ module SimpleCommandDispatcher
     class CommandService
       include Helpers::Camelize
 
-      def initialize(command:, command_namespace: {})
+      def initialize(command:, command_namespace: {}, options: {})
+        @options = options
         @command = validate_command(command:)
         @command_namespace = validate_command_namespace(command_namespace:)
       end
@@ -33,7 +34,13 @@ module SimpleCommandDispatcher
       #     { titleize_class: true, titleize_module: true }) # => Api::AppName::V1::Authenticate
       #
       def to_class
-        qualified_class_string = to_qualified_class_string(command, command_namespace)
+        qualified_class_string = to_qualified_class_string
+
+        if options.pretend?
+          log_debug <<~DEBUG
+            Command to execute: #{qualified_class_string.inspect}
+          DEBUG
+        end
 
         begin
           qualified_class_string.constantize
@@ -44,24 +51,13 @@ module SimpleCommandDispatcher
 
       private
 
-      attr_accessor :command, :command_namespace
+      attr_reader :options, :command, :command_namespace
 
       # Returns a fully-qualified constantized class (as a string), given the command and command_namespace.
-      # Both parameters are automatically camelized/titleized during processing.
-      #
-      # @param command [Symbol, String] the class name.
-      # @param command_namespace [Hash, Array, String] the modules command belongs to.
       #
       # @return [String] the fully qualified class, which includes module(s) and class name.
       #
-      # @example
-      #
-      #   to_qualified_class_string("authenticate", "api") # => "Api::Authenticate"
-      #   to_qualified_class_string(:Authenticate, [:Api, :AppName, :V1]) # => "Api::AppName::V1::Authenticate"
-      #   to_qualified_class_string(:authenticate, { api: :api, app_name: :app_name, api_version: :v1 })
-      #      # => "Api::AppName::V1::Authenticate"
-      #
-      def to_qualified_class_string(command, command_namespace)
+      def to_qualified_class_string
         class_modules_string = CommandNamespaceService.new(command_namespace:).to_class_modules_string
         class_string = to_class_string(command:)
         "#{class_modules_string}#{class_string}"
