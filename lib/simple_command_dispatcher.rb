@@ -84,11 +84,11 @@ module SimpleCommandDispatcher
       # class method, pass the request_params arguments depending on the request_params data type, and
       # return the results.
 
-      call_command_results = call_command(constantized_class_object:, request_params:)
+      command_object = call_command(constantized_class_object:, request_params:)
 
       log_debug 'End dispatching command' if @options.debug?
 
-      call_command_results
+      command_object
     end
 
     private
