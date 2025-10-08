@@ -32,7 +32,8 @@ module SimpleCommandDispatcher
       #     # => Api::Authenticate
       #   CommandService.new(command: :Authenticate, command_namespace: [:Api, :AppName, :V1]).to_class
       #     # => Api::AppName::V1::Authenticate
-      #   CommandService.new(command: :Authenticate, command_namespace: { api: :Api, app_name: :AppName, api_version: :V2 }).to_class
+      #   CommandService.new(command: :Authenticate,
+      #                      command_namespace: { api: :Api, app_name: :AppName, api_version: :V2 }).to_class
       #     # => Api::AppName::V2::Authenticate
       #   CommandService.new(command: "authenticate", command_namespace: "api::app_name::v1").to_class
       #     # => Api::AppName::V1::Authenticate
