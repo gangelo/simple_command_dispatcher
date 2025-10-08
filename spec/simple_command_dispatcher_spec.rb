@@ -250,21 +250,21 @@ RSpec.describe SimpleCommandDispatcher, type: :module do
     end
   end
 
-  describe 'pretend mode' do
+  describe 'debug mode' do
     let(:logger) { instance_double(::Logger) }
 
     before do
       allow(SimpleCommandDispatcher.configuration).to receive(:logger).and_return(logger)
     end
 
-    context 'when pretend option is true' do
+    context 'when debug option is true' do
       it 'logs debug information during command dispatch' do
         expect(logger).to receive(:debug).at_least(:once)
         described_class.call(
           command: :GoodCommandB,
           command_namespace: { api: :Api, app_name: :AppName, api_version: :V1 },
           request_params: { param1: :param1, param2: :param2, param3: :param3 },
-          options: { pretend: true }
+          options: { debug: true }
         )
       end
 
@@ -278,7 +278,7 @@ RSpec.describe SimpleCommandDispatcher, type: :module do
           command: :GoodCommandB,
           command_namespace: { api: :Api, app_name: :AppName, api_version: :V1 },
           request_params: { param1: :param1, param2: :param2, param3: :param3 },
-          options: { pretend: true }
+          options: { debug: true }
         )
 
         expect(logger).to have_received(:debug).with(/Begin dispatching command/)
@@ -293,20 +293,20 @@ RSpec.describe SimpleCommandDispatcher, type: :module do
           command: :GoodCommandB,
           command_namespace: { api: :Api, app_name: :AppName, api_version: :V1 },
           request_params: { param1: :param1, param2: :param2, param3: :param3 },
-          options: { pretend: true }
+          options: { debug: true }
         )
         expect(command.success?).to be(true)
       end
     end
 
-    context 'when pretend option is false or not provided' do
+    context 'when debug option is false or not provided' do
       it 'does not log debug information when false' do
         expect(logger).not_to receive(:debug)
         described_class.call(
           command: :GoodCommandB,
           command_namespace: { api: :Api, app_name: :AppName, api_version: :V1 },
           request_params: { param1: :param1, param2: :param2, param3: :param3 },
-          options: { pretend: false }
+          options: { debug: false }
         )
       end
 

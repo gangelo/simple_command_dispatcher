@@ -35,7 +35,7 @@ module SimpleCommandDispatcher
     #
     # @param options [Hash] optional configuration for command execution.
     #    Supported options:
-    #    - :pretend [Boolean] when true, enables debug logging of command execution flow
+    #    - :debug [Boolean] when true, enables debug logging of command execution flow
     #
     # @return [Object] the Object returned as a result of calling the Command#call method.
     #
@@ -61,7 +61,7 @@ module SimpleCommandDispatcher
     def call(command:, command_namespace: {}, request_params: nil, options: {})
       @options = Services::OptionsService.new(options:)
 
-      if @options.pretend?
+      if @options.debug?
         log_debug <<~DEBUG
           Begin dispatching command
             command: #{command.inspect}
@@ -72,7 +72,7 @@ module SimpleCommandDispatcher
       # Create a constantized class from our command and command_namespace...
       constantized_class_object = Services::CommandService.new(command:, command_namespace:, options: @options).to_class
 
-      if @options.pretend?
+      if @options.debug?
         log_debug <<~DEBUG
           Constantized command: #{constantized_class_object.inspect}
         DEBUG
@@ -86,7 +86,7 @@ module SimpleCommandDispatcher
 
       call_command_results = call_command(constantized_class_object:, request_params:)
 
-      log_debug 'End dispatching command' if @options.pretend?
+      log_debug 'End dispatching command' if @options.debug?
 
       call_command_results
     end
