@@ -22,16 +22,20 @@ module SimpleCommandDispatcher
     #
     # @param command [Symbol, String] the name of the Command to call.
     #
-    # @param command_namespace [Hash, Array] the ruby modules that qualify the Command to call.
+    # @param command_namespace [Hash, Array, String] the ruby modules that qualify the Command to call.
     #    When passing a Hash, the Hash keys serve as documentation only.
-    #    For example, ['Api', 'AppName', 'V1'] and { :api :Api, app_name: :AppName, api_version: :V1 }
-    #    will both produce 'Api::AppName::V1', this string will be prepended to the command to form the Command
+    #    For example, ['Api', 'AppName', 'V1'], 'Api::AppName::V1', and { :api :Api, app_name: :AppName, api_version: :V1 }
+    #    will all produce 'Api::AppName::V1', this string will be prepended to the command to form the Command
     #    to call (e.g. 'Api::AppName::V1::MySimpleCommand' = Api::AppName::V1::MySimpleCommand.call(*request_params)).
     #
     # @param request_params [Hash, Array, Object] the parameters to pass to the call method of the Command. This
     #    parameter is simply passed through to the call method of the Command. Hash parameters are passed as
     #    keyword arguments, Array parameters are passed as positional arguments, and other objects are passed
     #    as a single argument.
+    #
+    # @param options [Hash] optional configuration for command execution.
+    #    Supported options:
+    #    - :pretend [Boolean] when true, enables debug logging of command execution flow
     #
     # @return [Object] the Object returned as a result of calling the Command#call method.
     #
