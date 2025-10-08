@@ -1,5 +1,41 @@
 # CHANGELOG
 
+## Version 4.2.0 - 2025-10-07
+
+- **New Feature: Configurable Logger with Debug Mode**:
+
+  - Added configurable logger with automatic Rails.logger detection
+  - Introduced debug mode for command execution debugging via `options: { debug: true }`
+  - Logger can be configured via `SimpleCommandDispatcher.configuration.logger`
+  - Added `OptionsService` for managing command execution options
+  - Enhanced `SimpleCommandDispatcher.call` with `options:` parameter to support debug logging
+  - When debug mode is enabled, detailed debug logging shows command execution flow
+
+- **Test Coverage Improvements**:
+
+  - Achieved 100% test coverage across all modules (243 examples, 0 failures)
+  - Added comprehensive tests for `CommandCallable::Errors` class (15 new tests)
+  - Added comprehensive tests for `CommandCallable::Utils.array_wrap` method (8 new tests)
+  - Added tests for Rails logger auto-detection in configuration
+  - Added tests for debug mode functionality in command execution
+  - Enhanced test coverage for `OptionsService` and logger integration
+
+- **Documentation Enhancements**:
+
+  - Updated API documentation for `SimpleCommandDispatcher.call` to include `options` parameter
+  - Added comprehensive documentation for `CommandCallable` module with usage examples
+  - Documented all public methods in `Errors` class with examples
+  - Added documentation for `OptionsService` class and debug mode
+  - Enhanced `Configuration` documentation to include logger attribute
+  - Fixed all YARD documentation to accurately reflect current implementation
+  - Added best practice guidance for private `initialize` in CommandCallable commands
+
+- **Dependency Updates**:
+
+  - Added `irb` and `reline` gems to development dependencies
+  - Addresses Ruby 3.5 deprecation warnings for extracted standard library gems
+  - Rails 8 compatibility confirmed (supports ActiveSupport 8.x)
+
 ## Version 4.1.0 - 2025-07-14
 
 - **New Feature: CommandCallable Module**:

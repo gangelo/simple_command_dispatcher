@@ -44,13 +44,69 @@ Or install it yourself as:
 
 - Ruby >= 3.3.0
 - Rails (optional, but optimized for Rails applications)
+- Rails 8 compatible (tested with ActiveSupport 8.x)
+
+## Quick Start
+
+Here's a complete minimal example showing how to use the gem in a Rails controller:
+
+```ruby
+# 1. Configure the gem (optional - uses Rails.logger by default)
+# config/initializers/simple_command_dispatcher.rb
+SimpleCommandDispatcher.configure do |config|
+  config.logger = Rails.logger
+end
+
+# 2. Create a command
+# app/commands/api/v1/authenticate_user.rb
+module Api
+  module V1
+    class AuthenticateUser
+      prepend SimpleCommandDispatcher::Commands::CommandCallable
+
+      def call
+        user = User.find_by(email: email)
+        return nil unless user&.authenticate(password)
+
+        user
+      end
+
+      private
+
+      def initialize(params = {})
+        @email = params[:email]
+        @password = params[:password]
+      end
+
+      attr_reader :email, :password
+    end
+  end
+end
+
+# 3. Call the command from your controller
+# app/controllers/api/v1/sessions_controller.rb
+class Api::V1::SessionsController < ApplicationController
+  def create
+    command = SimpleCommandDispatcher.call(
+      command: request.path,           # "/api/v1/authenticate_user"
+      request_params: params
+    )
+
+    if command.success?
+      render json: { user: command.result }, status: :ok
+    else
+      render json: { errors: command.errors }, status: :unauthorized
+    end
+  end
+end
+```
 
 ## Basic Usage
 
 ### Simple Command Dispatch
 
 ```ruby
-# Basic command calls
+# Basic command calls - all equivalent
 
 command = SimpleCommandDispatcher.call(
   command: '/api/v1/authenticate_user',
@@ -68,6 +124,13 @@ command = SimpleCommandDispatcher.call(
   command: 'AuthenticateUser',
   command_namespace: %w[api v1],
   request_params: { email: 'user@example.com', password: 'secret' }
+)
+
+# With debug logging enabled
+command = SimpleCommandDispatcher.call(
+  command: '/api/v1/authenticate_user',
+  request_params: { email: 'user@example.com', password: 'secret' },
+  options: { debug: true }  # Enables detailed debug logging
 )
 
 # All the above will execute: Api::V1::AuthenticateUser.call(email: 'user@example.com', password: 'secret')
@@ -147,10 +210,6 @@ command = SimpleCommandDispatcher.call(
 class Api::V1::Mechs::Search
   prepend SimpleCommandDispatcher::Commands::CommandCallable
 
-  def initialize(params = {})
-    @name = params[:name]
-  end
-
   def call
     # V1 search logic - simple name search
     name.present? ? Mech.where("mech_name ILIKE ?", "%#{name}%") : Mech.none
@@ -158,20 +217,16 @@ class Api::V1::Mechs::Search
 
   private
 
+  def initialize(params = {})
+    @name = params[:name]
+  end
+
   attr_reader :name
 end
 
 # app/commands/api/v2/mechs/search.rb
 class Api::V2::Mechs::Search
   prepend SimpleCommandDispatcher::Commands::CommandCallable
-
-  def initialize(params = {})
-    @cost = params[:cost]
-    @introduction_year = params[:introduction_year]
-    @mech_name = params[:mech_name]
-    @tonnage = params[:tonnage]
-    @variant = params[:variant]
-  end
 
   def call
     # V2 search logic - comprehensive search using scopes
@@ -183,6 +238,14 @@ class Api::V2::Mechs::Search
   end
 
   private
+
+  def initialize(params = {})
+    @cost = params[:cost]
+    @introduction_year = params[:introduction_year]
+    @mech_name = params[:mech_name]
+    @tonnage = params[:tonnage]
+    @variant = params[:variant]
+  end
 
   attr_reader :cost, :introduction_year, :mech_name, :tonnage, :variant
 end
@@ -225,6 +288,39 @@ When you prepend `CommandCallable` to your command class, you automatically get:
 3. **Success/Failure Methods**: `success?` and `failure?` methods based on error state
 4. **Error Handling**: Built-in `errors` object for consistent error management
 5. **Call Tracking**: Internal tracking to ensure methods work correctly
+
+**Important:** The `.call` class method returns the command instance itself (not the raw result). Access the actual return value via `.result`:
+
+```ruby
+command = AuthenticateUser.call(email: 'user@example.com', password: 'secret')
+command.success?  # => true/false
+command.result    # => the actual User object (or whatever your call method returned)
+command.errors    # => errors collection if any
+```
+
+**Best Practice:** Make `initialize` private when using `CommandCallable`. This enforces the use of the `.call` class method and ensures proper success/failure tracking. Making `initialize` private prevents direct instantiation that would bypass CommandCallable's functionality:
+
+```ruby
+class YourCommand
+  prepend SimpleCommandDispatcher::Commands::CommandCallable
+
+  def call
+    # Your logic here
+  end
+
+  private  # <- initialize should be private
+
+  def initialize(params = {})
+    @params = params
+  end
+end
+
+# This works (correct pattern):
+YourCommand.call(foo: 'bar')
+
+# This raises NoMethodError (prevents bypassing CommandCallable):
+YourCommand.new(foo: 'bar')
+```
 
 ### Convention Over Configuration: Route-to-Command Mapping
 
@@ -300,12 +396,6 @@ request_params: 'single_value'
 class Api::V1::Payments::Process
   prepend SimpleCommandDispatcher::Commands::CommandCallable
 
-  def initialize(params = {})
-    @amount = params[:amount]
-    @card_token = params[:card_token]
-    @user_id = params[:user_id]
-  end
-
   def call
     validate_payment_data
     return nil if errors.any?
@@ -317,6 +407,12 @@ class Api::V1::Payments::Process
   end
 
   private
+
+  def initialize(params = {})
+    @amount = params[:amount]
+    @card_token = params[:card_token]
+    @user_id = params[:user_id]
+  end
 
   attr_reader :amount, :card_token, :user_id
 
@@ -379,9 +475,62 @@ SimpleCommandDispatcher.configure do |config|
 end
 ```
 
-### Logging and Debug Mode
+### Using Configuration in Commands
 
-The gem includes built-in logging support that can be enabled using the `pretend` option. This is useful for debugging command execution:
+You can access the configured logger within your commands to add custom logging:
+
+```ruby
+class Api::V1::Payments::Process
+  prepend SimpleCommandDispatcher::Commands::CommandCallable
+
+  def call
+    logger.info("Processing payment for user #{user_id}")
+
+    validate_payment_data
+    return nil if errors.any?
+
+    result = charge_card
+    logger.info("Payment successful: #{result.inspect}")
+    result
+  rescue StandardError => e
+    logger.error("Payment failed: #{e.message}")
+    errors.add(:payment, e.message)
+    nil
+  end
+
+  private
+
+  def initialize(params = {})
+    @amount = params[:amount]
+    @card_token = params[:card_token]
+    @user_id = params[:user_id]
+  end
+
+  attr_reader :amount, :card_token, :user_id
+
+  def logger
+    SimpleCommandDispatcher.configuration.logger
+  end
+
+  def validate_payment_data
+    errors.add(:amount, 'must be positive') if amount.to_i <= 0
+    errors.add(:card_token, 'is required') if card_token.blank?
+    errors.add(:user_id, 'is required') if user_id.blank?
+  end
+
+  def charge_card
+    PaymentProcessor.charge(
+      amount: amount,
+      card_token: card_token,
+      user_id: user_id
+    )
+  end
+end
+```
+
+### Debug Logging
+
+The gem includes built-in debug logging that can be enabled using the `debug` option. This is useful for debugging command execution flow:
 
 ```ruby
 # Enable debug logging for a single command
@@ -389,17 +538,17 @@ command = SimpleCommandDispatcher.call(
   command: :authenticate_user,
   command_namespace: '/api/v1',
   request_params: { email: 'user@example.com', password: 'secret' },
-  options: { pretend: true }
+  options: { debug: true }
 )
 
-# The pretend mode logs:
+# Debug logging outputs:
 # - Begin dispatching command (with command and namespace details)
 # - Command to execute (the fully qualified class name)
 # - Constantized command (the actual class constant)
 # - End dispatching command
 ```
 
-The pretend mode **does not** skip execution—it still runs your command and returns results, but with detailed debug output to help you understand what's happening internally.
+**Important:** Debug logging mode **does not** skip execution—it still runs your command and returns real results, but with detailed debug output to help you understand what's happening internally.
 
 **Configure logging level:**
 

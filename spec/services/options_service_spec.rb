@@ -10,15 +10,15 @@ describe SimpleCommandDispatcher::Services::OptionsService do
       let(:options) { {} }
 
       it 'uses default options' do
-        expect(options_service.pretend?).to be false
+        expect(options_service.debug?).to be false
       end
     end
 
     context 'when options are provided' do
-      let(:options) { { pretend: true } }
+      let(:options) { { debug: true } }
 
       it 'merges provided options with defaults' do
-        expect(options_service.pretend?).to be true
+        expect(options_service.debug?).to be true
       end
     end
 
@@ -26,33 +26,33 @@ describe SimpleCommandDispatcher::Services::OptionsService do
       let(:options) { { invalid_option: 'value' } }
 
       it 'ignores invalid options' do
-        expect(options_service.pretend?).to be false
+        expect(options_service.debug?).to be false
       end
     end
   end
 
-  describe '#pretend?' do
-    context 'when pretend is true' do
-      let(:options) { { pretend: true } }
+  describe '#debug?' do
+    context 'when debug is true' do
+      let(:options) { { debug: true } }
 
       it 'returns true' do
-        expect(options_service.pretend?).to be true
+        expect(options_service.debug?).to be true
       end
     end
 
-    context 'when pretend is false' do
-      let(:options) { { pretend: false } }
+    context 'when debug is false' do
+      let(:options) { { debug: false } }
 
       it 'returns false' do
-        expect(options_service.pretend?).to be false
+        expect(options_service.debug?).to be false
       end
     end
 
-    context 'when pretend is not provided' do
+    context 'when debug is not provided' do
       let(:options) { {} }
 
       it 'returns false (default)' do
-        expect(options_service.pretend?).to be false
+        expect(options_service.debug?).to be false
       end
     end
   end

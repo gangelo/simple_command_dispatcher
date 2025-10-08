@@ -41,7 +41,7 @@ module SimpleCommandDispatcher
       def to_class
         qualified_class_string = to_qualified_class_string
 
-        if options.pretend?
+        if options.debug?
           log_debug <<~DEBUG
             Command to execute: #{qualified_class_string.inspect}
           DEBUG
