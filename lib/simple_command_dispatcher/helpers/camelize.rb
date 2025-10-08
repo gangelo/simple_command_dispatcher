@@ -25,7 +25,7 @@ module SimpleCommandDispatcher
         # For RESTful paths → Ruby constants, use Rails' proven methods
         # They're fast, reliable, and handle edge cases that matter for constants
         result = trim_all(token)
-          .gsub(%r{[/\-\.\s:]+}, '/')                    # Normalize separators to /
+          .gsub(%r{[/\-.\s:]+}, '/') # Normalize separators to /
           .split('/')                                    # Split into path segments
           .reject(&:empty?)                              # Remove empty segments
           .map { |segment| segment.underscore.camelize } # Rails camelization
