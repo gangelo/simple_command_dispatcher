@@ -10,7 +10,9 @@ gem 'colorize', '>= 0.8.1', '< 2.0'
 gem 'rake', '>= 13.0', '< 14.0'
 
 group :development do
+  gem 'irb', '>= 1.0'
   gem 'pry-byebug', '>= 3.9', '< 4.0'
+  gem 'reline', '>= 0.3'
   gem 'rubocop', '>= 1.62', '< 2.0'
   gem 'rubocop-performance', '>= 1.20', '< 2.0'
   gem 'rubocop-rake', '>= 0.6', '< 1.0'
