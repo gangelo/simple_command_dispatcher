@@ -79,4 +79,26 @@ describe SimpleCommandDispatcher::Configuration do
       expect(configuration.logger).to be_a(::Logger)
     end
   end
+
+  describe '#default_logger' do
+    context 'when Rails is defined' do
+      it 'uses Rails.logger' do
+        rails_logger = double('Rails::Logger')
+        stub_const('Rails', Class.new)
+        allow(Rails).to receive(:respond_to?).with(:logger).and_return(true)
+        allow(Rails).to receive(:logger).and_return(rails_logger)
+
+        config = described_class.new
+        expect(config.logger).to eq(rails_logger)
+      end
+    end
+
+    context 'when Rails is not defined' do
+      it 'creates a new Logger instance' do
+        # Rails is not defined in test environment
+        config = described_class.new
+        expect(config.logger).to be_a(::Logger)
+      end
+    end
+  end
 end

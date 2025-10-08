@@ -28,12 +28,14 @@ module SimpleCommandDispatcher
       #
       # @example
       #
-      #   to_class("Authenticate", "Api") # => Api::Authenticate
-      #   to_class(:Authenticate, [:Api, :AppName, :V1]) # => Api::AppName::V1::Authenticate
-      #   to_class(:Authenticate, { :api :Api, app_name: :AppName, api_version: :V2 })
+      #   CommandService.new(command: "Authenticate", command_namespace: "Api").to_class
+      #     # => Api::Authenticate
+      #   CommandService.new(command: :Authenticate, command_namespace: [:Api, :AppName, :V1]).to_class
+      #     # => Api::AppName::V1::Authenticate
+      #   CommandService.new(command: :Authenticate, command_namespace: { api: :Api, app_name: :AppName, api_version: :V2 }).to_class
       #     # => Api::AppName::V2::Authenticate
-      #   to_class("authenticate", { :api :api, app_name: :app_name, api_version: :v1 },
-      #     { titleize_class: true, titleize_module: true }) # => Api::AppName::V1::Authenticate
+      #   CommandService.new(command: "authenticate", command_namespace: "api::app_name::v1").to_class
+      #     # => Api::AppName::V1::Authenticate
       #
       def to_class
         qualified_class_string = to_qualified_class_string
@@ -85,19 +87,18 @@ module SimpleCommandDispatcher
 
       # @!visibility public
       #
-      # Validates command and returns command as a string after all blanks have been removed using
-      # command.gsub(/\s+/, "").
+      # Validates command and returns command as a string after leading and trailing whitespace is stripped.
       #
-      # @param [Symbol or String] command the class name to be validated. command cannot be empty?
+      # @param command [Symbol, String] the class name to be validated. command cannot be empty after stripping.
       #
-      # @return [String] the validated class as a string with blanks removed.
+      # @return [String] the validated class as a string with leading/trailing whitespace removed.
       #
       # @raise [ArgumentError] if the command is empty? or not of type String or Symbol.
       #
       # @example
       #
-      #   validate_command(" My Class ") # => "MyClass"
-      #   validate_command(:MyClass) # => "MyClass"
+      #   validate_command(command: " MyClass ") # => "MyClass"
+      #   validate_command(command: :MyClass) # => "MyClass"
       #
       def validate_command(command:)
         unless command.is_a?(Symbol) || command.is_a?(String)
@@ -117,17 +118,17 @@ module SimpleCommandDispatcher
       #
       # Validates and returns command_namespace.
       #
-      # @param [Hash, Array or String] command_namespace the module(s) to be validated.
+      # @param command_namespace [Hash, Array, String] the module(s) to be validated.
       #
-      # @return [Hash, Array or String] the validated module(s).
+      # @return [Hash, Array, String] the validated module(s), or {} if blank.
       #
       # @raise [ArgumentError] if the command_namespace is not of type String, Hash or Array.
       #
       # @example
       #
-      #   validate_command_namespace(" Module ") # => " Module "
-      #   validate_command_namespace(:Module) # => :Module
-      #   validate_command_namespace("ModuleA::ModuleB") # => "ModuleA::ModuleB"
+      #   validate_command_namespace(command_namespace: "Api::V1") # => "Api::V1"
+      #   validate_command_namespace(command_namespace: [:Api, :V1]) # => [:Api, :V1]
+      #   validate_command_namespace(command_namespace: { api: :Api, version: :V1 }) # => { api: :Api, version: :V1 }
       #
       def validate_command_namespace(command_namespace:)
         return {} if command_namespace.blank?

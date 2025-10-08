@@ -36,6 +36,8 @@ module SimpleCommandDispatcher
   # This class encapsulates the configuration properties for this gem and
   # provides methods and attributes that allow for management of the same.
   class Configuration
+    # @return [Logger] the logger instance used for debug output.
+    #   Defaults to Rails.logger in Rails applications, or Logger.new($stdout) otherwise.
     attr_accessor :logger
 
     # Initializes a new Configuration instance with default values
@@ -43,7 +45,8 @@ module SimpleCommandDispatcher
       reset
     end
 
-    # Resets all configuration attributes to their default values
+    # Resets all configuration attributes to their default values.
+    # Sets logger to Rails.logger if Rails is defined, otherwise creates a new Logger writing to $stdout.
     def reset
       @logger = default_logger
     end
