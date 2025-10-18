@@ -14,6 +14,8 @@
 
 📋 **See it in action:** Check out the [demo application](https://github.com/gangelo/simple_command_dispatcher_demo_app) - a Rails API app with tests that demonstrate how to use the gem and its capabilities.
 
+📚 **Complete Documentation:** Visit the [comprehensive wiki](wiki/Home.md) for in-depth guides, real-world examples, and advanced usage patterns.
+
 ## Features
 
 - 🛠️ **Convention Over Configuration**: Call commands dynamically from controller actions using action routes and parameters
@@ -602,6 +604,21 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/gangel
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+
+## Documentation
+
+For comprehensive documentation, examples, and guides, visit the **[simple_command_dispatcher Wiki](wiki/Home.md)**:
+
+- **[Quick Start Tutorial](wiki/Quick-Start.md)** - Build your first command in 5 minutes
+- **[Core Concepts](wiki/Core-Concepts.md)** - Understand how SCD works
+- **[Creating Commands](wiki/Creating-Commands.md)** - Learn to write command classes
+- **[CommandCallable Module](wiki/CommandCallable-Module.md)** - Master command standardization
+- **[Dynamic Dispatching](wiki/Dynamic-Dispatching.md)** - Advanced controller patterns
+- **[Route-to-Command Mapping](wiki/Route-to-Command-Mapping.md)** - Convention over configuration explained
+- **[Real-World Examples](wiki/Examples-Authentication.md)** - Authentication, payments, search, and more
+- **[API Reference](wiki/API-Reference.md)** - Complete method documentation
+- **[FAQ](wiki/FAQ.md)** - Frequently asked questions
+- **[Troubleshooting](wiki/Troubleshooting.md)** - Common issues and solutions
 
 ## Changelog
 
