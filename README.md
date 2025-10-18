@@ -14,7 +14,7 @@
 
 📋 **See it in action:** Check out the [demo application](https://github.com/gangelo/simple_command_dispatcher_demo_app) - a Rails API app with tests that demonstrate how to use the gem and its capabilities.
 
-📚 **Complete Documentation:** Visit the [comprehensive wiki](wiki/Home.md) for in-depth guides, real-world examples, and advanced usage patterns.
+📚 **Complete Documentation:** Visit the [comprehensive wiki](https://github.com/gangelo/simple_command_dispatcher/wiki) for in-depth guides, real-world examples, and advanced usage patterns.
 
 ## Features
 
@@ -607,18 +607,19 @@ The gem is available as open source under the terms of the [MIT License](http://
 
 ## Documentation
 
-For comprehensive documentation, examples, and guides, visit the **[simple_command_dispatcher Wiki](wiki/Home.md)**:
+For comprehensive documentation, examples, and guides, visit the **[Wiki](https://github.com/gangelo/simple_command_dispatcher/wiki)**:
 
-- **[Quick Start Tutorial](wiki/Quick-Start.md)** - Build your first command in 5 minutes
-- **[Core Concepts](wiki/Core-Concepts.md)** - Understand how SCD works
-- **[Creating Commands](wiki/Creating-Commands.md)** - Learn to write command classes
-- **[CommandCallable Module](wiki/CommandCallable-Module.md)** - Master command standardization
-- **[Dynamic Dispatching](wiki/Dynamic-Dispatching.md)** - Advanced controller patterns
-- **[Route-to-Command Mapping](wiki/Route-to-Command-Mapping.md)** - Convention over configuration explained
-- **[Real-World Examples](wiki/Examples-Authentication.md)** - Authentication, payments, search, and more
-- **[API Reference](wiki/API-Reference.md)** - Complete method documentation
-- **[FAQ](wiki/FAQ.md)** - Frequently asked questions
-- **[Troubleshooting](wiki/Troubleshooting.md)** - Common issues and solutions
+- **[Quick Start Tutorial](https://github.com/gangelo/simple_command_dispatcher/wiki/Quick-Start)** - Build your first command in 5 minutes
+- **[Core Concepts](https://github.com/gangelo/simple_command_dispatcher/wiki/Core-Concepts)** - Understand how SCD works
+- **[Creating Commands](https://github.com/gangelo/simple_command_dispatcher/wiki/Creating-Commands)** - Learn to write command classes
+- **[CommandCallable Module](https://github.com/gangelo/simple_command_dispatcher/wiki/CommandCallable-Module)** - Master command standardization
+- **[Dynamic Dispatching](https://github.com/gangelo/simple_command_dispatcher/wiki/Dynamic-Dispatching)** - Advanced controller patterns
+- **[Route-to-Command Mapping](https://github.com/gangelo/simple_command_dispatcher/wiki/Route-to-Command-Mapping)** - Convention over configuration explained
+- **[Real-World Examples](https://github.com/gangelo/simple_command_dispatcher/wiki/Examples-Authentication)** - Authentication, payments, search, and more
+- **[Parameter Handling](https://github.com/gangelo/simple_command_dispatcher/wiki/Parameter-Handling)** - Working with different parameter types
+- **[Error Handling](https://github.com/gangelo/simple_command_dispatcher/wiki/Error-Handling)** - Validation and error management
+- **[FAQ](https://github.com/gangelo/simple_command_dispatcher/wiki/FAQ)** - Frequently asked questions
+- **[Installation](https://github.com/gangelo/simple_command_dispatcher/wiki/Installation)** - Complete setup guide
 
 ## Changelog
 
