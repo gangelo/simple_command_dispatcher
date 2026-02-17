@@ -10,6 +10,7 @@ gem 'colorize', '>= 0.8.1', '< 2.0'
 gem 'rake', '>= 13.0', '< 14.0'
 
 group :development do
+  gem 'fiddle', '>= 1.1'
   gem 'irb', '>= 1.0'
   gem 'pry-byebug', '>= 3.9', '< 4.0'
   gem 'reline', '>= 0.3'
