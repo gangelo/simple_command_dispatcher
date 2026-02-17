@@ -18,18 +18,18 @@ jobs:
         os:
           [
             ubuntu-22.04,
+            ubuntu-24.04,
             ubuntu-latest,
-            macos-13,
             macos-14,
             macos-15,
             windows-2022,
             windows-latest,
           ]
         # Use `rbenv install --list` to determine what stable ruby versions to test against.
-        ruby: ["3.3", "3.4"]
+        ruby: ["4.0"]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set timezone on Linux
         if: contains(matrix.os, 'ubuntu')

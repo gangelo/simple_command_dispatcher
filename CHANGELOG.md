@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## Version 5.0.0 - 2026-02-17
+
+- **Breaking Changes**:
+
+  - Minimum Ruby version changed from 3.3 to 4.0.1
+  - Ruby version constraint updated to `>= 4.0.1`, `< 5.0`
+
+- **CI/CD Updates**:
+
+  - Updated GitHub Actions matrix to test against Ruby 4.0
+  - Updated `actions/checkout` from v3 to v4
+  - Removed stale `.travis.yml` (referenced Ruby 2.0.0)
+  - Removed stale `Jenkinsfile` (referenced Ruby 3.2.6)
+
+- **Dependency Updates**:
+
+  - Added `fiddle` gem for Windows compatibility (extracted from default gems in Ruby 4.0.0)
+  - Updated all gem dependencies via `bundle update`
+  - ActiveSupport updated to 8.1.2
+  - RuboCop updated to 1.84.2
+  - RSpec updated to 3.13.2
+
 ## Version 4.2.0 - 2025-10-07
 
 - **New Feature: Configurable Logger with Debug Mode**:
