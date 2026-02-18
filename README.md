@@ -44,7 +44,7 @@ Or install it yourself as:
 
 ## Requirements
 
-- Ruby >= 3.3.0
+- Ruby >= 4.0.1
 - Rails (optional, but optimized for Rails applications)
 - Rails 8 compatible (tested with ActiveSupport 8.x)
 
