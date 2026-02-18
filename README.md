@@ -1,6 +1,6 @@
-[![Ruby](https://github.com/gangelo/simple_command_dispatcher/actions/workflows/ruby.yml/badge.svg?refresh=9)](https://github.com/gangelo/simple_command_dispatcher/actions/workflows/ruby.yml)
-[![GitHub version](https://badge.fury.io/gh/gangelo%2Fsimple_command_dispatcher.svg?refresh=9)](https://badge.fury.io/gh/gangelo%2Fsimple_command_dispatcher)
-[![Gem Version](https://badge.fury.io/rb/simple_command_dispatcher.svg?refresh=9)](https://badge.fury.io/rb/simple_command_dispatcher)
+[![Ruby](https://github.com/gangelo/simple_command_dispatcher/actions/workflows/ruby.yml/badge.svg?refresh=10)](https://github.com/gangelo/simple_command_dispatcher/actions/workflows/ruby.yml)
+[![GitHub version](https://badge.fury.io/gh/gangelo%2Fsimple_command_dispatcher.svg?refresh=10)](https://badge.fury.io/gh/gangelo%2Fsimple_command_dispatcher)
+[![Gem Version](https://badge.fury.io/rb/simple_command_dispatcher.svg?refresh=10)](https://badge.fury.io/rb/simple_command_dispatcher)
 [![](https://ruby-gem-downloads-badge.herokuapp.com/simple_command_dispatcher?type=total)](http://www.rubydoc.info/gems/simple_command_dispatcher/)
 [![Documentation](http://img.shields.io/badge/docs-rdoc.info-blue.svg)](http://www.rubydoc.info/gems/simple_command_dispatcher/)
 [![Report Issues](https://img.shields.io/badge/report-issues-red.svg)](https://github.com/gangelo/simple_command_dispatcher/issues)
@@ -584,13 +584,11 @@ If you're upgrading from v3.x, here are the key changes:
    ```
 
 2. **Removed simple_command dependency:**
-
    - Commands no longer need to include SimpleCommand
    - Commands must implement a `.call` class method
    - Return value is whatever your command returns (no automatic Result object)
 
 3. **Removed configuration options:**
-
    - `allow_custom_commands` option removed (all commands are "custom" now)
    - Camelization options removed (always enabled)
 
