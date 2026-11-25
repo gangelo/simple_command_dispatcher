@@ -11,52 +11,50 @@ permissions:
 
 jobs:
   test:
+    name: Ruby ${{ matrix.ruby }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
     strategy:
+      fail-fast: false
       matrix:
-        # See https://github.com/actions/runner-images
         os:
-          [
-            ubuntu-22.04,
-            ubuntu-24.04,
-            ubuntu-latest,
-            macos-14,
-            macos-15,
-            windows-2022,
-            windows-latest,
-          ]
-        # Use `rbenv install --list` to determine what stable ruby versions to test against.
-        ruby: ["4.0"]
+          - ubuntu-22.04
+          - ubuntu-24.04
+          - ubuntu-latest
+          - ubuntu-24.04-arm
+          - macos-15-intel
+          - macos-15
+          - macos-26
+          - windows-2022
+          - windows-2025
+        # Exercise both the minimum supported Ruby and the latest 4.0 patch.
+        ruby: ["4.0.10", "4.0"]
+    env:
+      BUNDLE_FROZEN: "true"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set timezone on Linux
-        if: contains(matrix.os, 'ubuntu')
+        if: runner.os == 'Linux'
         run: sudo timedatectl set-timezone 'America/New_York'
 
       - name: Set timezone on macOS
-        if: contains(matrix.os, 'macos')
+        if: runner.os == 'macOS'
         run: sudo systemsetup -settimezone America/New_York
 
       - name: Set timezone on Windows
-        if: contains(matrix.os, 'windows')
+        if: runner.os == 'Windows'
         run: tzutil /s "Eastern Standard Time"
 
-      - name: Set up Ruby
+      - name: Set up Ruby and locked dependencies
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
 
-      - name: Update RubyGems
-        run: gem update --system
-
-      - name: Disable bundler frozen setting
-        run: bundle config set frozen false
-
-      - name: Install dependencies
-        run: bundle install
-
-      - name: Run tests
+      - name: Run tests and lint
         run: bundle exec rake
+
+      - name: Verify lockfile is unchanged
+        run: git diff --exit-code -- Gemfile.lock

@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Unreleased
+
+- Raise the development Ruby pin and minimum supported Ruby version to 4.0.10 for security fixes.
+- Refresh locked dependencies to incorporate available security updates.
+- Test minimum and latest Ruby 4.0 patches on supported Linux, macOS, and Windows runners, including Linux and macOS ARM64.
+- Keep CI dependencies frozen to the committed lockfile.
+
 ## Version 5.0.0 - 2026-02-17
 
 - **Breaking Changes**:
