@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Version 5.0.1 - Unreleased
+## Version 5.0.1 - 2026-11-25
 
 - **Ruby compatibility**:
 
