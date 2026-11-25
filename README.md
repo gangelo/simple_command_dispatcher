@@ -50,7 +50,7 @@ Or install it yourself as:
 
 ## Upgrading to 5.0.1
 
-Version 5.0.1 is being prepared for release. It requires Ruby 4.0.10 or newer within the Ruby 4.x series. If you use 5.0.0 on Ruby 4.0.1 through 4.0.9, upgrade Ruby before updating the gem. The dispatcher and `CommandCallable` interfaces are unchanged.
+Version 5.0.1 requires Ruby 4.0.10 or newer within the Ruby 4.x series. If you use 5.0.0 on Ruby 4.0.1 through 4.0.9, upgrade Ruby before updating the gem. The dispatcher and `CommandCallable` interfaces are unchanged.
 
 The development and CI lockfile includes refreshed security dependencies. Consuming applications resolve dependencies using their own Gemfile and lockfile; this gem's lockfile does not update application dependencies. Review and update the affected dependencies in each application separately.
 
