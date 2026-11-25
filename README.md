@@ -44,9 +44,17 @@ Or install it yourself as:
 
 ## Requirements
 
-- Ruby >= 4.0.10
+- Ruby >= 4.0.10 and < 5.0
 - Rails (optional, but optimized for Rails applications)
 - Rails 8 compatible (tested with ActiveSupport 8.x)
+
+## Upgrading to 5.0.1
+
+Version 5.0.1 is being prepared for release. It requires Ruby 4.0.10 or newer within the Ruby 4.x series. If you use 5.0.0 on Ruby 4.0.1 through 4.0.9, upgrade Ruby before updating the gem. The dispatcher and `CommandCallable` interfaces are unchanged.
+
+The development and CI lockfile includes refreshed security dependencies. Consuming applications resolve dependencies using their own Gemfile and lockfile; this gem's lockfile does not update application dependencies. Review and update the affected dependencies in each application separately.
+
+CI runs tests and lint on minimum Ruby 4.0.10 and the latest Ruby 4.0 patch across Linux, macOS, and Windows, including Linux ARM64 and Intel/ARM64 macOS. See [CHANGELOG.md](CHANGELOG.md) for the release details.
 
 ## Quick Start
 

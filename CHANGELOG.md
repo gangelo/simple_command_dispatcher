@@ -1,11 +1,26 @@
 # CHANGELOG
 
-## Unreleased
+## Version 5.0.1 - Unreleased
 
-- Raise the development Ruby pin and minimum supported Ruby version to 4.0.10 for security fixes.
-- Refresh locked dependencies to incorporate available security updates.
-- Test minimum and latest Ruby 4.0 patches on supported Linux, macOS, and Windows runners, including Linux and macOS ARM64.
-- Keep CI dependencies frozen to the committed lockfile.
+- **Ruby compatibility**:
+
+  - Raise the development Ruby pin and minimum supported Ruby version to 4.0.10 for security fixes.
+  - Ruby 4.0.1 through 4.0.9 are no longer supported; upgrade Ruby before updating this gem.
+  - The dispatcher and CommandCallable interfaces are unchanged.
+
+- **Dependency updates**:
+
+  - Refresh locked development and test dependencies, including ActiveSupport 8.1.4.1, concurrent-ruby 1.3.8, JSON 3.2.0, and ERB 6.0.7.
+  - Update the locked Bundler version to 2.5.23.
+  - The ActiveSupport dependency constraint is unchanged; consuming applications retain their own lockfiles.
+
+- **CI updates**:
+
+  - Run tests and lint in 18 jobs covering minimum Ruby 4.0.10 and the latest Ruby 4.0 patch.
+  - Cover supported Linux, macOS, and Windows runners, including Linux ARM64 and both Intel and ARM64 macOS.
+  - Replace the retired macOS 14 runner and update checkout to v6.
+  - Add the corresponding Linux ARM64 and macOS lockfile platforms.
+  - Keep CI dependencies frozen to the committed lockfile and verify tests leave it unchanged.
 
 ## Version 5.0.0 - 2026-02-17
 
